@@ -1,0 +1,9 @@
+# Domain canonicalization: Redirect WWW to non-WWW
+https://www.skaylon.com/*    https://skaylon.com/:splat    301!
+
+# Hard 404 for legacy Shopify e-commerce paths
+/products/*                  /index.html                   404
+/collections/*               /index.html                   404
+
+# SPA Catch-All
+/*                           /index.html                   200

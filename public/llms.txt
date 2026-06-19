@@ -1,0 +1,38 @@
+# Skaylon
+
+> Skaylon is a premium digital product studio and custom software development company. Acting as a strategic product partner, Skaylon specializes in intentional design, strategic engineering, and founder-led execution for startups and established enterprises.
+
+## Business Context & Location
+
+- **Entity Type**: MSME Registered Entity (Udyam KL-05-0037475)
+- **Base Location**: Kasaragod, Kerala, India
+- **Geographic Scope**: Serving businesses across India and globally
+- **Operating Hours**: 9:30 AM – 6:30 PM IST
+- **Primary Contact**: skaylon.in@gmail.com
+- **Website**: https://skaylon.com
+
+## Core Capabilities & Services
+
+- **Website Development**: High-performance, search-optimized websites built with static site generation for sub-second speeds.
+  - [Website Development Details](https://skaylon.com/services/website-development)
+- **Web Application Development**: Scalable, security-first browser-based software and dashboard applications powered by React and Node.js.
+  - [Web Application Development Details](https://skaylon.com/services/web-application-development)
+- **Mobile App Development**: Cross-platform iOS and Android apps engineered with Google's Flutter framework.
+  - [Mobile App Development Details](https://skaylon.com/services/mobile-app-development)
+- **Custom Software Development**: Bespoke internal tools, ERPs, workflow automations, and startup MVP products.
+  - [Custom Software Development Details](https://skaylon.com/services/custom-software-development)
+- **UI/UX Design**: Intentional visual interfaces, interactive prototypes, and Figma design systems built for clean developer handoff.
+  - [UI/UX Design Details](https://skaylon.com/services/ui-ux-design)
+
+## Featured Case Studies
+
+- **Navora**: Custom global logistics and supply chain digital flagship.
+  - [Navora Case Study](https://skaylon.com/proof/navora-global-ltd)
+- **ManifestOS**: Lightweight operational desktop-grade system.
+  - [ManifestOS Case Study](https://skaylon.com/proof/manifestos)
+- **TikiTak**: Real-time board gaming arena and multiplayer lobby system.
+  - [TikiTak Case Study](https://skaylon.com/proof/tikitak-board-arena)
+
+## Full Context Document
+
+- [Full Website Content Context](https://skaylon.com/llms-full.txt) - Long-form markdown version of Skaylon's detailed pages, process timeline, and complete FAQ.

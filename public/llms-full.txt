@@ -1,0 +1,110 @@
+# Skaylon - Full Context Document
+
+This document provides complete long-form details about Skaylon's philosophy, operations, services, case studies, and common questions. It is optimized for consumption by AI assistants, crawlers, and agents.
+
+---
+
+## 1. Philosophy & Approach
+
+### Curiosity First
+Skaylon acts as a strategic product partner rather than a feature factory. We operate on the principle that "we think before we build." Business software development without deep initial discovery is guesswork. We ask the critical questions most developers skip and challenge assumptions to map what organizations actually need.
+
+### Clarity as a Deliverable
+We observe, audit, and analyze before code is written. We turn operational ambiguity into concrete roadmap blueprints.
+
+### Founder-Led Execution
+Skaylon ensures that every engagement is directly managed by the founding team. We maintain unfiltered visibility by giving clients access to our internal Slack, Jira, and repositories, providing flat ownership with direct developer access.
+
+---
+
+## 2. Core Service Directory
+
+### Website Development Services
+- **Goal**: Building digital flagships that command authority, load under a second, and convert visitors into customers.
+- **Benefits**: Sub-second load times via static site generation, responsive layouts matching WCAG accessibility standards, and SEO-first engineering (semantic HTML, structured schema).
+- **Process**:
+  1. Discovery & Content Architecture
+  2. Editorial UI/UX Design
+  3. Lightweight, modular frontend development
+  4. Optimization audits & launch validation
+- **Location Context**: We provide Website Development Services in Kasaragod and Kerala, serving local businesses and international partners looking to scale their digital footprint.
+- **Reference**: https://skaylon.com/services/website-development
+
+### Web Application Development
+- **Goal**: Engineering security-first web software, CRM tools, customer portals, and admin databases that scale with operations.
+- **Benefits**: Instantaneous state-driven React interfaces, auto-scaling serverless/container infrastructure, and end-to-end data encryption.
+- **Process**:
+  1. Database and API systems blueprinting
+  2. Interactive dashboard UI layout
+  3. Full-stack React + Node.js engineering
+  4. Automated QA testing & security audits
+- **Location Context**: Custom Web Application Development for businesses across Kerala and India, delivered via remote-first communication and collaborative git pipelines.
+- **Reference**: https://skaylon.com/services/web-application-development
+
+### Mobile App Development
+- **Goal**: Designing and building native-quality cross-platform mobile apps for iOS and Android.
+- **Benefits**: Unified codebase using Google's Flutter framework, smooth 60fps hardware-accelerated animations, and offline-first database synchronization.
+- **Process**:
+  1. Feature definition & mobile workflow mapping
+  2. High-fidelity mobile UX/UI layouts (light/dark mode layouts)
+  3. Flutter development & push notification integration
+  4. App Store & Google Play submission and launch
+- **Location Context**: Premium Mobile App Development Services in Kerala and across India.
+- **Reference**: https://skaylon.com/services/mobile-app-development
+
+### Custom Software Development
+- **Goal**: Replacing generic templates with custom-coded software built specifically for enterprise processes.
+- **Benefits**: Zero licensing fees, absolute code ownership, and scalable data architectures.
+- **Process**:
+  1. Process shadowing & operational audit
+  2. Database structure & backup system blueprinting
+  3. Agile incremental sprints & sandbox testing
+  4. Team training, handbook creation, and support handoff
+- **Location Context**: Custom Software Solutions for businesses across India, engineered to automate manual business processes.
+- **Reference**: https://skaylon.com/services/custom-software-development
+
+---
+
+## 3. Case Studies
+
+### Navora Global Ltd
+- **Scope**: Enterprise logistics platform and digital flagship.
+- **Impact**: Streamlined client intake, modernized UI branding, and optimized performance.
+- **Reference**: https://skaylon.com/proof/navora-global-ltd
+
+### ManifestOS
+- **Scope**: Desktop-grade system simulator and dashboard.
+- **Impact**: High-density interactive state components, lightweight bundles, and fluid drag-drop physics.
+- **Reference**: https://skaylon.com/proof/manifestos
+
+### TikiTak Board Arena
+- **Scope**: Real-time gaming lobby and multiplayer matchmaking.
+- **Impact**: Low-latency WebSocket connections, interactive canvas rendering, and real-time state synchronization.
+- **Reference**: https://skaylon.com/proof/tikitak-board-arena
+
+---
+
+## 4. Frequently Asked Questions (FAQs)
+
+### General FAQs
+1. **Do you provide website development services in Kasaragod?**
+   - Yes, Skaylon is based in Kasaragod, Kerala, and we build premium, search-optimized websites for local businesses and global brands alike.
+2. **Do you work with businesses across Kerala?**
+   - Yes. We serve clients across all districts of Kerala (including Kochi, Kozhikode, Trivandrum, and Kannur) through virtual consultation and scheduled in-person workshops.
+3. **Can Skaylon build software for clients outside Kerala?**
+   - Absolutely. Skaylon operates as a custom software development company serving clients across India and globally, leveraging transparent staging pipelines for seamless collaboration.
+4. **Do you provide mobile app development services across India?**
+   - Yes, we build and deliver premium cross-platform mobile apps for iOS and Android using Flutter, serving businesses across India and international markets.
+5. **How much does website development cost?**
+   - Custom corporate projects typically range from $3,000 to $10,000+ depending on volume and dynamic features. We offer fixed-price proposals following scoping.
+6. **Do you provide ongoing support?**
+   - Yes, we provide post-launch maintenance, updates, and SLA support agreements.
+
+---
+
+## 5. Contact & Operations
+
+- **Headquarters**: Kasaragod, Kerala, India
+- **Availability**: 9:30 AM – 6:30 PM IST (Monday to Friday)
+- **Email**: skaylon.in@gmail.com
+- **MSME Registry ID**: UDYAM-KL-05-0037475
