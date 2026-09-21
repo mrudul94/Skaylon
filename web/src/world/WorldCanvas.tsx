@@ -8,8 +8,7 @@ import { loadBakedEnvironment } from "./bakedEnvironment";
 import { CameraRig } from "./CameraRig";
 import { FrameDriver } from "./FrameDriver";
 import { live } from "./live";
-import { Chips } from "./Chips";
-import { LabelProjector } from "./LabelProjector";
+import { LiquidCore } from "./LiquidCore";
 import { Particles } from "./Particles";
 import { declineTier, TIER_SETTINGS } from "./quality/tiers";
 import { Stage } from "./Stage";
@@ -89,8 +88,7 @@ export default function WorldCanvas({ tier, reducedMotion }: { tier: 1 | 2; redu
       />
       <CameraRig reducedMotion={reducedMotion} />
       <Stage environment={environment} />
-      <Chips count={settings.chips} reducedMotion={reducedMotion} />
-      <LabelProjector />
+      <LiquidCore tier={tier} reducedMotion={reducedMotion} />
       <Particles count={settings.particles} reducedMotion={reducedMotion} />
       <FrameDriver idleFps={settings.idleFps} reducedMotion={reducedMotion} />
       <ReadySignal />

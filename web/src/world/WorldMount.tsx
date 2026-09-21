@@ -9,7 +9,6 @@ import { dimOverlay } from "./live";
 import { detectTier } from "./quality/detect";
 import { labelText } from "./labels";
 import { journeyProgress, useWorld } from "./store";
-import { WorldLabels } from "./WorldLabels";
 
 const WorldCanvas = dynamic(() => import("./WorldCanvas"), { ssr: false });
 
@@ -55,7 +54,6 @@ export function WorldMount({ labels }: { labels: Record<string, string> }) {
       )}
       <div ref={(el) => void (dimOverlay.current = el)} className="absolute inset-0 bg-graphite-950" style={{ opacity: 0 }} />
       <div data-world-scrim className="world-scrim absolute inset-0" />
-      {showCanvas && <WorldLabels reducedMotion={reducedMotion} />}
       <JourneyAnchors />
     </div>
   );
