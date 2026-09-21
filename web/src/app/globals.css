@@ -1,0 +1,148 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* ------------------------------------------------------------------
+   Design tokens
+   Palette: graphite void, bone text, one ember accent. Contrast on
+   graphite-950: bone 16.3:1, bone-muted 8.1:1, ember 6.3:1
+   (asserted by scripts/verify-contrast.mts).
+------------------------------------------------------------------ */
+@theme {
+  --color-graphite-950: #08090a;
+  --color-graphite-900: #0e1012;
+  --color-graphite-800: #16181b;
+  --color-graphite-700: #24272b;
+  --color-graphite-600: #34383e;
+  --color-graphite-500: #5b6068;
+  --color-bone: #ece8e1;
+  --color-bone-muted: #a9a59e;
+  --color-ember: #d9764a;
+  --color-ember-soft: #e8a283;
+
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  --text-display-xl: clamp(3rem, 1.4rem + 6.4vw, 8rem);
+  --text-display-xl--line-height: 0.94;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display: clamp(2.25rem, 1.4rem + 3.4vw, 4.75rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.03em;
+  --text-title: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.02em;
+  --text-lead: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
+  --text-lead--line-height: 1.55;
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.22em;
+
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --container-page: 90rem;
+}
+
+/* ------------------------------------------------------------------
+   Base
+------------------------------------------------------------------ */
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-graphite-950);
+    color: var(--color-bone);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Transparent on purpose: the fixed world layer sits at z-index -1, which
+     paints BELOW an opaque body background. The colour lives on <html>. */
+  body {
+    background: transparent;
+    font-family: var(--font-sans);
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-ember);
+    color: var(--color-graphite-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Native smooth scrolling only when Lenis is off (reduced motion keeps it off). */
+  html:not(.lenis) {
+    scroll-behavior: auto;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Atmosphere: the static stand-in behind content until the 3D world
+   mounts (checkpoint 3), and the permanent look for T0/reduced motion.
+------------------------------------------------------------------ */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 70% 35%, rgb(217 118 74 / 0.08), transparent 70%),
+    radial-gradient(80% 60% at 20% 90%, rgb(236 232 225 / 0.04), transparent 70%),
+    var(--color-graphite-950);
+}
+
+/* Keeps text legible over the world: darkens the text side of the frame
+   (left on wide screens, bottom on tall ones), plus a soft edge vignette. */
+.world-scrim {
+  background:
+    linear-gradient(to top, rgb(8 9 10 / 0.85), rgb(8 9 10 / 0) 55%),
+    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(8 9 10 / 0.55));
+}
+@media (min-aspect-ratio: 6/5) {
+  .world-scrim {
+    background:
+      linear-gradient(to right, rgb(8 9 10 / 0.8), rgb(8 9 10 / 0.35) 45%, rgb(8 9 10 / 0) 70%),
+      radial-gradient(120% 90% at 60% 45%, transparent 55%, rgb(8 9 10 / 0.55));
+  }
+}
+
+/* Film grain: a static SVG noise tile, never animated. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hairline rule used between sections and list rows. */
+.hairline {
+  border-color: rgb(236 232 225 / 0.1);
+}
+
+/* Native <details> FAQ marker. */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Mobile menu dialog. */
+dialog.menu::backdrop {
+  background: rgb(8 9 10 / 0.6);
+  backdrop-filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
