@@ -69,7 +69,7 @@ export default async function ProjectPage({ params }: Props) {
       />
 
       <Container>
-        <div className="relative aspect-[16/9] overflow-hidden rounded-sm bg-graphite-800">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-sm bg-ink-800">
           <Image
             src={project.cover.url}
             alt={project.cover.alt}
@@ -82,24 +82,24 @@ export default async function ProjectPage({ params }: Props) {
 
         <dl className="hairline mt-12 grid gap-8 border-b pb-12 sm:grid-cols-3">
           <div>
-            <dt className="text-eyebrow text-bone-muted uppercase">Services</dt>
+            <dt className="text-eyebrow text-chalk-muted uppercase">Services</dt>
             <dd className="mt-3 space-y-1">
               {services.map((s) => (
-                <Link key={s.slug} href={`/services/${s.slug}`} className="block hover:text-ember">
+                <Link key={s.slug} href={`/services/${s.slug}`} className="block hover:text-accent">
                   {s.name}
                 </Link>
               ))}
             </dd>
           </div>
           <div>
-            <dt className="text-eyebrow text-bone-muted uppercase">Stack</dt>
+            <dt className="text-eyebrow text-chalk-muted uppercase">Stack</dt>
             <dd className="mt-3">{project.techStack.join(" · ")}</dd>
           </div>
           {project.liveUrl && (
             <div>
-              <dt className="text-eyebrow text-bone-muted uppercase">Live</dt>
+              <dt className="text-eyebrow text-chalk-muted uppercase">Live</dt>
               <dd className="mt-3">
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="hover:text-ember">
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent">
                   Visit site<span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </dd>
@@ -111,8 +111,8 @@ export default async function ProjectPage({ params }: Props) {
           <Reveal as="dl" stagger className="grid gap-10 py-20 sm:grid-cols-3">
             {project.metrics.map((m) => (
               <div key={m.label} className="flex flex-col-reverse">
-                <dt className="mt-3 text-bone-muted">{m.label}</dt>
-                <dd className="font-serif text-6xl text-ember">{m.value}</dd>
+                <dt className="mt-3 text-chalk-muted">{m.label}</dt>
+                <dd className="text-gradient text-6xl font-semibold tracking-[-0.05em]">{m.value}</dd>
               </div>
             ))}
           </Reveal>
@@ -121,10 +121,10 @@ export default async function ProjectPage({ params }: Props) {
         {STORY.map(([key, heading]) =>
           project[key].length > 0 ? (
             <section key={key} aria-labelledby={`${key}-heading`} className="grid gap-8 py-16 lg:grid-cols-[1fr_2fr]">
-              <h2 id={`${key}-heading`} className="text-title font-light">
+              <h2 id={`${key}-heading`} className="text-title font-medium">
                 {heading}
               </h2>
-              <div className="space-y-5 text-lead text-bone-muted">
+              <div className="space-y-5 text-lead text-chalk-muted">
                 {project[key].map((p) => (
                   <p key={p}>{p}</p>
                 ))}
@@ -136,7 +136,7 @@ export default async function ProjectPage({ params }: Props) {
         {project.gallery.length > 0 && (
           <ul className="grid gap-8 py-16 md:grid-cols-2">
             {project.gallery.map((img) => (
-              <li key={img.url} className="relative aspect-[4/3] overflow-hidden rounded-sm bg-graphite-800">
+              <li key={img.url} className="relative aspect-[4/3] overflow-hidden rounded-sm bg-ink-800">
                 <Image src={img.url} alt={img.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
               </li>
             ))}

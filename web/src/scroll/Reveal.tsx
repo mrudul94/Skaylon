@@ -37,10 +37,10 @@ export function Reveal({ children, as: Tag = "div", className, stagger = false }
       const ctx = gsap.context(() => {
         gsap.from(stagger ? Array.from(el.children) : el, {
           autoAlpha: 0,
-          y: 28,
-          duration: 1.1,
-          ease: "power3.out",
-          stagger: stagger ? 0.08 : 0,
+          y: 48,
+          duration: 1.3,
+          ease: "expo.out",
+          stagger: stagger ? 0.09 : 0,
           scrollTrigger: { trigger: el, start: "top 85%", once: true },
         });
       }, el);

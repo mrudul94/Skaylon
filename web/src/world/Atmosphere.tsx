@@ -37,6 +37,7 @@ export function ContactShadow() {
   );
   useFrame(() => {
     if (!mesh.current) return;
+    mesh.current.position.set(0.2 + live.coreOffset[0], FLOOR_Y + 0.004, 0.1 + live.coreOffset[2]);
     const opacity = live.shadow * 0.9;
     (mesh.current.material as MeshBasicMaterial).opacity = opacity;
     mesh.current.visible = opacity > 0.01;
@@ -55,9 +56,9 @@ export function CoreGlow() {
     () =>
       radialTexture([
         [0, "rgba(255,255,255,0.95)"],
-        [0.2, "rgba(255,210,170,0.55)"],
-        [0.45, "rgba(217,118,74,0.18)"],
-        [0.75, "rgba(217,118,74,0.04)"],
+        [0.2, "rgba(200,190,255,0.5)"],
+        [0.45, "rgba(143,124,255,0.16)"],
+        [0.75, "rgba(63,216,255,0.04)"],
         [1, "rgba(0,0,0,0)"],
       ]),
     [],
@@ -65,6 +66,7 @@ export function CoreGlow() {
   useFrame(({ camera }) => {
     if (!mesh.current) return;
     mesh.current.quaternion.copy(camera.quaternion); // billboard
+    mesh.current.position.set(live.coreOffset[0], 0.1, -0.6 + live.coreOffset[2]);
     const m = mesh.current.material as MeshBasicMaterial;
     m.color.copy(tmp.copy(PALETTE.coolCore).lerp(PALETTE.warmCore, live.warmth)).multiplyScalar(live.glow * 0.75);
     mesh.current.visible = live.glow > 0.01;

@@ -26,14 +26,18 @@ function ratio(a: string, b: string) {
 
 // [foreground, background, minimum, where it's used]
 const pairs: [string, string, number, string][] = [
-  ["bone", "graphite-950", 7, "body text"],
-  ["bone-muted", "graphite-950", 4.5, "secondary text"],
-  ["ember", "graphite-950", 4.5, "eyebrows, links, numerals"],
-  ["bone", "graphite-800", 4.5, "text on raised surfaces"],
-  ["bone-muted", "graphite-800", 4.5, "secondary text on raised surfaces"],
-  ["graphite-950", "bone", 4.5, "primary button label"],
-  ["graphite-950", "ember", 4.5, "primary button hover / selection"],
-  ["ember", "graphite-950", 3, "focus ring (non-text, 1.4.11)"],
+  ["chalk", "ink-950", 7, "body text"],
+  ["chalk-muted", "ink-950", 4.5, "secondary text"],
+  ["accent", "ink-950", 4.5, "accent text, active links"],
+  ["cyan", "ink-950", 4.5, "numerals, status"],
+  ["accent-soft", "ink-950", 4.5, "form error text"],
+  ["chalk", "ink-800", 4.5, "text on raised surfaces"],
+  ["chalk-muted", "ink-800", 4.5, "secondary text on raised surfaces"],
+  ["chalk-muted", "ink-700", 4.5, "secondary text on glass cards (worst case)"],
+  ["ink-950", "chalk", 4.5, "primary button label"],
+  ["ink-950", "accent", 4.5, "button hover fill (iris end) / selection"],
+  ["ink-950", "cyan", 4.5, "button hover fill (cyan end)"],
+  ["accent", "ink-950", 3, "focus ring (non-text, 1.4.11)"],
 ];
 
 let failures = 0;

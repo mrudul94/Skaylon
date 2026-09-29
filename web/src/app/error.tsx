@@ -12,18 +12,18 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
     <section className="flex min-h-svh items-center pt-20">
       <Container>
         <Eyebrow>Something went wrong</Eyebrow>
-        <h1 className="mt-6 max-w-4xl text-display font-light text-balance">This page failed to load.</h1>
-        <p className="mt-6 max-w-xl text-lead text-bone-muted">
+        <h1 className="mt-6 max-w-4xl text-display font-medium text-balance">This page failed to load.</h1>
+        <p className="mt-6 max-w-xl text-lead text-chalk-muted">
           It&apos;s on our side, not yours. Try again, or email skaylon.in@gmail.com if it keeps happening.
         </p>
         <button
           type="button"
           onClick={reset}
-          className="mt-10 inline-flex min-h-12 items-center rounded-full bg-bone px-6 text-sm font-medium text-graphite-950 hover:bg-ember"
+          className="mt-10 inline-flex min-h-12 items-center rounded-full bg-chalk px-6 text-sm font-medium text-ink-950 hover:bg-accent"
         >
           Try again
         </button>
-        {error.digest && <p className="mt-8 text-xs text-bone-muted">Reference: {error.digest}</p>}
+        {error.digest && <p className="mt-8 text-xs text-chalk-muted">Reference: {error.digest}</p>}
       </Container>
     </section>
   );

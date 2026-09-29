@@ -50,8 +50,10 @@ export function Particles({ count, reducedMotion }: { count: number; reducedMoti
           uniform float uHeight;
           attribute float aRandom;
           varying float vAlpha;
+          varying float vTint;
           void main() {
             vec3 p = position;
+            vTint = fract(aRandom * 7.0);
             float speed = 0.03 + aRandom * 0.05;
             p.y = uFloor + mod(p.y - uFloor + uTime * speed, uHeight);
             p.x += sin(uTime * 0.12 + aRandom * 40.0) * 0.25;
@@ -68,10 +70,11 @@ export function Particles({ count, reducedMotion }: { count: number; reducedMoti
         `,
         fragmentShader: /* glsl */ `
           varying float vAlpha;
+          varying float vTint;
           void main() {
             float d = length(gl_PointCoord - 0.5);
             float disc = 1.0 - smoothstep(0.2, 0.5, d);
-            gl_FragColor = vec4(vec3(1.0, 0.94, 0.86), disc * vAlpha * 0.55);
+            gl_FragColor = vec4(mix(vec3(0.72, 0.68, 1.0), vec3(0.6, 0.93, 1.0), vTint), disc * vAlpha * 0.6);
           }
         `,
       }),

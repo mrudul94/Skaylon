@@ -7,7 +7,6 @@ import { useReducedMotion } from "@/scroll/useReducedMotion";
 import { anchorFor } from "./journey";
 import { dimOverlay } from "./live";
 import { detectTier } from "./quality/detect";
-import { labelText } from "./labels";
 import { journeyProgress, useWorld } from "./store";
 
 const WorldCanvas = dynamic(() => import("./WorldCanvas"), { ssr: false });
@@ -18,8 +17,7 @@ const WorldCanvas = dynamic(() => import("./WorldCanvas"), { ssr: false });
  * atmosphere; tier detection, three.js and the canvas all arrive after the
  * page is interactive. Decorative: aria-hidden, no pointer events.
  */
-export function WorldMount({ labels }: { labels: Record<string, string> }) {
-  labelText.map = labels;
+export function WorldMount() {
   const tier = useWorld((s) => s.tier);
   const lost = useWorld((s) => s.lost);
   const ready = useWorld((s) => s.ready);

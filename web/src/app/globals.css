@@ -3,42 +3,45 @@
 
 /* ------------------------------------------------------------------
    Design tokens
-   Palette: graphite void, bone text, one ember accent. Contrast on
-   graphite-950: bone 16.3:1, bone-muted 8.1:1, ember 6.3:1
-   (asserted by scripts/verify-contrast.mts).
+   Palette: deep ink, cool chalk text, and an iris → cyan accent pair
+   that matches the iridescent 3D core. Contrast pairs are asserted by
+   scripts/verify-contrast.mts.
 ------------------------------------------------------------------ */
 @theme {
-  --color-graphite-950: #08090a;
-  --color-graphite-900: #0e1012;
-  --color-graphite-800: #16181b;
-  --color-graphite-700: #24272b;
-  --color-graphite-600: #34383e;
-  --color-graphite-500: #5b6068;
-  --color-bone: #ece8e1;
-  --color-bone-muted: #a9a59e;
-  --color-ember: #d9764a;
-  --color-ember-soft: #e8a283;
+  --color-ink-950: #06070a;
+  --color-ink-900: #0b0d12;
+  --color-ink-800: #12151c;
+  --color-ink-700: #1c2029;
+  --color-ink-600: #2a2f3a;
+  --color-ink-500: #4a5060;
+  --color-chalk: #eef0f3;
+  --color-chalk-muted: #9ba2ae;
+  --color-accent: #a797ff;
+  --color-accent-soft: #c9c0ff;
+  --color-cyan: #62e4ff;
 
-  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
 
-  --text-display-xl: clamp(3rem, 1.4rem + 6.4vw, 8rem);
-  --text-display-xl--line-height: 0.94;
-  --text-display-xl--letter-spacing: -0.035em;
-  --text-display: clamp(2.25rem, 1.4rem + 3.4vw, 4.75rem);
-  --text-display--line-height: 1;
-  --text-display--letter-spacing: -0.03em;
-  --text-title: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
-  --text-title--line-height: 1.15;
-  --text-title--letter-spacing: -0.02em;
-  --text-lead: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
-  --text-lead--line-height: 1.55;
-  --text-eyebrow: 0.75rem;
+  --text-display-xl: clamp(3.1rem, 1.2rem + 7.4vw, 9.5rem);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.045em;
+  --text-display: clamp(2.35rem, 1.3rem + 3.9vw, 5.25rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.038em;
+  --text-title: clamp(1.5rem, 1.15rem + 1.3vw, 2.4rem);
+  --text-title--line-height: 1.1;
+  --text-title--letter-spacing: -0.025em;
+  --text-lead: clamp(1.075rem, 1rem + 0.4vw, 1.3rem);
+  --text-lead--line-height: 1.6;
+  --text-eyebrow: 0.72rem;
   --text-eyebrow--line-height: 1.2;
-  --text-eyebrow--letter-spacing: 0.22em;
+  --text-eyebrow--letter-spacing: 0.16em;
 
   --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
-  --container-page: 90rem;
+  --ease-snap: cubic-bezier(0.65, 0, 0.35, 1);
+  --container-page: 92rem;
 }
 
 /* ------------------------------------------------------------------
@@ -47,8 +50,8 @@
 @layer base {
   html {
     color-scheme: dark;
-    background: var(--color-graphite-950);
-    color: var(--color-bone);
+    background: var(--color-ink-950);
+    color: var(--color-chalk);
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
   }
@@ -62,14 +65,14 @@
   }
 
   ::selection {
-    background: var(--color-ember);
-    color: var(--color-graphite-950);
+    background: var(--color-accent);
+    color: var(--color-ink-950);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-ember);
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
-    border-radius: 2px;
+    border-radius: 4px;
   }
 
   /* Native smooth scrolling only when Lenis is off (reduced motion keeps it off). */
@@ -80,7 +83,7 @@
 
 /* ------------------------------------------------------------------
    Atmosphere: the static stand-in behind content until the 3D world
-   mounts (checkpoint 3), and the permanent look for T0/reduced motion.
+   mounts, and the permanent look for T0/reduced motion.
 ------------------------------------------------------------------ */
 .atmosphere {
   position: fixed;
@@ -88,24 +91,38 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(60% 50% at 70% 35%, rgb(217 118 74 / 0.08), transparent 70%),
-    radial-gradient(80% 60% at 20% 90%, rgb(236 232 225 / 0.04), transparent 70%),
-    var(--color-graphite-950);
+    radial-gradient(45% 45% at 72% 40%, rgb(167 151 255 / 0.12), transparent 70%),
+    radial-gradient(35% 35% at 80% 60%, rgb(98 228 255 / 0.07), transparent 70%),
+    radial-gradient(80% 60% at 10% 100%, rgb(238 240 243 / 0.03), transparent 70%),
+    var(--color-ink-950);
 }
 
 /* Keeps text legible over the world: darkens the text side of the frame
    (left on wide screens, bottom on tall ones), plus a soft edge vignette. */
 .world-scrim {
   background:
-    linear-gradient(to top, rgb(8 9 10 / 0.85), rgb(8 9 10 / 0) 55%),
-    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(8 9 10 / 0.55));
+    linear-gradient(to top, rgb(6 7 10 / 0.9), rgb(6 7 10 / 0) 55%),
+    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(6 7 10 / 0.6));
 }
 @media (min-aspect-ratio: 6/5) {
   .world-scrim {
     background:
-      linear-gradient(to right, rgb(8 9 10 / 0.8), rgb(8 9 10 / 0.35) 45%, rgb(8 9 10 / 0) 70%),
-      radial-gradient(120% 90% at 60% 45%, transparent 55%, rgb(8 9 10 / 0.55));
+      linear-gradient(to right, rgb(6 7 10 / 0.82), rgb(6 7 10 / 0.3) 45%, rgb(6 7 10 / 0) 68%),
+      radial-gradient(120% 90% at 62% 45%, transparent 55%, rgb(6 7 10 / 0.6));
   }
+}
+
+/* Fine blueprint grid behind content; fades toward the edges. */
+.grid-lines {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgb(238 240 243 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(238 240 243 / 0.035) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(80% 70% at 50% 40%, #000 20%, transparent 80%);
 }
 
 /* Film grain: a static SVG noise tile, never animated. */
@@ -114,13 +131,360 @@
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.06;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Hairline rule used between sections and list rows. */
 .hairline {
-  border-color: rgb(236 232 225 / 0.1);
+  border-color: rgb(238 240 243 / 0.09);
+}
+
+/* Iris → cyan gradient text (the accent word in headlines). */
+.text-gradient {
+  background: linear-gradient(100deg, var(--color-accent-soft) 0%, var(--color-accent) 40%, var(--color-cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Accent word set in the serif italic. Slightly larger to match cap height. */
+.serif-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  padding-right: 0.06em;
+}
+
+/* Frosted surface for cards and panels. */
+.glass {
+  background: linear-gradient(160deg, rgb(28 32 41 / 0.62), rgb(11 13 18 / 0.55));
+  border: 1px solid rgb(238 240 243 / 0.08);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* ------------------------------------------------------------------
+   Headline intro: words rise out of a mask on load. Pure CSS so it
+   starts with first paint (no JS wait); each word sets --i.
+------------------------------------------------------------------ */
+.rise {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.2em;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.rise > span {
+  display: inline-block;
+  animation: rise 1.1s var(--ease-cinematic) both;
+  animation-delay: calc(80ms + var(--i, 0) * 70ms);
+}
+@keyframes rise {
+  from {
+    transform: translate3d(0, 105%, 0) rotate(4deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.fade-in {
+  animation: fade-in 1.2s var(--ease-cinematic) both;
+  animation-delay: var(--delay, 500ms);
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Hover: text roll. The label slides up and its copy rolls in below.
+   Markup: <span class="roll" data-text="Label"><span>Label</span></span>
+------------------------------------------------------------------ */
+.roll {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  line-height: 1.25;
+}
+.roll > span,
+.roll::after {
+  transition: transform 0.55s var(--ease-cinematic);
+}
+.roll::after {
+  content: attr(data-text);
+  /* Empty alt text: the copy is decorative, keep it out of accessible names. */
+  content: attr(data-text) / "";
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
+}
+:is(a, button):hover .roll > span,
+:is(a, button):focus-visible .roll > span {
+  transform: translateY(-100%);
+}
+:is(a, button):hover .roll::after,
+:is(a, button):focus-visible .roll::after {
+  transform: none;
+}
+
+/* Underline that draws in from the left on hover. */
+.link-draw {
+  background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0 1px;
+  transition: background-size 0.6s var(--ease-cinematic), color 0.4s;
+}
+.link-draw:hover,
+.link-draw:focus-visible {
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+
+/* ------------------------------------------------------------------
+   Buttons: fill wipes up from the bottom, arrow loops through.
+------------------------------------------------------------------ */
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: color 0.5s var(--ease-cinematic), border-color 0.5s var(--ease-cinematic), transform 0.5s var(--ease-cinematic);
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  background: var(--btn-fill);
+  transform: translateY(101%);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  transition: transform 0.6s var(--ease-cinematic), border-radius 0.6s var(--ease-cinematic);
+}
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: none;
+  border-radius: 0;
+}
+.btn .btn-arrow {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  width: 16px;
+  height: 16px;
+}
+.btn .btn-arrow > svg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.55s var(--ease-cinematic);
+}
+.btn .btn-arrow > svg + svg {
+  transform: translateX(-120%);
+}
+.btn:hover .btn-arrow > svg:first-child,
+.btn:focus-visible .btn-arrow > svg:first-child {
+  transform: translateX(120%);
+}
+.btn:hover .btn-arrow > svg + svg,
+.btn:focus-visible .btn-arrow > svg + svg {
+  transform: none;
+}
+
+/* ------------------------------------------------------------------
+   Spotlight card: a soft light and a lit border follow the pointer.
+   Tilt.tsx sets --mx/--my (px) and --rx/--ry (deg).
+------------------------------------------------------------------ */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.6s var(--ease-cinematic), border-color 0.5s;
+  transform-style: preserve-3d;
+}
+.spotlight[data-active] {
+  transition: transform 0.12s linear, border-color 0.5s;
+}
+.spotlight::before,
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.spotlight::before {
+  z-index: -1;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(167 151 255 / 0.14), transparent 45%);
+}
+.spotlight::after {
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(98 228 255 / 0.7), rgb(167 151 255 / 0.35) 40%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.spotlight:hover::before,
+.spotlight:hover::after,
+.spotlight:focus-within::before,
+.spotlight:focus-within::after {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------
+   Marquee: two identical tracks loop seamlessly; slows on hover.
+------------------------------------------------------------------ */
+.marquee {
+  --duration: 38s;
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  min-width: 100%;
+  animation: marquee var(--duration) linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+/* Live status dot. */
+.pulse-dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: var(--color-cyan);
+}
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: pulse 2.2s var(--ease-cinematic) infinite;
+}
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+/* Scroll cue: a line with a light travelling down it. */
+.scroll-cue {
+  position: relative;
+  width: 1px;
+  height: 56px;
+  overflow: hidden;
+  background: rgb(238 240 243 / 0.15);
+}
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, var(--color-chalk));
+  animation: cue 2s var(--ease-snap) infinite;
+}
+@keyframes cue {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(260%);
+  }
+}
+
+/* Oversized decorative chapter numeral. Generated content, so it is never
+   read out or measured as text (it is deliberately faint). */
+.numeral::before {
+  content: attr(data-numeral);
+  content: attr(data-numeral) / "";
+}
+
+/* Footer wordmark: letters lift one after another on hover. */
+.wordmark span {
+  display: inline-block;
+  transition: transform 0.7s var(--ease-cinematic), color 0.7s var(--ease-cinematic);
+  transition-delay: calc(var(--i, 0) * 35ms);
+}
+.wordmark:hover span {
+  transform: translateY(-9%);
+  color: rgb(167 151 255 / 0.28);
+}
+
+/* Header hides while scrolling down, returns on scroll up. */
+.site-header {
+  transition: transform 0.7s var(--ease-cinematic);
+}
+.site-header[data-hidden="true"] {
+  transform: translateY(-120%);
+}
+
+/* Custom cursor (fine pointers only; Cursor.tsx). */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  pointer-events: none;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 9999px;
+  border: 1px solid rgb(238 240 243 / 0.5);
+  mix-blend-mode: difference;
+  transition: width 0.4s var(--ease-cinematic), height 0.4s var(--ease-cinematic), margin 0.4s var(--ease-cinematic),
+    background-color 0.4s, opacity 0.3s, border-color 0.4s;
+  opacity: 0;
+}
+.cursor[data-visible="true"] {
+  opacity: 1;
+}
+.cursor[data-hover="true"] {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  background: rgb(238 240 243 / 0.95);
+  border-color: transparent;
+}
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 81;
+  pointer-events: none;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 9999px;
+  background: var(--color-chalk);
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cursor-dot[data-visible="true"] {
+  opacity: 1;
 }
 
 /* Native <details> FAQ marker. */
@@ -133,8 +497,22 @@ details > summary::-webkit-details-marker {
 
 /* Mobile menu dialog. */
 dialog.menu::backdrop {
-  background: rgb(8 9 10 / 0.6);
+  background: rgb(6 7 10 / 0.6);
   backdrop-filter: blur(6px);
+}
+dialog.menu[open] .menu-item {
+  animation: menu-in 0.8s var(--ease-cinematic) both;
+  animation-delay: calc(120ms + var(--i, 0) * 60ms);
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -142,7 +520,14 @@ dialog.menu::backdrop {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  .spotlight {
+    transform: none !important;
   }
 }

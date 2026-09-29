@@ -8,7 +8,7 @@ import { track } from "@/lib/track";
 import { Turnstile } from "./Turnstile";
 
 const inputClass =
-  "mt-2 block w-full rounded-sm border border-bone/15 bg-graphite-950/60 px-4 py-3 text-bone placeholder:text-bone-muted/60 transition-colors focus:border-ember focus:outline-none aria-[invalid=true]:border-ember";
+  "mt-2 block w-full rounded-xl border border-chalk/12 bg-ink-950/60 px-4 py-3.5 text-chalk placeholder:text-chalk-muted/60 transition-[border-color,box-shadow] duration-300 hover:border-chalk/30 focus:border-accent focus:shadow-[0_0_0_4px_rgb(167_151_255/0.15)] focus:outline-none aria-[invalid=true]:border-accent";
 
 export function ContactForm({ services, siteKey, email }: { services: string[]; siteKey: string; email: string }) {
   const [state, formAction, pending] = useActionState<ContactState, FormData>(submitContact, { status: "idle" });
@@ -36,11 +36,11 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
   if (state.status === "success") {
     return (
       <div ref={statusRef} tabIndex={-1} role="status" className="outline-none">
-        <p className="text-eyebrow text-ember uppercase">Message received</p>
-        <h2 className="mt-5 text-title font-light">Thank you. We&apos;ll be in touch.</h2>
-        <p className="mt-4 text-bone-muted">
+        <p className="font-mono text-eyebrow text-accent uppercase">Message received</p>
+        <h2 className="mt-5 text-title font-medium">Thank you. We&apos;ll be in touch.</h2>
+        <p className="mt-4 text-chalk-muted">
           The founder reads every enquiry personally. If it&apos;s urgent, write to{" "}
-          <a href={`mailto:${email}`} className="text-bone underline underline-offset-4 hover:text-ember">
+          <a href={`mailto:${email}`} className="text-chalk underline underline-offset-4 hover:text-accent">
             {email}
           </a>
           .
@@ -60,18 +60,18 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
   });
   const Err = ({ name }: { name: ContactField }) =>
     errors[name] ? (
-      <p id={`contact-${name}-error`} className="mt-2 text-sm text-ember-soft">
+      <p id={`contact-${name}-error`} className="mt-2 text-sm text-accent-soft">
         {errors[name]}
       </p>
     ) : null;
 
   return (
     <form ref={formRef} action={formAction} className="space-y-6" aria-describedby="contact-status">
-      <h2 className="text-title font-light">Send a project brief</h2>
+      <h2 className="text-title font-medium">Send a project brief</h2>
 
       <div ref={statusRef} id="contact-status" tabIndex={-1} role="alert" className="outline-none">
         {state.status === "error" && (
-          <p className="rounded-sm border border-ember/40 bg-ember/10 px-4 py-3 text-sm">{state.message}</p>
+          <p className="rounded-xl border border-accent/40 bg-accent/10 px-4 py-3 text-sm">{state.message}</p>
         )}
       </div>
 
@@ -85,14 +85,14 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="contact-name" className="text-sm">
-            Name <span className="text-bone-muted">(required)</span>
+            Name <span className="text-chalk-muted">(required)</span>
           </label>
           <input {...field("name")} type="text" required minLength={2} maxLength={80} autoComplete="name" className={inputClass} />
           <Err name="name" />
         </div>
         <div>
           <label htmlFor="contact-email" className="text-sm">
-            Email <span className="text-bone-muted">(required)</span>
+            Email <span className="text-chalk-muted">(required)</span>
           </label>
           <input {...field("email")} type="email" required maxLength={254} autoComplete="email" className={inputClass} />
           <Err name="email" />
@@ -143,7 +143,7 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
 
       <div>
         <label htmlFor="contact-message" className="text-sm">
-          What&apos;s in the way? <span className="text-bone-muted">(required, 20+ characters)</span>
+          What&apos;s in the way? <span className="text-chalk-muted">(required, 20+ characters)</span>
         </label>
         <textarea {...field("message")} required minLength={20} maxLength={4000} rows={6} className={inputClass} />
         <Err name="message" />
@@ -158,11 +158,11 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
             required
             aria-invalid={errors.consent ? true : undefined}
             aria-describedby={errors.consent ? "contact-consent-error" : undefined}
-            className="mt-1 h-4 w-4 accent-[var(--color-ember)]"
+            className="mt-1 h-4 w-4 accent-[var(--color-accent)]"
           />
-          <label htmlFor="contact-consent" className="text-sm text-bone-muted">
+          <label htmlFor="contact-consent" className="text-sm text-chalk-muted">
             Skaylon may use these details to reply to my enquiry, as described in the{" "}
-            <a href="/privacy" className="text-bone underline underline-offset-4 hover:text-ember">
+            <a href="/privacy" className="text-chalk underline underline-offset-4 hover:text-accent">
               privacy policy
             </a>
             .
@@ -176,14 +176,14 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
       <button
         type="submit"
         disabled={pending || !startedAt}
-        className="inline-flex min-h-12 items-center rounded-full bg-bone px-7 text-sm font-medium text-graphite-950 transition-colors duration-500 hover:bg-ember disabled:cursor-wait disabled:opacity-60"
+        className="btn inline-flex min-h-12 items-center rounded-full bg-chalk px-7 text-sm font-medium text-ink-950 [--btn-fill:linear-gradient(100deg,var(--color-accent),var(--color-cyan))] disabled:cursor-wait disabled:opacity-60"
       >
         {pending ? "Sending…" : "Send brief"}
       </button>
       <noscript>
-        <p className="text-sm text-bone-muted">
+        <p className="text-sm text-chalk-muted">
           The form needs JavaScript for spam protection. You can always email{" "}
-          <a href={`mailto:${email}`} className="text-bone underline">
+          <a href={`mailto:${email}`} className="text-chalk underline">
             {email}
           </a>
           .

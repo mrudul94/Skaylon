@@ -31,16 +31,16 @@ await page.waitForTimeout(500);
 const png = await page.screenshot({ type: "png" });
 await browser.close();
 
-// Default Open Graph card (1200×630): the render, cropped to the monolith side,
+// Default Open Graph card (1200×630): the render, cropped to the core side,
 // with the wordmark and tagline. Plain SVG text in the system sans.
 const og = `public/og-default.jpg`;
 const overlay = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#08090a" stop-opacity=".92"/><stop offset=".62" stop-color="#08090a" stop-opacity="0"/></linearGradient></defs>
+  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#06070a" stop-opacity=".94"/><stop offset=".62" stop-color="#06070a" stop-opacity="0"/></linearGradient></defs>
   <rect width="1200" height="630" fill="url(#g)"/>
-  <text x="72" y="118" fill="#d9764a" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" letter-spacing="7">SKAYLON</text>
-  <text x="72" y="330" fill="#ece8e1" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="74" font-weight="300" letter-spacing="-2">Digital flagships,</text>
-  <text x="72" y="418" fill="#ece8e1" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="74" font-weight="300" letter-spacing="-2">engineered.</text>
-  <text x="72" y="540" fill="#a9a59e" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="24">Software studio · Kasaragod, Kerala</text>
+  <text x="72" y="118" fill="#a797ff" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" letter-spacing="7">SKAYLON</text>
+  <text x="72" y="330" fill="#eef0f3" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="74" font-weight="600" letter-spacing="-3">Digital flagships,</text>
+  <text x="72" y="418" fill="#a797ff" font-family="Georgia, Times New Roman, serif" font-size="80" font-style="italic" letter-spacing="-2">engineered.</text>
+  <text x="72" y="540" fill="#9ba2ae" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="24">Software studio · Kasaragod, Kerala</text>
 </svg>`);
 const ogInfo = await sharp(png)
   .resize({ width: 1200, height: 630, fit: "cover", position: "right" })

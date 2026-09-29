@@ -27,3 +27,6 @@ playwright-report/
 
 .DS_Store
 Thumbs.db
+
+# graphify knowledge-graph output
+graphify-out/

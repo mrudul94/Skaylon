@@ -28,14 +28,14 @@ export function Stage({ environment }: { environment: Texture | null }) {
       <fogExp2 attach="fog" args={[PALETTE.void, 0.035]} />
 
       <ambientLight intensity={0.05} />
-      <directionalLight position={[-5, 7, 5]} intensity={2.8} color="#fff6ed" />
-      <directionalLight position={[5, 2.5, -6]} intensity={1.8} color="#b4cbff" />
-      <pointLight position={[0, -1.0, 0]} intensity={1.5} color="#d9764a" distance={10} />
+      <directionalLight position={[-5, 7, 5]} intensity={2.6} color="#f4f1ff" />
+      <directionalLight position={[5, 2.5, -6]} intensity={2.2} color="#9fe6ff" />
+      <pointLight position={[0, 1.6, 2.2]} intensity={1.2} color="#8f7cff" distance={9} />
 
       {/* Ground: near-black, faintly reflective, dissolving into fog. */}
       <mesh rotation-x={-Math.PI / 2} position={[0, FLOOR_Y, 0]}>
         <planeGeometry args={[90, 90]} />
-        <meshStandardMaterial color="#050607" roughness={0.42} metalness={0.45} envMapIntensity={0.65} />
+        <meshStandardMaterial color="#040508" roughness={0.55} metalness={0.3} envMapIntensity={0.12} />
       </mesh>
       <ContactShadow />
       <CoreGlow />

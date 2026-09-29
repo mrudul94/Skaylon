@@ -14,7 +14,7 @@ export function LegalDocument({ page }: { page: LegalPage }) {
     <>
       <WorldPose pose="legal" />
       <PageHero eyebrow="Legal" heading={page.title} sub={page.intro}>
-        <p className="mt-6 text-sm text-bone-muted">
+        <p className="mt-6 text-sm text-chalk-muted">
           Last updated <time dateTime={page.lastUpdated}>{updated}</time>
         </p>
       </PageHero>
@@ -22,8 +22,8 @@ export function LegalDocument({ page }: { page: LegalPage }) {
         <div className="max-w-3xl space-y-14">
           {page.sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="text-title font-light">{section.heading}</h2>
-              <div className="mt-5 space-y-4 leading-relaxed text-bone-muted">
+              <h2 className="text-title font-medium">{section.heading}</h2>
+              <div className="mt-5 space-y-4 leading-relaxed text-chalk-muted">
                 {section.body.map((p) => (
                   <p key={p}>{p}</p>
                 ))}

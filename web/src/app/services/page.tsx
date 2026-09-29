@@ -25,7 +25,9 @@ export default async function ServicesPage() {
       />
       <section aria-label="All services" className="pb-12">
         <Container>
-          <ServiceList services={services} headingLevel="h2" />
+          <div className="lg:max-w-[70%]">
+            <ServiceList services={services} headingLevel="h2" />
+          </div>
         </Container>
       </section>
       <CtaSection title="Not sure which one you need?" label="Talk it through with us" />

@@ -8,7 +8,9 @@ import { loadBakedEnvironment } from "./bakedEnvironment";
 import { CameraRig } from "./CameraRig";
 import { FrameDriver } from "./FrameDriver";
 import { live } from "./live";
-import { LiquidCore } from "./LiquidCore";
+import { Core } from "./Core";
+import { Orbit } from "./Orbit";
+import { listenPointer } from "./pointer";
 import { Particles } from "./Particles";
 import { declineTier, TIER_SETTINGS } from "./quality/tiers";
 import { Stage } from "./Stage";
@@ -54,6 +56,8 @@ export default function WorldCanvas({ tier, reducedMotion }: { tier: 1 | 2; redu
     };
   }, []);
 
+  useEffect(() => listenPointer(), []);
+
   const [compiled, setCompiled] = useState(false);
   const onCompiled = useCallback(() => setCompiled(true), []);
 
@@ -88,7 +92,8 @@ export default function WorldCanvas({ tier, reducedMotion }: { tier: 1 | 2; redu
       />
       <CameraRig reducedMotion={reducedMotion} />
       <Stage environment={environment} />
-      <LiquidCore tier={tier} reducedMotion={reducedMotion} />
+      <Core tier={tier} reducedMotion={reducedMotion} />
+      <Orbit reducedMotion={reducedMotion} />
       <Particles count={settings.particles} reducedMotion={reducedMotion} />
       <FrameDriver idleFps={settings.idleFps} reducedMotion={reducedMotion} />
       <ReadySignal />

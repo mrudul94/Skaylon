@@ -2,6 +2,7 @@
 
 import type { FormationKey, Vec3 } from "./formations";
 import { JOURNEY_POSES, type Pose } from "./journey";
+import { SHAPES, type Shape } from "./shapes";
 
 /**
  * The world's CURRENT (damped) state, mutated every frame by CameraRig and
@@ -21,6 +22,10 @@ export type LiveState = {
   morph: { from: FormationKey | null; to: FormationKey; mix: number };
   /** Formation whose labels are showing (null while mid-morph) and their opacity. */
   labels: { key: FormationKey | null; opacity: number };
+  /** The core's current (damped) shape; Core.tsx eases it toward the pose's. */
+  shape: Shape;
+  /** Where the core actually sits this frame (shape offset scaled for the viewport; set by Core.tsx). */
+  coreOffset: Vec3;
   /** True while anything is still easing toward its target. */
   moving: boolean;
 };
@@ -37,6 +42,8 @@ export function liveFromPose(pose: Pose): LiveState {
     orbitAngle: 0,
     morph: { from: null, to: pose.formation, mix: 1 },
     labels: { key: null, opacity: 0 },
+    shape: { ...SHAPES[pose.formation], scale: [...SHAPES[pose.formation].scale], offset: [...SHAPES[pose.formation].offset] },
+    coreOffset: [0, 0, 0],
     moving: true,
   };
 }

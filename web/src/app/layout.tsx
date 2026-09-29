@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Inter_Tight } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Analytics } from "@/components/layout/Analytics";
 import { ClickTracker } from "@/components/layout/ClickTracker";
+import { Cursor } from "@/components/motion/Cursor";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Header } from "@/components/layout/Header";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getProcessPage, getServices, getSiteSettings } from "@/content";
+import { getSiteSettings } from "@/content";
 import { env } from "@/lib/env";
 import { organization, website } from "@/lib/jsonld";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
@@ -15,20 +17,27 @@ import "./globals.css";
 
 // Self-hosted at build time by next/font (no runtime request to Google),
 // with metric-matched fallbacks so late font swaps don't shift layout.
-const interTight = Inter_Tight({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter-tight",
+  variable: "--font-geist",
   display: "swap",
 });
 
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+  // Small labels only: don't compete with the hero's fonts during LCP.
+  preload: false,
+});
+
+// The italic accent word in headlines (including the hero h1, so preloaded).
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
+  style: "italic",
   variable: "--font-instrument-serif",
   display: "swap",
-  // Only used for numerals below the fold: don't compete with the hero's
-  // font for bandwidth during the LCP window.
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -46,34 +55,33 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08090a",
+  themeColor: "#06070a",
   colorScheme: "dark",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [site, services, process] = await Promise.all([getSiteSettings(), getServices(), getProcessPage()]);
-  // Text for the 3D labels ("service:2" → "03 Mobile App Development").
-  const worldLabels: Record<string, string> = {};
-  services.forEach((s) => (worldLabels[`service:${s.wedgeIndex}`] = `${String(s.wedgeIndex + 1).padStart(2, "0")} ${s.name}`));
-  process.phases.forEach((p, i) => (worldLabels[`phase:${i}`] = `${p.number} ${p.title}`));
+  const site = await getSiteSettings();
   return (
-    <html lang="en-IN" className={`${interTight.variable} ${instrumentSerif.variable}`}>
+    <html lang="en-IN" className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}>
       <body className="min-h-svh antialiased">
         <JsonLd data={[organization(site), website(site)]} />
         <a
           href="#main"
-          className="fixed top-3 left-3 z-[70] -translate-y-24 rounded-full bg-bone px-5 py-3 text-sm text-graphite-950 focus:translate-y-0"
+          className="fixed top-3 left-3 z-[70] -translate-y-24 rounded-full bg-chalk px-5 py-3 text-sm text-ink-950 focus:translate-y-0"
         >
           Skip to content
         </a>
         <div className="atmosphere" aria-hidden="true" />
-        <WorldMount labels={worldLabels} />
+        <div className="grid-lines" aria-hidden="true" />
+        <WorldMount />
         <Header />
         <main id="main" tabIndex={-1} className="outline-none">
           {children}
         </main>
         <Footer />
         <div className="grain" aria-hidden="true" />
+        <ScrollProgress />
+        <Cursor />
         <SmoothScroll />
         <ClickTracker />
         <Analytics />

@@ -2,7 +2,7 @@
 // against a URL) and the bundle suite (needs a build) have their own scripts.
 import { spawnSync } from "node:child_process";
 
-const suites = ["headers", "contrast", "formations", "camera", "anchors", "tiers", "env", "webhook", "contact"];
+const suites = ["headers", "contrast", "formations", "shapes", "camera", "anchors", "tiers", "env", "webhook", "contact"];
 let failed = 0;
 for (const s of suites) {
   const r = spawnSync(process.execPath, ["--experimental-strip-types", "--no-warnings", `scripts/verify-${s}.mts`], {
