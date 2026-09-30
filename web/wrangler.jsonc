@@ -1,6 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "skaylon-web",
+  // Mrudulp2002@gmail.com's Account. Pinned so a login to another account
+  // can never deploy (or create resources) there by mistake.
+  "account_id": "857603eabd84a475bb34b63688aac7ad",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
