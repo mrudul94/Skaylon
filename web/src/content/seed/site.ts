@@ -4,9 +4,9 @@ import type { SiteSettings } from "../types";
 export const siteSettings: SiteSettings = {
   name: "Skaylon",
   legalName: "Skaylon Technology",
-  tagline: "Digital flagships, engineered.",
+  tagline: "Websites, apps and custom software for growing businesses.",
   description:
-    "Skaylon is a software studio in Kasaragod, Kerala, designing and engineering high-performance websites, web applications, mobile apps and custom software for businesses across India and beyond.",
+    "Skaylon is a founder-led software studio in Kasaragod, Kerala, that designs and builds websites, web applications, mobile apps, custom software and backend systems for businesses in India and abroad.",
   email: "skaylon.in@gmail.com",
   phone: "+91 80759 15386",
   whatsapp: "918075915386",

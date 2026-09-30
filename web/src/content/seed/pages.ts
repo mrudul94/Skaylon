@@ -1,92 +1,118 @@
 import type { AboutPage, HomePage, ProcessPage, Project } from "../types";
 
-// Narrative adapted from the previous site's chapters (Curiosity, Understanding,
-// Confidence, Proof, Connection, Commitment).
-
 export const homePage: HomePage = {
   hero: {
-    eyebrow: "Software studio · Kasaragod, Kerala",
-    heading: "Digital flagships, engineered.",
-    sub: "Skaylon designs and builds websites, web applications, mobile apps and custom software for businesses that value clarity over code.",
+    eyebrow: "Software development studio · Kerala, India",
+    heading: "Websites, apps and custom software for growing businesses",
+    sub: "Skaylon designs and builds business websites, web applications, mobile apps and custom software, from the first conversation to launch and support.",
   },
-  chapters: {
-    understanding: {
-      key: "understanding",
-      eyebrow: "01 — Understanding",
-      heading: "Clarity is the first deliverable.",
-      body: [
-        "Most software is built to spec. We ask the questions most developers skip, then ask them again until the answer is precise enough to build from.",
-        "We audit your landscape and challenge every assumption on the table. The output isn't a summary of what you told us. It's a map of what you actually need.",
-      ],
+  summary:
+    "Skaylon is a founder-led software studio based in Kasaragod, Kerala. We help small and mid-sized businesses and startups in India and abroad plan, design and build digital products: websites, web applications, iOS and Android apps, custom business software, UI/UX design and backend systems. Every project starts with a short discovery phase and a fixed-scope proposal, and you own the code we write.",
+  audiences: [
+    {
+      title: "Small and mid-sized businesses",
+      description: "Companies that need a stronger website, or software to replace spreadsheets and manual steps.",
     },
-    capabilities: {
-      key: "capabilities",
-      eyebrow: "02 — Capabilities",
-      heading: "The craft of the invisible.",
-      body: [
-        "Execution is our obsession. Whatever we build, we build for durability, performance and scale: a system that performs as well as it looks, documented, maintainable and built to last.",
-      ],
+    {
+      title: "Startups and founders",
+      description: "Teams that need a first version of a product built properly, then extended as it grows.",
     },
-    proof: {
-      key: "proof",
-      eyebrow: "03 — Proof",
-      heading: "Selected work, measurable outcomes.",
-      body: ["A demonstration of technical authority and creative precision."],
+    {
+      title: "Teams with an existing product",
+      description: "Businesses that need design help, a new feature, a mobile app or a better backend for software they already run.",
     },
-    process: {
-      key: "process",
-      eyebrow: "04 — Process",
-      heading: "From ambiguity to a system you can rely on.",
-      body: [
-        "Four deliberate phases. You see working software early, and you see everything we see: no filtered reports, just real progress.",
-      ],
-    },
-    commitment: {
-      key: "commitment",
-      eyebrow: "05 — Commitment",
-      heading: "We stay accountable for how it performs.",
-      body: [
-        "We don't just build software. We build the system your business depends on. Tell us about the problem, not the product.",
-      ],
-    },
-  },
-  outcomes: [
-    "Faster time-to-market by eliminating recursive design loops and technical debt.",
-    "Brand value built through high-fidelity experiences that command authority in your sector.",
-    "Technical infrastructure that adapts as your business evolves and scales.",
   ],
-  cta: { title: "Tell us what's in the way.", label: "Start a project", href: "/contact" },
+  whyUs: [
+    {
+      title: "You work directly with the founder",
+      description: "Your project is led by Skaylon's founder, not handed to an unnamed delivery team.",
+    },
+    {
+      title: "A fixed scope before you commit",
+      description: "After discovery you get a written proposal with scope, price and timeline before development starts.",
+    },
+    {
+      title: "Progress you can see",
+      description: "You get access to a staging environment and regular updates, so there are no surprises at the end.",
+    },
+    {
+      title: "You own what we build",
+      description: "Source code, designs and documentation are handed over to you at the end of the project.",
+    },
+    {
+      title: "Registered business",
+      description: "Skaylon Technology is registered as an MSME in India (Udyam registration).",
+    },
+  ],
+  engagement: [
+    {
+      title: "Fixed-scope project",
+      description: "Best for a defined website, app or system. Scope, price and timeline are agreed in writing after discovery.",
+    },
+    {
+      title: "Phased product build",
+      description: "Best for new products. A focused first release, then further phases planned from real user feedback.",
+    },
+    {
+      title: "Ongoing support",
+      description: "Optional after launch: updates, fixes and improvements agreed to fit what your system needs.",
+    },
+  ],
+  faqs: [
+    {
+      question: "What does Skaylon do?",
+      answer:
+        "Skaylon designs and builds websites, web applications, mobile apps, custom business software and the backend systems behind them, and offers UI/UX design as a standalone service.",
+    },
+    {
+      question: "Who does Skaylon work with?",
+      answer:
+        "Mainly small and mid-sized businesses and startups, in Kerala, across India and abroad. Projects are run remotely with regular video calls and a shared staging environment.",
+    },
+    {
+      question: "How does a project start?",
+      answer:
+        "You send a short enquiry. We arrange a call to understand the goal, run a short discovery phase, and then send a fixed-scope proposal with price and timeline.",
+    },
+    {
+      question: "How long does a typical project take?",
+      answer:
+        "A business website usually takes 4 to 8 weeks and a mobile app 10 to 16 weeks. Other projects depend on scope; the timeline is set out in the proposal.",
+    },
+    {
+      question: "Who owns the code and designs?",
+      answer: "You do. The source code, design files and documentation are handed over at the end of the project.",
+    },
+  ],
+  cta: { title: "Tell us what you want to build.", label: "Start a project", href: "/contact" },
 };
 
 export const aboutPage: AboutPage = {
   intro: {
-    heading: "We don't sell software. We solve problems.",
-    sub: "Skaylon is a founder-led software studio in Kasaragod, Kerala, partnering with startups and businesses across India and international markets.",
+    heading: "A founder-led software studio in Kerala",
+    sub: "Skaylon Technology is a software studio in Kasaragod, Kerala, building websites, apps and custom software for businesses in India and abroad.",
   },
   story: [
-    "Development has become a commodity, detached from the business outcomes it was meant to serve. Products get built without conviction, and promises get made without accountability.",
-    "Skaylon exists to do the opposite. Traditional agencies focus on shipping features. We focus on shipping value. If a feature doesn't move your needle, it doesn't belong in your code.",
-    "Every engagement is founder-led. Mrudul handles your project personally: not a junior team, not an outsourced delivery partner.",
+    "Skaylon was started to offer businesses a simpler way to get software built: one accountable person leading the work, a clear scope agreed up front, and honest advice about what is worth building.",
+    "Every engagement is led by the founder, Mrudul, from the first call to launch. You always know who is responsible for your project and who to talk to.",
+    "We focus on the business result rather than the feature list. If something does not help your customers or your team, we will say so before you pay for it.",
   ],
   principles: [
     {
-      title: "Business-first engineering",
-      description:
-        "Every sprint is measured against your commercial objective, not just the feature list.",
+      title: "Business goals first",
+      description: "Work is planned and prioritised against what the project needs to achieve for your business.",
     },
     {
-      title: "Radical transparency",
-      description:
-        "You get access to our boards, channels and repositories. You see what we see, exactly when we see it.",
+      title: "Transparency",
+      description: "You get access to the staging environment, the task board and the code repository during the project.",
     },
     {
-      title: "Honest counsel",
-      description: "If we don't think something should be built, we'll tell you, before you pay for it.",
+      title: "Honest advice",
+      description: "If an existing product would serve you better than custom work, we will tell you.",
     },
     {
-      title: "Formal credibility",
-      description:
-        "Skaylon is a registered MSME with Udyam certification, operating with the rigor and compliance serious partnerships require.",
+      title: "Registered and accountable",
+      description: "Skaylon Technology is a registered MSME in India with Udyam registration.",
     },
   ],
   quote: "Transparency is not a courtesy. It is how we work.",
@@ -94,62 +120,66 @@ export const aboutPage: AboutPage = {
 
 export const processPage: ProcessPage = {
   intro: {
-    heading: "A process precise enough to execute.",
-    sub: "Four phases take a project from open questions to a documented system in production, with nothing hidden in between.",
+    heading: "How a project with Skaylon works",
+    sub: "Four phases take a project from the first conversation to software in production, with a written scope before development begins.",
   },
   phases: [
     {
       number: "01",
       title: "Discover",
       summary:
-        "We observe before we build: stakeholder interviews, user and competitor research, and an audit of your current landscape. Every decision that follows is backed by evidence, not intuition.",
+        "We learn about your business, users and goals, review what already exists, and agree what success looks like.",
       duration: "1–2 weeks",
-      deliverables: ["Discovery report", "Requirements map", "Success metrics"],
+      deliverables: ["Discovery summary", "Requirements list", "Success criteria"],
     },
     {
       number: "02",
-      title: "Architect",
+      title: "Plan and design",
       summary:
-        "We harden the boundaries of the system before a single pixel is placed: information architecture, data models, integrations, and a design direction that fits your brand.",
+        "We plan the structure, data and integrations, design the key screens, and send a fixed-scope proposal with price and timeline.",
       duration: "1–3 weeks",
-      deliverables: ["Technical blueprint", "UX flows & wireframes", "Fixed-scope proposal"],
+      deliverables: ["Technical plan", "User flows and wireframes", "Fixed-scope proposal"],
     },
     {
       number: "03",
       title: "Build",
       summary:
-        "Design and engineering in short, tested increments on a shared staging environment. You see functional modules every few weeks, not a reveal at the end.",
+        "Design and development happen in short, tested increments on a shared staging environment you can review at any time.",
       duration: "4–14 weeks",
-      deliverables: ["High-fidelity UI", "Working increments on staging", "Test coverage"],
+      deliverables: ["Final designs", "Working increments on staging", "Automated tests"],
     },
     {
       number: "04",
-      title: "Launch & support",
+      title: "Launch and support",
       summary:
-        "Performance, accessibility and security audits, then a controlled launch. After that, documentation, training and optional monthly support keep the system healthy.",
-      duration: "1–2 weeks + ongoing",
-      deliverables: ["Production launch", "Documentation & handoff", "Support agreement (optional)"],
+        "Performance, accessibility and security checks, a controlled launch, documentation and handover, with optional ongoing support.",
+      duration: "1–2 weeks, then ongoing",
+      deliverables: ["Production launch", "Documentation and handover", "Support plan (optional)"],
     },
   ],
   faqs: [
     {
-      question: "How do projects get priced?",
+      question: "How are projects priced?",
       answer:
-        "After the Discover phase we issue a fixed-scope, fixed-price proposal. You know what will be built, by when, and for how much before engineering starts.",
+        "After discovery we send a fixed-scope, fixed-price proposal. You know what will be built, by when and for how much before development starts.",
     },
     {
-      question: "Will I have visibility while you build?",
-      answer:
-        "Yes. You get access to the staging environment, the project board and the repository from day one.",
+      question: "Will I see progress while the project is being built?",
+      answer: "Yes. You get access to the staging environment, the task board and the code repository from the start of the build.",
     },
     {
-      question: "Do you work with teams outside Kerala?",
+      question: "Do you work with clients outside Kerala?",
       answer:
-        "Yes. Skaylon is based in Kasaragod and works with clients across India and internationally, remotely or with on-site workshops where useful.",
+        "Yes. Skaylon is based in Kasaragod and works with clients across India and in other countries, with meetings held over video calls.",
+    },
+    {
+      question: "What happens after launch?",
+      answer:
+        "You receive the code, documentation and a handover session. Ongoing support and improvements can be agreed separately if you need them.",
     },
   ],
 };
 
-// Intentionally empty: no case studies are published yet. Pages render a clean
-// empty state until real projects are added in the CMS (checkpoint 2).
+// Intentionally empty: no case studies are published yet. Pages render an honest
+// empty state until real projects are added in the CMS.
 export const projects: Project[] = [];

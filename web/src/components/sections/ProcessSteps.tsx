@@ -1,32 +1,35 @@
 import type { ProcessPhase } from "@/content/types";
-import { Tilt } from "@/components/motion/Tilt";
 import { Reveal } from "@/scroll/Reveal";
 
 export function ProcessSteps({ phases, detailed = false }: { phases: ProcessPhase[]; detailed?: boolean }) {
   return (
-    <Reveal as="ol" stagger className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <Reveal as="ol" stagger className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {phases.map((phase) => (
-        <Tilt key={phase.number} as="li" max={5} className="glass flex flex-col rounded-3xl p-8">
-          <span className="text-gradient text-6xl font-semibold tracking-[-0.06em] tabular-nums">{phase.number}</span>
-          <h3 className="mt-10 text-title font-medium">{phase.title}</h3>
-          <p className="mt-4 text-chalk-muted">{phase.summary}</p>
-          {detailed && (
-            <dl className="mt-auto pt-10 text-sm">
-              <dt className="font-mono text-eyebrow text-chalk-muted uppercase">Typical duration</dt>
-              <dd className="mt-2">{phase.duration}</dd>
-              <dt className="mt-6 font-mono text-eyebrow text-chalk-muted uppercase">Deliverables</dt>
-              <dd className="mt-3">
-                <ul className="flex flex-wrap gap-2">
-                  {phase.deliverables.map((d) => (
-                    <li key={d} className="rounded-full bg-chalk/[0.05] px-3 py-1.5 text-xs text-chalk-muted">
-                      {d}
-                    </li>
-                  ))}
-                </ul>
-              </dd>
-            </dl>
-          )}
-        </Tilt>
+        <li key={phase.number} className="flex flex-col rounded-xl border hairline bg-surface p-6">
+          <span aria-hidden="true" className="font-mono text-sm text-accent-ink">
+            {phase.number}
+          </span>
+          <h3 className="mt-3 text-title font-semibold">{phase.title}</h3>
+          <p className="mt-3 leading-relaxed text-ink-muted">{phase.summary}</p>
+          <dl className="mt-auto pt-6 text-sm">
+            <dt className="font-mono text-eyebrow text-ink-muted uppercase">Typical duration</dt>
+            <dd className="mt-1 font-medium">{phase.duration}</dd>
+            {detailed && (
+              <>
+                <dt className="mt-4 font-mono text-eyebrow text-ink-muted uppercase">Deliverables</dt>
+                <dd className="mt-2">
+                  <ul className="flex flex-wrap gap-2">
+                    {phase.deliverables.map((d) => (
+                      <li key={d} className="rounded-md bg-paper-2 px-2.5 py-1 text-xs text-ink-2">
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </>
+            )}
+          </dl>
+        </li>
       ))}
     </Reveal>
   );

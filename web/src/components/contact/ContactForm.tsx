@@ -1,46 +1,38 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
-import { submitContact } from "@/app/contact/actions";
-import { BUDGETS } from "@/lib/contact-options";
-import type { ContactField, ContactState } from "@/lib/contact-schema";
-import { track } from "@/lib/track";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { BUDGETS, PROJECT_TYPES, SERVICE_PROJECT_TYPE, TIMELINES } from "@/lib/contact-options";
+import { buttonClass } from "@/components/ui/primitives";
 import { Turnstile } from "./Turnstile";
+import { BotFields, ConsentField, FormStatus, Label, inputClass, useEnquiryForm } from "./useEnquiryForm";
 
-const inputClass =
-  "mt-2 block w-full rounded-xl border border-chalk/12 bg-ink-950/60 px-4 py-3.5 text-chalk placeholder:text-chalk-muted/60 transition-[border-color,box-shadow] duration-300 hover:border-chalk/30 focus:border-accent focus:shadow-[0_0_0_4px_rgb(167_151_255/0.15)] focus:outline-none aria-[invalid=true]:border-accent";
+const P = "contact";
 
-export function ContactForm({ services, siteKey, email }: { services: string[]; siteKey: string; email: string }) {
-  const [state, formAction, pending] = useActionState<ContactState, FormData>(submitContact, { status: "idle" });
-  const [startedAt, setStartedAt] = useState("");
-  const [attempt, setAttempt] = useState(0);
-  const formRef = useRef<HTMLFormElement>(null);
-  const statusRef = useRef<HTMLDivElement>(null);
-
-  // Set on the client: the page is statically built, so a server timestamp
-  // would be the build time.
-  useEffect(() => setStartedAt(String(Date.now())), []);
-
+export function ContactForm({ siteKey, email }: { siteKey: string; email: string }) {
+  const router = useRouter();
+  // Pre-select the project type when arriving from a service page
+  // (/contact?service=<slug>). Read on the client so the page stays static.
+  const [projectType, setProjectType] = useState("");
   useEffect(() => {
-    if (state.status === "success") {
-      track("contact_submitted");
-      statusRef.current?.focus();
-    } else if (state.status === "error") {
-      track("contact_failed");
-      setAttempt((a) => a + 1); // new Turnstile token for the retry
-      const firstInvalid = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
-      (firstInvalid ?? statusRef.current)?.focus();
-    }
-  }, [state]);
+    const slug = new URLSearchParams(window.location.search).get("service") ?? "";
+    setProjectType(SERVICE_PROJECT_TYPE[slug] ?? "");
+  }, []);
+  const { state, formAction, pending, startedAt, attempt, formRef, statusRef, errors, field, selectKey, FieldError, canSubmit, verifying, onTurnstileStatus } = useEnquiryForm({
+    prefix: P,
+    events: { success: "contact_submitted", failure: "contact_failed" },
+    onSuccess: () => router.push("/contact/thank-you"),
+  });
 
   if (state.status === "success") {
+    // Shown while the thank-you page loads (and if navigation is blocked).
     return (
       <div ref={statusRef} tabIndex={-1} role="status" className="outline-none">
-        <p className="font-mono text-eyebrow text-accent uppercase">Message received</p>
-        <h2 className="mt-5 text-title font-medium">Thank you. We&apos;ll be in touch.</h2>
-        <p className="mt-4 text-chalk-muted">
-          The founder reads every enquiry personally. If it&apos;s urgent, write to{" "}
-          <a href={`mailto:${email}`} className="text-chalk underline underline-offset-4 hover:text-accent">
+        <p className="font-mono text-eyebrow text-success uppercase">Message received</p>
+        <h2 className="mt-3 text-title font-semibold">Thank you. We&apos;ll be in touch.</h2>
+        <p className="mt-3 text-ink-muted">
+          We reply to every enquiry within one to two working days. If it&apos;s urgent, email{" "}
+          <a href={`mailto:${email}`} className="font-medium text-ink underline">
             {email}
           </a>
           .
@@ -49,87 +41,62 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
     );
   }
 
-  const errors: Partial<Record<ContactField, string>> = state.status === "error" ? (state.fieldErrors ?? {}) : {};
-  const values: Record<string, string> = state.status === "error" ? (state.values ?? {}) : {};
-  const field = (name: ContactField) => ({
-    id: `contact-${name}`,
-    name,
-    defaultValue: values[name] ?? "",
-    "aria-invalid": errors[name] ? true : undefined,
-    "aria-describedby": errors[name] ? `contact-${name}-error` : undefined,
-  });
-  const Err = ({ name }: { name: ContactField }) =>
-    errors[name] ? (
-      <p id={`contact-${name}-error`} className="mt-2 text-sm text-accent-soft">
-        {errors[name]}
-      </p>
-    ) : null;
-
   return (
-    <form ref={formRef} action={formAction} className="space-y-6" aria-describedby="contact-status">
-      <h2 className="text-title font-medium">Send a project brief</h2>
-
-      <div ref={statusRef} id="contact-status" tabIndex={-1} role="alert" className="outline-none">
-        {state.status === "error" && (
-          <p className="rounded-xl border border-accent/40 bg-accent/10 px-4 py-3 text-sm">{state.message}</p>
-        )}
+    <form ref={formRef} action={formAction} className="space-y-5" aria-describedby="contact-status">
+      <div>
+        <h2 className="text-title font-semibold">Send a project enquiry</h2>
+        <p className="mt-1.5 text-sm text-ink-muted">Fields marked (required) must be filled in. It takes about two minutes.</p>
       </div>
 
-      {/* Honeypot: invisible to people and assistive tech; bots fill it. */}
-      <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
-        <label htmlFor="contact-website">Website</label>
-        <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
-      </div>
-      <input type="hidden" name="startedAt" value={startedAt} />
+      <FormStatus id="contact-status" statusRef={statusRef} message={state.status === "error" ? state.message : undefined} />
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <BotFields prefix={P} startedAt={startedAt} />
+      <input type="hidden" name="source" value="contact" />
+
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="contact-name" className="text-sm">
-            Name <span className="text-chalk-muted">(required)</span>
-          </label>
+          <Label htmlFor={`${P}-name`}>Name</Label>
           <input {...field("name")} type="text" required minLength={2} maxLength={80} autoComplete="name" className={inputClass} />
-          <Err name="name" />
+          <FieldError name="name" />
         </div>
         <div>
-          <label htmlFor="contact-email" className="text-sm">
-            Email <span className="text-chalk-muted">(required)</span>
-          </label>
+          <Label htmlFor={`${P}-email`}>Email</Label>
           <input {...field("email")} type="email" required maxLength={254} autoComplete="email" className={inputClass} />
-          <Err name="email" />
+          <FieldError name="email" />
         </div>
         <div>
-          <label htmlFor="contact-company" className="text-sm">
+          <Label htmlFor={`${P}-company`} optional>
             Company
-          </label>
+          </Label>
           <input {...field("company")} type="text" maxLength={120} autoComplete="organization" className={inputClass} />
-          <Err name="company" />
+          <FieldError name="company" />
         </div>
         <div>
-          <label htmlFor="contact-phone" className="text-sm">
+          <Label htmlFor={`${P}-phone`} optional>
             Phone
-          </label>
+          </Label>
           <input {...field("phone")} type="tel" maxLength={24} pattern="[+()\d\s\-]*" autoComplete="tel" className={inputClass} />
-          <Err name="phone" />
+          <FieldError name="phone" />
         </div>
         <div>
-          <label htmlFor="contact-service" className="text-sm">
-            What do you need?
-          </label>
-          <select {...field("service")} className={inputClass}>
+          <Label htmlFor={`${P}-projectType`} optional>
+            Project type
+          </Label>
+          <select key={`${selectKey("projectType")}-${projectType}`} {...field("projectType", projectType)} className={inputClass}>
             <option value="">Not sure yet</option>
-            {services.map((s) => (
-              <option key={s} value={s}>
-                {s}
+            {PROJECT_TYPES.map((t) => (
+              <option key={t} value={t}>
+                {t}
               </option>
             ))}
           </select>
-          <Err name="service" />
+          <FieldError name="projectType" />
         </div>
         <div>
-          <label htmlFor="contact-budget" className="text-sm">
-            Budget
-          </label>
-          <select {...field("budget")} className={inputClass}>
+          <Label htmlFor={`${P}-budget`} optional>
+            Estimated budget
+          </Label>
+          <select key={selectKey("budget")} {...field("budget")} className={inputClass}>
             <option value="">Prefer not to say</option>
             {BUDGETS.map((b) => (
               <option key={b} value={b}>
@@ -137,53 +104,52 @@ export function ContactForm({ services, siteKey, email }: { services: string[]; 
               </option>
             ))}
           </select>
-          <Err name="budget" />
+          <FieldError name="budget" />
+        </div>
+        <div className="sm:col-span-2">
+          <Label htmlFor={`${P}-timeline`} optional>
+            Preferred timeline
+          </Label>
+          <select key={selectKey("timeline")} {...field("timeline")} className={inputClass}>
+            <option value="">Not sure yet</option>
+            {TIMELINES.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          <FieldError name="timeline" />
         </div>
       </div>
 
       <div>
-        <label htmlFor="contact-message" className="text-sm">
-          What&apos;s in the way? <span className="text-chalk-muted">(required, 20+ characters)</span>
-        </label>
-        <textarea {...field("message")} required minLength={20} maxLength={4000} rows={6} className={inputClass} />
-        <Err name="message" />
+        <Label htmlFor={`${P}-message`}>Project details</Label>
+        <p id={`${P}-message-hint`} className="mt-0.5 text-sm text-ink-muted">
+          What are you trying to achieve, and what is in the way? At least 20 characters.
+        </p>
+        <textarea
+          {...field("message")}
+          aria-describedby={[`${P}-message-hint`, errors.message ? `${P}-message-error` : ""].filter(Boolean).join(" ")}
+          required
+          minLength={20}
+          maxLength={4000}
+          rows={6}
+          className={inputClass}
+        />
+        <FieldError name="message" />
       </div>
 
-      <div>
-        <div className="flex items-start gap-3">
-          <input
-            id="contact-consent"
-            name="consent"
-            type="checkbox"
-            required
-            aria-invalid={errors.consent ? true : undefined}
-            aria-describedby={errors.consent ? "contact-consent-error" : undefined}
-            className="mt-1 h-4 w-4 accent-[var(--color-accent)]"
-          />
-          <label htmlFor="contact-consent" className="text-sm text-chalk-muted">
-            Skaylon may use these details to reply to my enquiry, as described in the{" "}
-            <a href="/privacy" className="text-chalk underline underline-offset-4 hover:text-accent">
-              privacy policy
-            </a>
-            .
-          </label>
-        </div>
-        <Err name="consent" />
-      </div>
+      <ConsentField prefix={P} error={errors.consent} />
 
-      <Turnstile siteKey={siteKey} resetKey={attempt} />
+      <Turnstile siteKey={siteKey} resetKey={attempt} onStatus={onTurnstileStatus} />
 
-      <button
-        type="submit"
-        disabled={pending || !startedAt}
-        className="btn inline-flex min-h-12 items-center rounded-full bg-chalk px-7 text-sm font-medium text-ink-950 [--btn-fill:linear-gradient(100deg,var(--color-accent),var(--color-cyan))] disabled:cursor-wait disabled:opacity-60"
-      >
-        {pending ? "Sending…" : "Send brief"}
+      <button type="submit" disabled={pending || !canSubmit} className={buttonClass("primary", "w-full disabled:cursor-wait disabled:opacity-60 sm:w-auto")}>
+        {pending ? "Sending…" : verifying ? "Checking your browser…" : "Send enquiry"}
       </button>
       <noscript>
-        <p className="text-sm text-chalk-muted">
+        <p className="text-sm text-ink-muted">
           The form needs JavaScript for spam protection. You can always email{" "}
-          <a href={`mailto:${email}`} className="text-chalk underline">
+          <a href={`mailto:${email}`} className="font-medium text-ink underline">
             {email}
           </a>
           .

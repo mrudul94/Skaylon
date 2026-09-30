@@ -10,7 +10,7 @@ import { createClient } from "@sanity/client";
 import { siteSettings } from "../../web/src/content/seed/site.ts";
 import { services } from "../../web/src/content/seed/services.ts";
 import { aboutPage, homePage, processPage } from "../../web/src/content/seed/pages.ts";
-import { privacyPage, termsPage } from "../../web/src/content/seed/legal.ts";
+import { cookiesPage, privacyPage, termsPage } from "../../web/src/content/seed/legal.ts";
 
 import { projectId } from "../env.ts";
 
@@ -37,10 +37,11 @@ const docs: ({ _id: string; _type: string } & Record<string, unknown>)[] = [
     _id: "homePage",
     _type: "homePage",
     hero: homePage.hero,
-    chapters: Object.fromEntries(
-      Object.entries(homePage.chapters).map(([k, { eyebrow, heading, body }]) => [k, { eyebrow, heading, body }]),
-    ),
-    outcomes: homePage.outcomes,
+    summary: homePage.summary,
+    audiences: keyed(homePage.audiences, "a"),
+    whyUs: keyed(homePage.whyUs, "w"),
+    engagement: keyed(homePage.engagement, "e"),
+    faqs: keyed(homePage.faqs, "f"),
     cta: homePage.cta,
   },
   { _id: "aboutPage", _type: "aboutPage", ...aboutPage, principles: keyed(aboutPage.principles, "p") },
@@ -51,7 +52,7 @@ const docs: ({ _id: string; _type: string } & Record<string, unknown>)[] = [
     phases: keyed(processPage.phases, "ph"),
     faqs: keyed(processPage.faqs, "f"),
   },
-  ...[privacyPage, termsPage].map((p) => ({
+  ...[privacyPage, termsPage, cookiesPage].map((p) => ({
     _id: `${p.slug}Page`,
     _type: "legalPage",
     title: p.title,
@@ -65,13 +66,16 @@ const docs: ({ _id: string; _type: string } & Record<string, unknown>)[] = [
     name: s.name,
     slug: { _type: "slug", current: s.slug },
     order: s.order,
-    wedgeIndex: s.wedgeIndex,
+    menuDescription: s.menuDescription,
     summary: s.summary,
     headline: s.headline,
     overview: s.overview,
+    capabilities: keyed(s.capabilities, "c"),
+    useCases: keyed(s.useCases, "u"),
     benefits: keyed(s.benefits, "b"),
     process: keyed(s.process, "st"),
     faqs: keyed(s.faqs, "f"),
+    related: s.related.map((slug, i) => ({ _key: `r${i}`, _type: "reference", _ref: `service-${slug}` })),
     localContent: s.localContent,
     cta: s.cta,
     seo: s.seo,

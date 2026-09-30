@@ -1,63 +1,52 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { loadMotion } from "./gsap";
-import { useReducedMotion } from "./useReducedMotion";
 
 type RevealProps = {
   children: ReactNode;
-  as?: "div" | "ul" | "ol" | "dl" | "figure" | "section";
+  as?: "div" | "ul" | "ol" | "section";
   className?: string;
-  /** Stagger direct children instead of revealing the wrapper as one block. */
-  stagger?: boolean;
 };
 
 /**
- * Fades content up as it enters the viewport.
+ * Fades content up as it enters the viewport, with a CSS transition
+ * (.reveal-armed in globals.css) and one IntersectionObserver: no animation
+ * library.
  *
- * Content is fully visible in the server HTML; the hidden start state is only
- * applied by JS once GSAP has loaded, and only to content still below the
- * fold, so no-JS, crawlers and reduced motion always see everything. Never
- * wrap the LCP element (the page's h1) in this.
+ * Content is fully visible in the server HTML. The hidden start state is only
+ * applied after hydration, only to content still below the fold, and never
+ * under prefers-reduced-motion, so no-JS visitors, crawlers and reduced-motion
+ * users always see everything. Never wrap the page's h1 in this.
  */
-export function Reveal({ children, as: Tag = "div", className, stagger = false }: RevealProps) {
+export function Reveal({ children, as: Tag = "div", className, stagger = false }: RevealProps & { stagger?: boolean }) {
   const ref = useRef<HTMLElement>(null);
-  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || reducedMotion) return;
-    let revert: (() => void) | undefined;
-    let cancelled = false;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.92) return;
 
-    loadMotion().then(({ gsap }) => {
-      // Already on screen (or unmounted) by the time motion arrives: leave it
-      // alone rather than hide it and fade it back in.
-      if (cancelled || el.getBoundingClientRect().top < window.innerHeight * 0.9) return;
-      const ctx = gsap.context(() => {
-        gsap.from(stagger ? Array.from(el.children) : el, {
-          autoAlpha: 0,
-          y: 48,
-          duration: 1.3,
-          ease: "expo.out",
-          stagger: stagger ? 0.09 : 0,
-          scrollTrigger: { trigger: el, start: "top 85%", once: true },
-        });
-      }, el);
-      revert = () => ctx.revert();
-    });
-
+    el.classList.add("reveal-armed");
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          el.classList.add("is-visible");
+          io.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(el);
     return () => {
-      cancelled = true;
-      revert?.();
+      io.disconnect();
+      el.classList.remove("reveal-armed", "is-visible");
     };
-  }, [reducedMotion, stagger]);
+  }, []);
 
-  // Typed as a plain HTML element: R3F's JSX augmentation otherwise widens
-  // ElementType with three.js intrinsics and breaks polymorphic props.
   const Element = Tag as unknown as React.FC<React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }>;
   return (
-    <Element ref={ref} className={className}>
+    <Element ref={ref} className={className} {...(stagger ? { "data-stagger": "" } : {})}>
       {children}
     </Element>
   );

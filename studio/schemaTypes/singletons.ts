@@ -21,6 +21,20 @@ export const siteSettings = defineType({
     }),
     defineField({ name: "founder", type: "string" }),
     defineField({
+      name: "founderPhoto",
+      title: "Founder photo",
+      type: "imageWithAlt",
+      description: "A real, recent photo of the founder (square works best, at least 800 px). Shown on the home and About pages.",
+    }),
+    defineField({
+      name: "founderBio",
+      title: "Founder bio",
+      type: "text",
+      rows: 3,
+      description: "One or two factual sentences about the founder's background. Shown next to the photo.",
+      validation: (r) => r.max(320),
+    }),
+    defineField({
       name: "address",
       type: "object",
       fields: [
@@ -45,26 +59,20 @@ export const siteSettings = defineType({
         defineArrayMember({
           type: "object",
           fields: [
-            defineField({ name: "label", type: "string", validation: (r) => r.required() }),
+            defineField({
+              name: "label",
+              type: "string",
+              description: "e.g. LinkedIn, GitHub, Instagram, X, Behance, Dribbble, YouTube, Facebook.",
+              validation: (r) => r.required(),
+            }),
             defineField({ name: "url", type: "url", validation: (r) => r.required() }),
           ],
+          preview: { select: { title: "label", subtitle: "url" } },
         }),
       ],
     }),
   ],
 });
-
-const chapter = (key: string, title: string) =>
-  defineField({
-    name: key,
-    title,
-    type: "object",
-    fields: [
-      defineField({ name: "eyebrow", type: "string", validation: (r) => r.required().max(40) }),
-      defineField({ name: "heading", type: "string", validation: (r) => r.required().max(90) }),
-      paragraphs("body", "Body", { required: true, max: 3 }),
-    ],
-  });
 
 export const homePage = defineType({
   name: "homePage",
@@ -76,23 +84,22 @@ export const homePage = defineType({
       type: "object",
       fields: [
         defineField({ name: "eyebrow", type: "string", validation: (r) => r.required().max(60) }),
-        defineField({ name: "heading", type: "string", validation: (r) => r.required().max(60) }),
+        defineField({ name: "heading", title: "Heading (H1)", type: "string", validation: (r) => r.required().max(90) }),
         defineField({ name: "sub", type: "text", rows: 3, validation: (r) => r.required().max(240) }),
       ],
     }),
     defineField({
-      name: "chapters",
-      description: "The five scroll chapters. Each is paired with a fixed movement of the 3D monolith.",
-      type: "object",
-      fields: [
-        chapter("understanding", "01 — Understanding"),
-        chapter("capabilities", "02 — Capabilities"),
-        chapter("proof", "03 — Proof"),
-        chapter("process", "04 — Process"),
-        chapter("commitment", "05 — Commitment"),
-      ],
+      name: "summary",
+      title: "In-short summary",
+      type: "text",
+      rows: 4,
+      description: "A factual paragraph answering \"what is Skaylon?\" for readers, search engines and AI assistants.",
+      validation: (r) => r.required().max(600),
     }),
-    defineField({ name: "outcomes", type: "array", of: [defineArrayMember({ type: "string" })], validation: (r) => r.max(3) }),
+    defineField({ name: "audiences", title: "Who we help", type: "array", of: [defineArrayMember({ type: "titledText" })], validation: (r) => r.max(4) }),
+    defineField({ name: "whyUs", title: "Why Skaylon", type: "array", of: [defineArrayMember({ type: "titledText" })], validation: (r) => r.max(6) }),
+    defineField({ name: "engagement", title: "Engagement models", type: "array", of: [defineArrayMember({ type: "titledText" })], validation: (r) => r.max(4) }),
+    defineField({ name: "faqs", title: "FAQs", type: "array", of: [defineArrayMember({ type: "faq" })] }),
     defineField({
       name: "cta",
       type: "object",

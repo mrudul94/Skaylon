@@ -1,12 +1,16 @@
 import { z } from "zod";
-import { BUDGETS, MAX_FILL_MS, MIN_FILL_MS } from "./contact-options.ts";
+import { BUDGETS, MAX_FILL_MS, MIN_FILL_MS, PROJECT_TYPES, SOURCES, TIMELINES } from "./contact-options.ts";
 
 /**
- * The contact form contract, enforced by the server action (the browser
- * pre-checks with native constraints, mirroring these limits). Tested by
+ * The enquiry contract shared by the contact page form and the "before you
+ * go" pop-up, enforced by the one server action (the browser pre-checks with
+ * native constraints, mirroring these limits). Tested by
  * scripts/verify-contact.mts.
  */
-export { BUDGETS, MAX_FILL_MS, MIN_FILL_MS };
+export { BUDGETS, MAX_FILL_MS, MIN_FILL_MS, PROJECT_TYPES, TIMELINES };
+
+const optionalEnum = <T extends readonly [string, ...string[]]>(values: T) =>
+  z.enum(values).optional().or(z.literal("").transform(() => undefined));
 
 const optionalText = (max: number) =>
   z
@@ -27,14 +31,17 @@ export const contactSchema = z.object({
     .regex(/^[+()\d\s-]*$/, "Use digits, spaces, +, - or brackets.")
     .optional()
     .transform((v) => (v ? v : undefined)),
-  service: optionalText(60),
-  budget: z.enum(BUDGETS).optional().or(z.literal("").transform(() => undefined)),
-  message: z
-    .string()
-    .trim()
-    .min(20, "Tell us a little more: at least 20 characters.")
-    .max(4000, "Keep your message under 4000 characters."),
+  projectType: optionalEnum(PROJECT_TYPES),
+  budget: optionalEnum(BUDGETS),
+  timeline: optionalEnum(TIMELINES),
+  message: z.string().trim().max(4000, "Keep your message under 4000 characters.").optional().default(""),
   consent: z.literal("on", { error: "Please confirm we may use these details to reply." }),
+  source: z.enum(SOURCES).optional().default("contact"),
+}).superRefine((v, ctx) => {
+  // The contact page asks for a brief; the pop-up keeps details optional.
+  if (v.source === "contact" && v.message.length < 20) {
+    ctx.addIssue({ code: "custom", path: ["message"], message: "Tell us a little more: at least 20 characters." });
+  }
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;

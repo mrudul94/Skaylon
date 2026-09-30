@@ -9,7 +9,7 @@ import { sendEmail } from "@/lib/resend";
 import { verifyTurnstile } from "@/lib/turnstile";
 
 const FALLBACK = "Please email skaylon.in@gmail.com directly and we'll reply personally.";
-const FIELDS = ["name", "email", "company", "phone", "service", "budget", "message"] as const;
+const FIELDS = ["name", "email", "company", "phone", "projectType", "budget", "timeline", "message"] as const;
 
 async function sha256(text: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -17,7 +17,8 @@ async function sha256(text: string): Promise<string> {
 }
 
 /**
- * Contact form Server Action. Order matters: cheap checks first, the paid /
+ * Enquiry Server Action, shared by the contact page form and the pop-up
+ * (`source` tells them apart). Order matters: cheap checks first, the paid /
  * networked ones last. Nothing is stored; the enquiry only goes to the inbox.
  */
 export async function submitContact(_prev: ContactState, formData: FormData): Promise<ContactState> {

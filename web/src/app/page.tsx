@@ -1,34 +1,25 @@
 import type { Metadata } from "next";
 import { getHomePage, getProcessPage, getProjects, getServices, getSiteSettings } from "@/content";
-import { Parallax } from "@/components/motion/Parallax";
-import { RiseText } from "@/components/motion/RiseText";
-import { ScrubText } from "@/components/motion/ScrubText";
-import { Tilt } from "@/components/motion/Tilt";
 import { CtaSection } from "@/components/sections/CtaSection";
-import { ProcessTrack } from "@/components/sections/ProcessTrack";
+import { FaqList } from "@/components/sections/FaqList";
+import { FounderCard } from "@/components/sections/FounderCard";
+import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
 import { ProjectGrid } from "@/components/sections/ProjectGrid";
 import { ServiceList } from "@/components/sections/ServiceList";
-import { AccentLast, ButtonLink, Container, Eyebrow } from "@/components/ui/primitives";
+import { TechStrip } from "@/components/sections/TechStrip";
+import { ProductStack } from "@/components/visuals/ProductStack";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { ButtonLink, CardGrid, Check, Container, SectionHeading, Summary } from "@/components/ui/primitives";
+import { faqPage, webPage } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { Reveal } from "@/scroll/Reveal";
-import { WorldPose } from "@/world/WorldPose";
 
-export const metadata: Metadata = {
-  ...pageMetadata({
-    description:
-      "Skaylon is a software studio in Kasaragod, Kerala, designing and engineering high-performance websites, web apps, mobile apps and custom software for businesses across India.",
-    path: "/",
-  }),
-  title: { absolute: "Skaylon — Digital flagships, engineered" },
-};
+const TITLE = "Skaylon | Websites, Web Apps, Mobile Apps & Custom Software";
+const DESCRIPTION =
+  "Skaylon designs and builds business websites, web applications, iOS and Android apps, custom software and APIs. Founder-led studio in Kerala, India. Fixed-scope proposals.";
 
-const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as React.CSSProperties;
+export const metadata: Metadata = pageMetadata({ absoluteTitle: TITLE, description: DESCRIPTION, path: "/" });
 
-/*
- * Each <section data-chapter> is an anchor the 3D camera journey maps onto
- * (src/world/journey.ts; order checked by verify-anchors). Sections are tall
- * enough to give the world room.
- */
 export default async function HomePage() {
   const [home, services, projects, process, site] = await Promise.all([
     getHomePage(),
@@ -37,201 +28,164 @@ export default async function HomePage() {
     getProcessPage(),
     getSiteSettings(),
   ]);
-  const { chapters } = home;
-
-  // Facts only (all from the About page / site settings), no invented numbers.
-  const facts = [
-    { k: "Founder-led", v: `${site.founder} handles every project personally` },
-    { k: "Fixed scope", v: "Price agreed before engineering starts" },
-    { k: "MSME registered", v: "Udyam certified studio" },
-  ];
 
   return (
     <>
-      <WorldPose journey />
+      <JsonLd data={[webPage({ path: "/", name: TITLE, description: DESCRIPTION }), faqPage(home.faqs)]} />
 
       {/* ------------------------------------------------ hero */}
-      <section data-chapter="hero" className="relative flex min-h-svh flex-col justify-end pt-32 pb-8 sm:pb-10">
-        <Container>
-          <p
-            className="fade-in inline-flex items-center gap-3 rounded-full border border-chalk/10 bg-ink-900/50 px-4 py-2 font-mono text-xs text-chalk-muted uppercase backdrop-blur-md"
-            style={delay(0)}
-          >
-            <span className="pulse-dot" aria-hidden="true" />
-            {home.hero.eyebrow}
-          </p>
-          <h1 className="mt-8 max-w-[12ch] text-display-xl font-medium">
-            <RiseText text={home.hero.heading} accentWords={1} />
-          </h1>
-          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,34rem)_1fr] lg:items-end">
-            <div className="fade-in" style={delay(650)}>
-              <p className="text-lead text-chalk-muted">{home.hero.sub}</p>
-              <div className="mt-10 flex flex-wrap gap-3">
-                <ButtonLink href="/contact" data-track="cta_click" data-track-label="hero">
-                  Start a project
-                </ButtonLink>
-                <ButtonLink href="/services" variant="ghost">
-                  Explore services
-                </ButtonLink>
-              </div>
+      <section aria-labelledby="hero-heading" className="relative overflow-hidden pt-28 pb-14 sm:pt-36 sm:pb-20">
+        <div className="backdrop" aria-hidden="true" />
+        <Container className="grid items-center gap-12 lg:grid-cols-[1.55fr_1fr] xl:gap-12">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border hairline bg-surface px-3 py-1.5 text-sm text-ink-2">
+              <span aria-hidden="true" className="ps-pulse relative h-2 w-2 rounded-full bg-accent" />
+              {home.hero.eyebrow}
+            </p>
+            {/* The LCP element: painted final on first frame, never animated. */}
+            <h1 id="hero-heading" className="mt-6 text-[clamp(2.5rem,1.5rem+3.3vw,4.35rem)] leading-[1.03] font-semibold tracking-[-0.04em] text-balance">
+              {home.hero.heading}
+            </h1>
+            <p className="hero-in mt-6 max-w-xl text-lead text-ink-muted" style={{ "--d": "80ms" } as React.CSSProperties}>
+              {home.hero.sub}
+            </p>
+            <div data-hero-cta className="hero-in mt-8 flex flex-col gap-3 sm:flex-row" style={{ "--d": "160ms" } as React.CSSProperties}>
+              <ButtonLink href="/contact" data-track="cta_click" data-track-label="hero">
+                Start a project
+              </ButtonLink>
+              <ButtonLink href="/services" variant="secondary" arrow={false}>
+                Explore services
+              </ButtonLink>
             </div>
+            <ul className="hero-in mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--d": "240ms" } as React.CSSProperties}>
+              {["Founder-led projects", "Fixed-scope proposals", "You own the code"].map((t) => (
+                <li key={t} className="flex items-center gap-2">
+                  <Check className="text-success" />
+                  {t}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div
-            className="fade-in mt-16 grid grid-cols-1 gap-6 border-t border-chalk/[0.09] pt-6 sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_auto]"
-            style={delay(950)}
-          >
-            {facts.map((f) => (
-              <div key={f.k}>
-                <p className="text-sm font-medium">{f.k}</p>
-                <p className="mt-1 text-sm text-chalk-muted">{f.v}</p>
-              </div>
-            ))}
-            <div aria-hidden="true" className="hidden items-center gap-4 lg:flex">
-              <span className="font-mono text-[0.68rem] text-chalk-muted uppercase">Scroll</span>
-              <span className="scroll-cue" />
-            </div>
+          {/* Decorative: what we build, as stylised UI. Desktop and tablet only. */}
+          <div className="hero-in hidden md:block" style={{ "--d": "200ms" } as React.CSSProperties}>
+            <ProductStack />
           </div>
         </Container>
       </section>
 
-      {/* ------------------------------------------------ marquee */}
-      <div aria-hidden="true" className="relative border-y border-chalk/[0.07] bg-ink-950/40 py-7 backdrop-blur-sm">
-        <div className="marquee">
-          {[0, 1].map((copy) => (
-            <div key={copy} className="marquee-track">
-              {services.map((s) => (
-                <span key={s.slug} className="flex shrink-0 items-center text-3xl font-medium tracking-[-0.03em] sm:text-5xl">
-                  <span className="px-8 transition-colors duration-500 hover:text-accent sm:px-12">{s.name}</span>
-                  <svg viewBox="0 0 24 24" width="22" height="22" className="shrink-0 text-accent">
-                    <path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z" fill="currentColor" />
-                  </svg>
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <TechStrip />
 
-      {/* ------------------------------------------------ 01 understanding */}
-      <section
-        data-chapter="understanding"
-        aria-labelledby="ch-understanding"
-        className="relative flex min-h-[110vh] items-center py-32 sm:py-48"
-      >
-        <Parallax speed={25} className="pointer-events-none absolute top-24 right-4 hidden lg:block">
-          <span aria-hidden="true" data-numeral="01" className="numeral text-[16rem] leading-none font-semibold tracking-[-0.08em] text-chalk/[0.035]" />
-        </Parallax>
-        <Container>
-          <div className="max-w-3xl">
-            <Reveal>
-              <Eyebrow>{chapters.understanding.eyebrow}</Eyebrow>
-              <h2 id="ch-understanding" className="mt-6 text-display font-medium text-balance">
-                <AccentLast text={chapters.understanding.heading} />
-              </h2>
-            </Reveal>
-            <div className="mt-14 space-y-10">
-              {chapters.understanding.body.map((p) => (
-                <ScrubText key={p} text={p} className="text-title font-normal text-chalk" />
-              ))}
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/* ------------------------------------------------ summary (AEO) */}
+      <Container className="pt-16 sm:pt-20">
+        <Summary label="Skaylon in short">{home.summary}</Summary>
+      </Container>
 
-      {/* ------------------------------------------------ 02 capabilities */}
-      <section
-        data-chapter="capabilities"
-        aria-labelledby="ch-capabilities"
-        className="relative flex min-h-[115vh] flex-col justify-center py-32 sm:py-48"
-      >
+      {/* ------------------------------------------------ services */}
+      <section aria-labelledby="services-heading" className="py-16 sm:py-24">
         <Container>
-          <Reveal className="max-w-3xl">
-            <div>
-              <Eyebrow>{chapters.capabilities.eyebrow}</Eyebrow>
-              <h2 id="ch-capabilities" className="mt-6 text-display font-medium text-balance">
-                <AccentLast text={chapters.capabilities.heading} />
-              </h2>
-            </div>
-            <div className="mt-7 space-y-4 text-lead text-chalk-muted">
-              {chapters.capabilities.body.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
-            </div>
-          </Reveal>
-          <div className="mt-16 sm:mt-20 lg:max-w-[66%]">
+          <SectionHeading id="services-heading" eyebrow="Services" heading="What can Skaylon build for your business?">
+            <p>Six services that cover a digital product from first design to the systems behind it. Each has its own page with use cases, process and answers to common questions.</p>
+          </SectionHeading>
+          <div className="mt-10">
             <ServiceList services={services} />
           </div>
-          <Reveal as="ul" stagger className="mt-16 grid gap-5 md:grid-cols-3 lg:max-w-[66%]">
-            {home.outcomes.map((o, i) => (
-              <Tilt key={o} as="li" className="glass rounded-3xl p-8">
-                <span className="font-mono text-xs text-cyan">{`0${i + 1}`}</span>
-                <p className="mt-8 text-lg leading-snug">{o}</p>
-              </Tilt>
+        </Container>
+      </section>
+
+      {/* ------------------------------------------------ who we help */}
+      <section aria-labelledby="audience-heading" className="border-y hairline bg-paper-2 py-16 sm:py-24">
+        <Container>
+          <SectionHeading id="audience-heading" eyebrow="Who we help" heading="Who is Skaylon a good fit for?">
+            <p>We work best with organisations that want a dependable partner and a clear plan rather than the cheapest quote.</p>
+          </SectionHeading>
+          <Reveal stagger className="mt-10">
+            <CardGrid items={home.audiences} />
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* ------------------------------------------------ how it works */}
+      <section aria-labelledby="process-heading" className="dark-band relative overflow-hidden bg-ink py-16 text-paper sm:py-24">
+        <div aria-hidden="true" className="cta-glow pointer-events-none absolute -top-40 left-1/3 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
+        <Container className="relative">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-3xl">
+              <p className="flex items-center gap-2.5 font-mono text-eyebrow font-medium text-accent uppercase">
+                <span aria-hidden="true" className="h-px w-5 bg-accent" />
+                How it works
+              </p>
+              <h2 id="process-heading" className="mt-4 text-display font-semibold text-balance">
+                How does a project with Skaylon work?
+              </h2>
+              <p className="mt-5 text-lead text-paper/75">{process.intro.sub}</p>
+            </div>
+            <ButtonLink href="/process" variant="secondary" className="shrink-0 border-paper/30 bg-transparent text-paper hover:border-paper">
+              See the full process
+            </ButtonLink>
+          </div>
+          <div className="mt-12">
+            <ProcessTimeline phases={process.phases} />
+          </div>
+        </Container>
+      </section>
+
+      {/* ------------------------------------------------ engagement */}
+      <section aria-labelledby="engagement-heading" className="py-16 sm:py-20">
+        <Container>
+          <SectionHeading id="engagement-heading" eyebrow="Engagement" heading="Ways to work together">
+            <p>Every engagement starts with a short discovery phase. After that, pick the model that fits the project.</p>
+          </SectionHeading>
+          <Reveal stagger className="mt-10">
+            <CardGrid items={home.engagement} />
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* ------------------------------------------------ why us */}
+      <section aria-labelledby="why-heading" className="py-16 sm:py-20">
+        <Container className="grid gap-10 lg:grid-cols-[1fr_1.6fr]">
+          <SectionHeading id="why-heading" eyebrow="Why Skaylon" heading="Why businesses choose Skaylon">
+            <p>
+              No inflated claims: here is how we work. Want to talk it through? Call{" "}
+              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-medium text-ink underline" data-track="phone_click" data-track-label="why">
+                {site.phone}
+              </a>
+              .
+            </p>
+            <FounderCard site={site} className="mt-8 rounded-xl border hairline bg-surface p-4" />
+          </SectionHeading>
+          <Reveal as="ul" stagger className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            {home.whyUs.map((item) => (
+              <li key={item.title} className="flex gap-3">
+                <span aria-hidden="true" className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-wash text-accent-ink">
+                  <Check />
+                </span>
+                <div>
+                  <h3 className="font-semibold">{item.title}</h3>
+                  <p className="mt-1 leading-relaxed text-ink-muted">{item.description}</p>
+                </div>
+              </li>
             ))}
           </Reveal>
         </Container>
       </section>
 
-      {/* ------------------------------------------------ 03 proof */}
-      <section
-        data-chapter="proof"
-        aria-labelledby="ch-proof"
-        className="relative flex min-h-[115vh] flex-col justify-center py-32 sm:py-48"
-      >
-        <Container>
-          <Reveal className="max-w-3xl">
-            <Eyebrow>{chapters.proof.eyebrow}</Eyebrow>
-            <h2 id="ch-proof" className="mt-6 text-display font-medium text-balance">
-              <AccentLast text={chapters.proof.heading} />
-            </h2>
-            <div className="mt-7 space-y-4 text-lead text-chalk-muted">
-              {chapters.proof.body.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
+      {/* ------------------------------------------------ work (only when real case studies exist) */}
+      {projects.length > 0 && (
+        <section aria-labelledby="work-heading" className="py-16 sm:py-20">
+          <Container>
+            <SectionHeading id="work-heading" eyebrow="Work" heading="Selected projects" />
+            <div className="mt-10">
+              <ProjectGrid projects={projects} />
             </div>
-          </Reveal>
-          <div className="mt-16 lg:max-w-[60%]">
-            <ProjectGrid projects={projects} />
-          </div>
-        </Container>
-      </section>
+          </Container>
+        </section>
+      )}
 
-      {/* ------------------------------------------------ 04 process */}
-      <section
-        data-chapter="process"
-        aria-labelledby="ch-process"
-        className="relative flex min-h-[115vh] flex-col justify-center overflow-x-clip py-32 sm:py-48"
-      >
-        <Container>
-          <Reveal className="max-w-3xl">
-            <div>
-              <Eyebrow>{chapters.process.eyebrow}</Eyebrow>
-              <h2 id="ch-process" className="mt-6 text-display font-medium text-balance">
-                <AccentLast text={chapters.process.heading} />
-              </h2>
-            </div>
-            <div className="mt-7 space-y-4 text-lead text-chalk-muted">
-              {chapters.process.body.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
-            </div>
-          </Reveal>
-          <div className="mt-16">
-            <ProcessTrack phases={process.phases} />
-          </div>
-        </Container>
-      </section>
+      <FaqList faqs={home.faqs} intro="Short, factual answers to what people ask before getting in touch." />
 
-      {/* ------------------------------------------------ 05 commitment */}
-      <CtaSection
-        chapter="commitment"
-        eyebrow={chapters.commitment.eyebrow}
-        title={chapters.commitment.heading}
-        body={chapters.commitment.body.join(" ")}
-        label={home.cta.label}
-        href={home.cta.href}
-      />
+      <CtaSection title={home.cta.title} label={home.cta.label} href={home.cta.href} secondary={{ label: "Browse services", href: "/services" }} />
     </>
   );
 }

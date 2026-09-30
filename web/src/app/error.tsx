@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Container, Eyebrow } from "@/components/ui/primitives";
+import { buttonClass, Container, Eyebrow } from "@/components/ui/primitives";
 
 export default function ErrorPage({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -9,21 +9,21 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
   }, [error]);
 
   return (
-    <section className="flex min-h-svh items-center pt-20">
+    <section className="pt-32 pb-20 sm:pt-40">
       <Container>
         <Eyebrow>Something went wrong</Eyebrow>
-        <h1 className="mt-6 max-w-4xl text-display font-medium text-balance">This page failed to load.</h1>
-        <p className="mt-6 max-w-xl text-lead text-chalk-muted">
-          It&apos;s on our side, not yours. Try again, or email skaylon.in@gmail.com if it keeps happening.
+        <h1 className="mt-4 max-w-3xl text-display font-semibold text-balance">This page failed to load</h1>
+        <p className="mt-5 max-w-xl text-lead text-ink-muted">
+          The problem is on our side. Please try again, or email{" "}
+          <a href="mailto:skaylon.in@gmail.com" className="font-medium text-ink underline">
+            skaylon.in@gmail.com
+          </a>{" "}
+          if it keeps happening.
         </p>
-        <button
-          type="button"
-          onClick={reset}
-          className="mt-10 inline-flex min-h-12 items-center rounded-full bg-chalk px-6 text-sm font-medium text-ink-950 hover:bg-accent"
-        >
+        <button type="button" onClick={reset} className={buttonClass("primary", "mt-8")}>
           Try again
         </button>
-        {error.digest && <p className="mt-8 text-xs text-chalk-muted">Reference: {error.digest}</p>}
+        {error.digest && <p className="mt-6 text-sm text-ink-muted">Reference: {error.digest}</p>}
       </Container>
     </section>
   );

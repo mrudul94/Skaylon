@@ -3,8 +3,8 @@ import { LegalDocument } from "@/components/sections/LegalDocument";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Terms of Use",
-  description: "The terms that govern your use of the Skaylon website.",
+  title: "Terms and Conditions",
+  description: "The terms and conditions that govern your use of the Skaylon website and how enquiries are handled.",
   path: "/terms",
 });
 

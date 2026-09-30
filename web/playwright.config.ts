@@ -25,6 +25,7 @@ export default defineConfig({
     env: {
       TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA",
       CONTACT_DRY_RUN: "1",
+      CONTENT_SOURCE: "seed",
       SANITY_REVALIDATE_SECRET: "e2e-revalidate-secret-0123456789",
     },
   },

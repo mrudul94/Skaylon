@@ -17,17 +17,21 @@ export function buildEnquiryEmail(input: ContactInput, meta: { receivedAt: strin
     ["Email", input.email],
     ["Company", input.company],
     ["Phone", input.phone],
-    ["Service", input.service],
+    ["Project type", input.projectType],
     ["Budget", input.budget],
+    ["Timeline", input.timeline],
+    ["Sent from", input.source === "popup" ? "Project enquiry pop-up" : "Contact page"],
   ];
   const present = rows.filter((r): r is [string, string] => Boolean(r[1]));
 
   const subject = oneLine(`New enquiry: ${input.name}${input.company ? ` (${input.company})` : ""}`).slice(0, 150);
 
+  const message = input.message || "(No project details provided.)";
+
   const text = [
     ...present.map(([k, v]) => `${k}: ${oneLine(v)}`),
     "",
-    input.message,
+    message,
     "",
     `— Received ${meta.receivedAt} via skaylon.com`,
   ].join("\n");
@@ -37,7 +41,7 @@ export function buildEnquiryEmail(input: ContactInput, meta: { receivedAt: strin
 <table cellpadding="6" style="border-collapse:collapse">${present
     .map(([k, v]) => `<tr><td style="color:#666">${k}</td><td>${escapeHtml(oneLine(v))}</td></tr>`)
     .join("")}</table>
-<p style="white-space:pre-wrap;margin-top:20px">${escapeHtml(input.message)}</p>
+<p style="white-space:pre-wrap;margin-top:20px">${escapeHtml(message)}</p>
 <p style="color:#888;font-size:12px">Received ${escapeHtml(meta.receivedAt)} via skaylon.com</p>
 </body></html>`;
 

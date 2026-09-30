@@ -12,7 +12,7 @@
  */
 
 // Enforced after scripts/csp-audit.mjs found zero violations across every
-// route (3D tiers 1–2, workers, post chain, Turnstile, deferred motion).
+// route (including Turnstile and the enquiry pop-up).
 const CSP_ENFORCE = true;
 
 // `next dev` evaluates code with eval(); production never does (verify-headers
@@ -38,8 +38,7 @@ const csp: Record<string, string[]> = {
     "https://cloudflareinsights.com",
   ],
   "frame-src": ["https://challenges.cloudflare.com"],
-  // three.js / drei decoders (KTX2, Draco) spin up blob: workers.
-  "worker-src": ["'self'", "blob:"],
+  "worker-src": ["'self'"],
   "media-src": ["'self'"],
   "object-src": ["'none'"],
   "base-uri": ["'self'"],

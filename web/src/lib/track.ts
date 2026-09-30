@@ -1,6 +1,15 @@
 "use client";
 
-export type TrackEvent = "cta_click" | "contact_submitted" | "contact_failed" | "whatsapp_click" | "email_click";
+export type TrackEvent =
+  | "cta_click"
+  | "contact_submitted"
+  | "contact_failed"
+  | "whatsapp_click"
+  | "email_click"
+  | "phone_click"
+  | "enquiry_popup_shown"
+  | "enquiry_popup_dismissed"
+  | "enquiry_popup_submitted";
 
 /**
  * First-party, cookieless conversion events → /api/event → Workers Analytics

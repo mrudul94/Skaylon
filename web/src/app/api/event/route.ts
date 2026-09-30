@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
 
-const EVENTS = new Set(["cta_click", "contact_submitted", "contact_failed", "whatsapp_click", "email_click"]);
+// Keep in sync with TrackEvent in src/lib/track.ts.
+const EVENTS = new Set([
+  "cta_click",
+  "contact_submitted",
+  "contact_failed",
+  "whatsapp_click",
+  "email_click",
+  "phone_click",
+  "enquiry_popup_shown",
+  "enquiry_popup_dismissed",
+  "enquiry_popup_submitted",
+]);
 
 type AnalyticsEngine = { writeDataPoint: (p: { blobs?: string[]; doubles?: number[]; indexes?: string[] }) => void };
 
@@ -11,7 +22,10 @@ type AnalyticsEngine = { writeDataPoint: (p: { blobs?: string[]; doubles?: numbe
  */
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
-  if (origin && new URL(origin).host !== new URL(request.url).host) {
+  // Compare with the Host header: behind `next start -H 127.0.0.1`,
+  // request.url reports "localhost" and would reject same-origin beacons.
+  const host = request.headers.get("host") ?? new URL(request.url).host;
+  if (origin && new URL(origin).host !== host) {
     return new NextResponse(null, { status: 403 });
   }
 

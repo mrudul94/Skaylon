@@ -11,6 +11,17 @@ export const routes: string[] = [
   "/about",
   "/process",
   "/contact",
+  "/contact/thank-you",
   "/privacy",
   "/terms",
+  "/cookies",
 ];
+
+/** Keeps the enquiry pop-up out of tests that aren't about it. */
+export const SUPPRESS_POPUP = () => {
+  try {
+    localStorage.setItem("skaylon:enquiry-popup-dismissed", String(Date.now()));
+  } catch {
+    // ignore
+  }
+};

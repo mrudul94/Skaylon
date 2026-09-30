@@ -1,23 +1,13 @@
-/** Wordmark with the orbit glyph: the 3D world's core and its ring, flattened. */
+/** Wordmark with the brand glyph (the same mark as app/icon.svg). Decorative: the parent link carries the name. */
 export function Logo({ className }: { className?: string }) {
   return (
-    <span className={`group/logo inline-flex items-center gap-2.5 ${className ?? ""}`}>
-      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" className="overflow-visible">
-        <circle cx="12" cy="12" r="5.2" fill="var(--color-accent)" />
-        <circle cx="12" cy="12" r="5.2" fill="var(--color-cyan)" opacity="0.55" transform="translate(1.4 -1.4) scale(0.9)" style={{ transformOrigin: "12px 12px" }} />
-        <ellipse
-          cx="12"
-          cy="12"
-          rx="11"
-          ry="4.2"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          transform="rotate(-28 12 12)"
-          className="origin-center transition-transform duration-700 ease-cinematic group-hover/logo:rotate-180"
-        />
+    <span className={`inline-flex items-center gap-2.5 ${className ?? ""}`}>
+      <svg aria-hidden="true" viewBox="0 0 32 32" width="28" height="28">
+        <rect width="32" height="32" rx="6" fill="#14161a" />
+        <path d="M10 4h12v11.5L10 18.5z" fill="#ece8e1" />
+        <path d="M10 20.6l12-3V28H10z" fill="#d9764a" />
       </svg>
-      <span className="text-[1.05rem] font-semibold tracking-[-0.02em]">Skaylon</span>
+      <span className="text-[1.1rem] font-semibold tracking-[-0.02em]">Skaylon</span>
     </span>
   );
 }

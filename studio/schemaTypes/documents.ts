@@ -10,31 +10,39 @@ export const service = defineType({
     defineField({ name: "slug", type: "slug", options: { source: "name", maxLength: 64 }, validation: (r) => r.required() }),
     defineField({ name: "order", type: "number", validation: (r) => r.required().integer().min(1) }),
     defineField({
-      name: "wedgeIndex",
-      title: "3D icon",
-      type: "number",
-      description: "Which of the five 3D icons stands for this service: 0 browser, 1 dashboard, 2 phone, 3 stacked layers, 4 design ring. Must be unique.",
-      validation: (r) =>
-        r
-          .required()
-          .integer()
-          .min(0)
-          .max(4)
-          .custom(async (value, ctx) => {
-            if (value === undefined) return true;
-            const id = ctx.document?._id.replace(/^drafts\./, "");
-            const clash = await ctx
-              .getClient({ apiVersion: "2025-01-01" })
-              .fetch<number>(`count(*[_type == "service" && wedgeIndex == $value && !(_id in [$id, "drafts." + $id])])`, { value, id });
-            return clash === 0 || "Another service already uses this icon.";
-          }),
+      name: "menuDescription",
+      title: "Menu description",
+      type: "string",
+      description: "One line shown under the name in the Services menu.",
+      validation: (r) => r.required().max(90),
     }),
     defineField({ name: "summary", type: "text", rows: 2, validation: (r) => r.required().max(200) }),
     defineField({ name: "headline", title: "Page headline (H1)", type: "string", validation: (r) => r.required().max(80) }),
     defineField({ name: "overview", type: "text", rows: 5, validation: (r) => r.required().max(900) }),
+    defineField({
+      name: "capabilities",
+      title: "What we can build",
+      type: "array",
+      of: [defineArrayMember({ type: "titledText" })],
+      validation: (r) => r.required().min(3).max(8),
+    }),
+    defineField({
+      name: "useCases",
+      title: "Ideal use cases",
+      type: "array",
+      of: [defineArrayMember({ type: "titledText" })],
+      validation: (r) => r.required().min(2).max(6),
+    }),
     defineField({ name: "benefits", type: "array", of: [defineArrayMember({ type: "titledText" })], validation: (r) => r.required().min(1).max(6) }),
     defineField({ name: "process", title: "Delivery steps", type: "array", of: [defineArrayMember({ type: "titledText" })], validation: (r) => r.required().min(1).max(6) }),
     defineField({ name: "faqs", title: "FAQs", type: "array", of: [defineArrayMember({ type: "faq" })] }),
+    defineField({
+      name: "related",
+      title: "Related services",
+      type: "array",
+      of: [defineArrayMember({ type: "reference", to: [{ type: "service" }] })],
+      validation: (r) => r.max(3).unique(),
+    }),
     defineField({
       name: "localContent",
       title: "Local SEO block",

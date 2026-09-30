@@ -1,41 +1,48 @@
-import { AccentLast, ButtonLink, Container, Eyebrow } from "@/components/ui/primitives";
-import { Reveal } from "@/scroll/Reveal";
+import { ButtonLink, Container } from "@/components/ui/primitives";
 
+/** Closing call to action. One per page (fixed heading id). */
 export function CtaSection({
-  eyebrow = "Start a project",
   title,
   label,
   href = "/contact",
-  chapter,
-  body,
+  body = "Tell us about your project in a few lines. We reply within one to two working days with next steps, usually a short call.",
+  secondary,
 }: {
-  eyebrow?: string;
   title: string;
   label: string;
   href?: string;
-  /** Marks the section as a 3D chapter anchor (home page). */
-  chapter?: string;
   body?: string;
+  secondary?: { label: string; href: string };
 }) {
   return (
-    <section aria-labelledby="cta-heading" data-chapter={chapter} className="relative py-28 sm:py-44">
+    <section aria-labelledby="cta-heading" className="py-16 sm:py-24">
       <Container>
-        <Reveal className="relative overflow-hidden rounded-[2rem] border border-chalk/[0.08] bg-gradient-to-br from-ink-800/80 via-ink-900/70 to-ink-950/60 px-6 py-16 backdrop-blur-md sm:px-16 sm:py-24">
-          <div aria-hidden="true" className="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-accent/25 blur-3xl" />
-          <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 left-1/4 h-80 w-80 rounded-full bg-cyan/10 blur-3xl" />
-          <div className="relative">
-            <Eyebrow>{eyebrow}</Eyebrow>
-            <h2 id="cta-heading" className="mt-8 max-w-5xl text-display font-medium text-balance">
-              <AccentLast text={title} />
+        <div className="cta-band relative overflow-hidden rounded-2xl bg-ink px-6 py-12 text-paper sm:px-12 sm:py-20">
+          <div
+            aria-hidden="true"
+            className="cta-glow pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-accent/35 blur-3xl"
+          />
+          <div className="relative max-w-2xl">
+            <h2 id="cta-heading" className="text-display font-semibold text-balance">
+              {title}
             </h2>
-            {body && <p className="mt-8 max-w-2xl text-lead text-chalk-muted">{body}</p>}
-            <div className="mt-12 flex flex-wrap items-center gap-4">
-              <ButtonLink href={href} className="min-h-14 px-8 text-base" data-track="cta_click" data-track-label={label}>
+            <p className="mt-4 text-lead text-paper/80">{body}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <ButtonLink href={href} variant="secondary" className="border-paper bg-paper" data-track="cta_click" data-track-label={label}>
                 {label}
               </ButtonLink>
+              {secondary && (
+                <ButtonLink
+                  href={secondary.href}
+                  arrow={false}
+                  className="border-paper/40 bg-transparent hover:border-paper hover:bg-transparent"
+                >
+                  {secondary.label}
+                </ButtonLink>
+              )}
             </div>
           </div>
-        </Reveal>
+        </div>
       </Container>
     </section>
   );

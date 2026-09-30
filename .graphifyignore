@@ -1,2 +1,6 @@
 # generated Cloudflare Workers type definitions (wrangler types) - noise for the graph
 web/cloudflare-env.d.ts
+
+# generated from src/app/icon.svg by scripts/render-brand-assets.mjs
+web/public/icon-*.png
+web/src/app/apple-icon.png

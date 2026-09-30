@@ -3,33 +3,46 @@ import { CtaSection } from "@/components/sections/CtaSection";
 import { FaqList } from "@/components/sections/FaqList";
 import { PageHero } from "@/components/sections/PageHero";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
-import { Container } from "@/components/ui/primitives";
+import { Container, Summary } from "@/components/ui/primitives";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { faqPage } from "@/lib/jsonld";
+import { faqPage, webPage } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
-import { WorldPose } from "@/world/WorldPose";
 
-export const metadata = pageMetadata({
-  title: "Process",
-  description:
-    "How Skaylon delivers: Discover, Architect, Build, Launch & support. Fixed scope, full transparency, working software early.",
-  path: "/process",
-});
+const DESCRIPTION =
+  "How Skaylon runs a software project: discovery, planning and design, build, then launch and support, with a fixed-scope proposal before development.";
+
+export const metadata = pageMetadata({ title: "Our Process", description: DESCRIPTION, path: "/process" });
 
 export default async function ProcessPage() {
   const process = await getProcessPage();
   return (
     <>
-      <JsonLd data={faqPage(process.faqs)} />
-      <WorldPose pose="process" />
-      <PageHero eyebrow="Process" heading={process.intro.heading} sub={process.intro.sub} />
-      <section aria-label="Phases" className="pb-12">
+      <JsonLd data={[webPage({ path: "/process", name: "Our Process | Skaylon", description: DESCRIPTION }), faqPage(process.faqs)]} />
+      <PageHero
+        eyebrow="Process"
+        heading={process.intro.heading}
+        sub={process.intro.sub}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Process", href: "/process" },
+        ]}
+      />
+      <Container>
+        <Summary>
+          Projects move through {process.phases.length} phases: {process.phases.map((p) => `${p.title} (${p.duration})`).join(", ")}.
+          Price, scope and timeline are agreed in writing before development starts.
+        </Summary>
+      </Container>
+      <section aria-labelledby="phases-heading" className="py-12 sm:py-16">
         <Container>
+          <h2 id="phases-heading" className="sr-only">
+            Project phases
+          </h2>
           <ProcessSteps phases={process.phases} detailed />
         </Container>
       </section>
-      <FaqList faqs={process.faqs} />
-      <CtaSection title="Start with a discovery conversation." label="Book a call" />
+      <FaqList faqs={process.faqs} heading="Questions about working with us" />
+      <CtaSection title="Start with a discovery conversation." label="Book a consultation" />
     </>
   );
 }

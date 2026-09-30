@@ -8,11 +8,20 @@ const image = `{ "url": asset->url, alt, "width": asset->metadata.dimensions.wid
 export const SITE_SETTINGS = `*[_id == "siteSettings"][0]{
   name, legalName, tagline, description, email, phone, whatsapp,
   "founder": coalesce(founder, ""),
+  defined(founderPhoto.asset) => { "founderPhoto": founderPhoto${image} },
+  defined(founderBio) => { founderBio },
   address, credential,
   "socials": coalesce(socials[]{label, url}, [])
 }`;
 
-export const HOME_PAGE = `*[_id == "homePage"][0]{ hero, chapters, "outcomes": coalesce(outcomes, []), cta }`;
+export const HOME_PAGE = `*[_id == "homePage"][0]{
+  hero, summary,
+  "audiences": coalesce(audiences[]{title, description}, []),
+  "whyUs": coalesce(whyUs[]{title, description}, []),
+  "engagement": coalesce(engagement[]{title, description}, []),
+  "faqs": coalesce(faqs[]{question, answer}, []),
+  cta
+}`;
 
 export const ABOUT_PAGE = `*[_id == "aboutPage"][0]{
   intro, "story": coalesce(story, []),
@@ -32,10 +41,13 @@ export const LEGAL_PAGE = `*[_id == $id][0]{
 }`;
 
 const serviceFields = `
-  "slug": slug.current, name, order, wedgeIndex, summary, headline, overview,
+  "slug": slug.current, name, order, "menuDescription": coalesce(menuDescription, summary), summary, headline, overview,
+  "capabilities": coalesce(capabilities[]{title, description}, []),
+  "useCases": coalesce(useCases[]{title, description}, []),
   "benefits": coalesce(benefits[]{title, description}, []),
   "process": coalesce(process[]{title, description}, []),
   "faqs": coalesce(faqs[]{question, answer}, []),
+  "related": coalesce(related[]->slug.current, []),
   defined(localContent.heading) => { localContent },
   cta, "seo": coalesce(seo, {})
 `;

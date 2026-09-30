@@ -1,11 +1,11 @@
 import "server-only";
 import { sanityConfigured, sanityFetch } from "@/sanity/client";
 import * as q from "@/sanity/queries";
-import type { AboutPage, ChapterKey, HomePage, LegalPage, ProcessPage, Project, Service, SiteSettings } from "./types";
+import type { AboutPage, HomePage, LegalPage, LegalSlug, ProcessPage, Project, Service, SiteSettings } from "./types";
 import { siteSettings } from "./seed/site";
 import { services as seedServices } from "./seed/services";
 import { aboutPage, homePage, processPage, projects as seedProjects } from "./seed/pages";
-import { privacyPage, termsPage } from "./seed/legal";
+import { cookiesPage, privacyPage, termsPage } from "./seed/legal";
 
 /**
  * The single content API every page uses.
@@ -30,20 +30,16 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function getHomePage(): Promise<HomePage> {
-  type Raw = Omit<HomePage, "chapters"> & { chapters?: Partial<Record<ChapterKey, Omit<HomePage["chapters"][ChapterKey], "key">>> };
-  const raw = await fromCms<Raw>(q.HOME_PAGE, homePage);
-  // Every chapter is anchored to a 3D pose, so all five must exist: fill any
-  // missing one from the seed rather than breaking the journey.
-  const chapters = Object.fromEntries(
-    (Object.keys(homePage.chapters) as ChapterKey[]).map((key) => [
-      key,
-      raw.chapters?.[key] ? { key, ...raw.chapters[key] } : homePage.chapters[key],
-    ]),
-  ) as HomePage["chapters"];
+  const raw = await fromCms<Partial<HomePage>>(q.HOME_PAGE, homePage);
+  // Field-by-field fallback: a half-filled CMS document never leaves a hole.
+  const list = <T,>(v: T[] | undefined, seed: T[]) => (v?.length ? v : seed);
   return {
-    hero: raw.hero ?? homePage.hero,
-    chapters,
-    outcomes: raw.outcomes?.length ? raw.outcomes : homePage.outcomes,
+    hero: raw.hero?.heading ? raw.hero : homePage.hero,
+    summary: raw.summary || homePage.summary,
+    audiences: list(raw.audiences, homePage.audiences),
+    whyUs: list(raw.whyUs, homePage.whyUs),
+    engagement: list(raw.engagement, homePage.engagement),
+    faqs: list(raw.faqs, homePage.faqs),
     cta: raw.cta?.label ? { ...raw.cta, href: raw.cta.href || "/contact" } : homePage.cta,
   };
 }
@@ -60,7 +56,31 @@ export async function getServices(): Promise<Service[]> {
   if (!sanityConfigured) return [...seedServices].sort((a, b) => a.order - b.order);
   const services = await sanityFetch<Service[]>(q.SERVICES);
   // The site's structure assumes services exist; an unseeded dataset falls back.
-  return services.length ? services : seedServices;
+  if (!services.length) return seedServices;
+  return services.map(withSeedDefaults);
+}
+
+/**
+ * Fills list fields a CMS service hasn't been given yet (e.g. a dataset
+ * created before capabilities/use cases existed) from the seed service with
+ * the same slug, so a partly migrated document never renders empty sections.
+ * Fields the CMS does set always win.
+ */
+function withSeedDefaults(service: Service): Service {
+  const seed = seedServices.find((s) => s.slug === service.slug);
+  if (!seed) return service;
+  const list = <K extends "capabilities" | "useCases" | "benefits" | "process" | "faqs" | "related">(k: K) =>
+    service[k]?.length ? service[k] : seed[k];
+  return {
+    ...service,
+    menuDescription: service.menuDescription || seed.menuDescription,
+    capabilities: list("capabilities"),
+    useCases: list("useCases"),
+    benefits: list("benefits"),
+    process: list("process"),
+    faqs: list("faqs"),
+    related: list("related"),
+  };
 }
 
 export async function getService(slug: string): Promise<Service | null> {
@@ -76,8 +96,9 @@ export async function getProject(slug: string): Promise<Project | null> {
   return (await getProjects()).find((p) => p.slug === slug) ?? null;
 }
 
-export async function getLegalPage(slug: LegalPage["slug"]): Promise<LegalPage> {
-  const seed = slug === "privacy" ? privacyPage : termsPage;
+const legalSeed: Record<LegalSlug, LegalPage> = { privacy: privacyPage, terms: termsPage, cookies: cookiesPage };
+
+export async function getLegalPage(slug: LegalSlug): Promise<LegalPage> {
   const doc = await fromCms<Omit<LegalPage, "slug"> | null>(q.LEGAL_PAGE, null, { id: `${slug}Page` });
-  return doc ? { ...doc, slug } : seed;
+  return doc ? { ...doc, slug } : legalSeed[slug];
 }

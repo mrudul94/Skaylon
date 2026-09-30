@@ -12,7 +12,7 @@ import * as q from "../src/sanity/queries.ts";
 import { siteSettings } from "../src/content/seed/site.ts";
 import { services } from "../src/content/seed/services.ts";
 import { aboutPage, homePage, processPage } from "../src/content/seed/pages.ts";
-import { privacyPage, termsPage } from "../src/content/seed/legal.ts";
+import { cookiesPage, privacyPage, termsPage } from "../src/content/seed/legal.ts";
 
 const projectId = process.argv[2] ?? "94bjvovm";
 const client = createClient({ projectId, dataset: "production", apiVersion: "2025-01-01", useCdn: false });
@@ -23,7 +23,7 @@ function check(name: string, ok: boolean, detail = "") {
   if (!ok) failures++;
 }
 // Sanity omits undefined optional fields; normalise both sides the same way.
-const clean = (v: unknown) => JSON.parse(JSON.stringify(v));
+const clean = (v: unknown) => (v === undefined ? undefined : JSON.parse(JSON.stringify(v)));
 function firstDiff(a: unknown, b: unknown, path = ""): string {
   if (isDeepStrictEqual(a, b)) return "";
   if (typeof a !== "object" || typeof b !== "object" || !a || !b) return `${path || "(root)"}: ${JSON.stringify(a)?.slice(0, 80)} ≠ ${JSON.stringify(b)?.slice(0, 80)}`;
@@ -40,17 +40,11 @@ const same = (name: string, got: unknown, want: unknown) => {
 
 same("siteSettings", await client.fetch(q.SITE_SETTINGS), siteSettings);
 
-const home = await client.fetch(q.HOME_PAGE);
-same("homePage.hero", home.hero, homePage.hero);
-for (const [key, ch] of Object.entries(homePage.chapters)) {
-  const fields = { eyebrow: ch.eyebrow, heading: ch.heading, body: ch.body }; // `key` isn't stored
-  same(`homePage.chapters.${key}`, home.chapters[key], fields);
-}
-same("homePage.outcomes", home.outcomes, homePage.outcomes);
+same("homePage", await client.fetch(q.HOME_PAGE), homePage);
 
 same("aboutPage", await client.fetch(q.ABOUT_PAGE), aboutPage);
 same("processPage", await client.fetch(q.PROCESS_PAGE), processPage);
-for (const page of [privacyPage, termsPage]) {
+for (const page of [privacyPage, termsPage, cookiesPage]) {
   const { slug, ...fields } = page;
   same(`legal:${slug}`, await client.fetch(q.LEGAL_PAGE, { id: `${slug}Page` }), fields);
 }

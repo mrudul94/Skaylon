@@ -11,5 +11,6 @@ export const SINGLETONS = [
   { id: "aboutPage", type: "aboutPage", title: "About page" },
   { id: "processPage", type: "processPage", title: "Process page" },
   { id: "privacyPage", type: "legalPage", title: "Privacy policy" },
-  { id: "termsPage", type: "legalPage", title: "Terms of use" },
+  { id: "termsPage", type: "legalPage", title: "Terms and conditions" },
+  { id: "cookiesPage", type: "legalPage", title: "Cookie policy" },
 ] as const;

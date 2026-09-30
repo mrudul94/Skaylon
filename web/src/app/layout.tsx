@@ -1,18 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Analytics } from "@/components/layout/Analytics";
 import { ClickTracker } from "@/components/layout/ClickTracker";
-import { Cursor } from "@/components/motion/Cursor";
-import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Header } from "@/components/layout/Header";
+import { StickyMobileCta } from "@/components/layout/StickyMobileCta";
+import { EnquiryPrompt } from "@/components/enquiry/EnquiryPrompt";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getSiteSettings } from "@/content";
+import { getServices, getSiteSettings } from "@/content";
 import { env } from "@/lib/env";
 import { organization, website } from "@/lib/jsonld";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
-import { SmoothScroll } from "@/scroll/SmoothScroll";
-import { WorldMount } from "@/world/WorldMount";
 import "./globals.css";
 
 // Self-hosted at build time by next/font (no runtime request to Google),
@@ -27,27 +25,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
   display: "swap",
-  // Small labels only: don't compete with the hero's fonts during LCP.
+  // Small labels only: don't compete with the hero's font during LCP.
   preload: false,
-});
-
-// The italic accent word in headlines (including the hero h1, so preloaded).
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: "italic",
-  variable: "--font-instrument-serif",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
   title: {
-    default: "Skaylon — Digital flagships, engineered",
+    default: "Skaylon | Websites, Web Apps, Mobile Apps & Custom Software",
     template: "%s | Skaylon",
   },
   description:
-    "Skaylon is a software studio in Kasaragod, Kerala, designing and engineering high-performance websites, web apps, mobile apps and custom software.",
+    "Skaylon is a founder-led software studio in Kerala, India, designing and building websites, web applications, mobile apps, custom software and backend systems for businesses.",
   applicationName: "Skaylon",
   formatDetection: { telephone: false },
   openGraph: { type: "website", siteName: "Skaylon", locale: "en_IN", images: [DEFAULT_OG_IMAGE] },
@@ -55,34 +44,31 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#06070a",
-  colorScheme: "dark",
+  themeColor: "#faf8f4",
+  colorScheme: "light",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const site = await getSiteSettings();
+  const [site, services] = await Promise.all([getSiteSettings(), getServices()]);
+  const navServices = services.map((s) => ({ slug: s.slug, name: s.name, description: s.menuDescription }));
+  const siteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   return (
-    <html lang="en-IN" className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}>
+    <html lang="en-IN" className={`${geist.variable} ${geistMono.variable}`}>
       <body className="min-h-svh antialiased">
-        <JsonLd data={[organization(site), website(site)]} />
+        <JsonLd data={[organization(site, services), website(site)]} />
         <a
           href="#main"
-          className="fixed top-3 left-3 z-[70] -translate-y-24 rounded-full bg-chalk px-5 py-3 text-sm text-ink-950 focus:translate-y-0"
+          className="fixed top-3 left-3 z-[70] -translate-y-24 rounded-lg bg-ink px-5 py-3 text-sm font-medium text-paper focus:translate-y-0"
         >
           Skip to content
         </a>
-        <div className="atmosphere" aria-hidden="true" />
-        <div className="grid-lines" aria-hidden="true" />
-        <WorldMount />
-        <Header />
-        <main id="main" tabIndex={-1} className="outline-none">
+        <Header services={navServices} phone={site.phone} />
+        <main id="main" tabIndex={-1} className="relative outline-none">
           {children}
         </main>
         <Footer />
-        <div className="grain" aria-hidden="true" />
-        <ScrollProgress />
-        <Cursor />
-        <SmoothScroll />
+        <StickyMobileCta phone={site.phone} />
+        {siteKey && <EnquiryPrompt siteKey={siteKey} />}
         <ClickTracker />
         <Analytics />
       </body>

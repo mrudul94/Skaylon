@@ -48,7 +48,7 @@ check("CSP allows Turnstile script + frame",
 check("CSP allows Sanity images", has("img-src", "https://cdn.sanity.io"));
 check("CSP allows CF analytics beacon",
   has("script-src", "https://static.cloudflareinsights.com") && has("connect-src", "https://cloudflareinsights.com"));
-check("CSP allows blob: workers (KTX2/Draco decoders)", has("worker-src", "blob:"));
+check("CSP allows no blob: workers (nothing needs them since the 3D removal)", !has("worker-src", "blob:"));
 check("HSTS ≥ 1 year", /max-age=(\d+)/.test(byName.get("strict-transport-security") ?? "") &&
   Number(/max-age=(\d+)/.exec(byName.get("strict-transport-security")!)![1]) >= 31536000);
 

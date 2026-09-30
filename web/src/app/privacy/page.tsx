@@ -4,7 +4,7 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Privacy Policy",
-  description: "What personal data Skaylon collects through this website, why, and your rights.",
+  description: "What personal data Skaylon collects through its website and enquiry forms, why, who processes it, and your rights.",
   path: "/privacy",
 });
 

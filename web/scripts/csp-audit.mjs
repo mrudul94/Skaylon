@@ -1,6 +1,5 @@
 /**
- * csp-audit — crawls every route of a running server in Chrome (with GPU, so
- * the 3D world, its workers and the post chain all load), exercises the
+ * csp-audit — crawls every route of a running server in Chrome, exercises the
  * contact form's Turnstile, and reports any Content-Security-Policy
  * violations (report-only or enforced). Exit 1 if any are found.
  *
@@ -9,9 +8,9 @@
 import { chromium } from "@playwright/test";
 
 const base = process.argv[2] ?? "http://127.0.0.1:3100";
-const routes = ["/?tier=2", "/?tier=1", "/services", "/services/ui-ux-design", "/work", "/about", "/process", "/contact?tier=2", "/privacy", "/terms", "/missing-page"];
+const routes = ["/", "/services", "/services/ui-ux-design", "/services/backend-api-development", "/work", "/about", "/process", "/contact", "/contact/thank-you", "/privacy", "/terms", "/cookies", "/missing-page"];
 
-const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"] });
+const browser = await chromium.launch({ channel: "chrome" });
 const page = await browser.newPage();
 const violations = [];
 page.on("console", (m) => {
@@ -21,7 +20,7 @@ page.on("console", (m) => {
 
 for (const r of routes) {
   await page.goto(base + r, { waitUntil: "networkidle" }).catch(() => undefined);
-  await page.waitForTimeout(3500); // world + deferred motion + beacon
+  await page.waitForTimeout(1500); // Turnstile + beacon
   await page.evaluate(async () => {
     for (let y = 0; y < document.body.scrollHeight; y += 700) {
       window.scrollTo(0, y);

@@ -26,20 +26,23 @@ function ratio(a: string, b: string) {
 
 // [foreground, background, minimum, where it's used]
 const pairs: [string, string, number, string][] = [
-  ["chalk", "ink-950", 7, "body text"],
-  ["chalk-muted", "ink-950", 4.5, "secondary text"],
-  ["accent", "ink-950", 4.5, "accent text, active links"],
-  ["cyan", "ink-950", 4.5, "numerals, status"],
-  ["accent-soft", "ink-950", 4.5, "form error text"],
-  ["chalk", "ink-800", 4.5, "text on raised surfaces"],
-  ["chalk-muted", "ink-800", 4.5, "secondary text on raised surfaces"],
-  ["chalk-muted", "ink-700", 4.5, "secondary text on glass cards (worst case)"],
-  ["ink-950", "chalk", 4.5, "primary button label"],
-  ["ink-950", "accent", 4.5, "button hover fill (iris end) / selection"],
-  ["ink-950", "cyan", 4.5, "button hover fill (cyan end)"],
-  ["accent", "ink-950", 3, "focus ring (non-text, 1.4.11)"],
+  ["ink", "paper", 7, "body text"],
+  ["ink-2", "paper", 7, "long-form text"],
+  ["ink-muted", "paper", 4.5, "secondary text"],
+  ["ink-muted", "paper-2", 4.5, "secondary text on tinted sections and the footer"],
+  ["ink-muted", "surface", 4.5, "secondary text on cards"],
+  ["accent-ink", "paper", 4.5, "eyebrows, links, numerals"],
+  ["accent-ink", "surface", 4.5, "links on cards"],
+  ["accent-ink", "accent-wash", 4.5, "service icons, current menu item"],
+  ["paper", "ink", 7, "primary button label, dark CTA band"],
+  ["surface", "accent-ink", 4.5, "accent button label"],
+  ["danger", "surface", 4.5, "form error text"],
+  ["success", "paper", 4.5, "success status text"],
+  ["accent-ink", "paper", 3, "focus ring (non-text, 1.4.11)"],
+  ["accent", "ink", 4.5, "eyebrows, step numbers and focus ring on dark bands"],
+  ["field", "surface", 3, "form field borders (non-text, 1.4.11)"],
+  ["field", "paper", 3, "form field borders on the page background"],
 ];
-
 let failures = 0;
 for (const [fg, bg, min, use] of pairs) {
   const r = ratio(token(fg), token(bg));

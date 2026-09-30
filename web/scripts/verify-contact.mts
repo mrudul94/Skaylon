@@ -16,8 +16,9 @@ const valid = {
   email: "asha@example.in",
   company: "",
   phone: "+91 98470 00000",
-  service: "Website Development",
+  projectType: "Website",
   budget: "₹2–5 lakh",
+  timeline: "Within 1–3 months",
   message: "We need a faster marketing site with a booking flow for three clinics.",
   consent: "on",
 };
@@ -36,6 +37,21 @@ check("phone with letters rejected", !parse({ ...valid, phone: "call me maybe" }
 check("unknown budget rejected", !parse({ ...valid, budget: "a million" }).success);
 check("empty budget allowed", parse({ ...valid, budget: "" }).success);
 check("missing consent rejected", !parse({ ...valid, consent: undefined }).success);
+check("unknown project type rejected", !parse({ ...valid, projectType: "Blockchain" }).success);
+check("unknown timeline rejected", !parse({ ...valid, timeline: "yesterday" }).success);
+check("source defaults to contact", (() => { const r = parse(valid); return r.success && r.data.source === "contact"; })());
+check("unknown source rejected", !parse({ ...valid, source: "admin" }).success);
+const popup = { name: "Asha Menon", email: "asha@example.in", projectType: "Mobile App", consent: "on", source: "popup" };
+check("pop-up enquiry without details accepted", parse(popup).success);
+check("pop-up still requires consent", !parse({ ...popup, consent: undefined }).success);
+check("pop-up still requires a valid email", !parse({ ...popup, email: "nope" }).success);
+check("contact page still requires 20+ chars", !parse({ ...valid, message: "", source: "contact" }).success);
+{
+  const r = parse(popup);
+  const mail = r.success ? buildEnquiryEmail(r.data, { receivedAt: "2026-09-29T10:00:00Z" }) : null;
+  check("pop-up email names its source", !!mail && mail.text.includes("Sent from: Project enquiry pop-up"));
+  check("pop-up email notes missing details", !!mail && mail.text.includes("(No project details provided.)"));
+}
 
 const now = 1_760_000_000_000;
 check("honeypot filled → bot", botSignals("http://spam", String(now - 10_000), now) === "honeypot");

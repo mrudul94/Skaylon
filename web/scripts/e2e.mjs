@@ -5,10 +5,14 @@
  * and CONTACT_DRY_RUN (enquiries are logged, not emailed). These values are
  * passed only to this build/server process, never written to .env files, so
  * they can't leak into a deploy (cf:build always rebuilds from .env.production).
+ * It also builds from the local seed content instead of the live CMS.
  */
 import { spawnSync } from "node:child_process";
 
 export const E2E_ENV = {
+  // Test the seed content (what studio/seed/import.mts publishes), not
+  // whatever the live CMS holds today; scripts/verify-cms.mts checks parity.
+  CONTENT_SOURCE: "seed",
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA", // always passes, invisible
   TURNSTILE_SECRET_KEY: "1x0000000000000000000000000000000AA", // always passes
   CONTACT_DRY_RUN: "1",

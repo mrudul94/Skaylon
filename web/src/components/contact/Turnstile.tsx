@@ -34,11 +34,22 @@ function loadScript(): Promise<void> {
  * Cloudflare Turnstile, rendered explicitly. It injects the
  * `cf-turnstile-response` hidden input into the surrounding form, and shows
  * UI only when it actually needs an interaction. `resetKey` changes after a
- * failed submit, because tokens are single-use.
+ * failed submit, because tokens are single-use. `onStatus` reports when a
+ * token is ready (so the form can wait for it) or when the check failed.
  */
-export function Turnstile({ siteKey, resetKey }: { siteKey: string; resetKey: number }) {
+export function Turnstile({
+  siteKey,
+  resetKey,
+  onStatus,
+}: {
+  siteKey: string;
+  resetKey: number;
+  onStatus?: (status: "ready" | "pending" | "failed") => void;
+}) {
   const el = useRef<HTMLDivElement>(null);
   const widget = useRef<string | null>(null);
+  const report = useRef(onStatus);
+  report.current = onStatus;
 
   useEffect(() => {
     let cancelled = false;
@@ -47,12 +58,15 @@ export function Turnstile({ siteKey, resetKey }: { siteKey: string; resetKey: nu
         if (cancelled || !el.current || !window.turnstile || widget.current) return;
         widget.current = window.turnstile.render(el.current, {
           sitekey: siteKey,
-          theme: "dark",
+          theme: "light",
           appearance: "interaction-only",
           action: "contact",
+          callback: () => report.current?.("ready"),
+          "expired-callback": () => report.current?.("pending"),
+          "error-callback": () => report.current?.("failed"),
         });
       })
-      .catch(() => undefined);
+      .catch(() => report.current?.("failed"));
     return () => {
       cancelled = true;
       if (widget.current) window.turnstile?.remove(widget.current);
@@ -61,7 +75,10 @@ export function Turnstile({ siteKey, resetKey }: { siteKey: string; resetKey: nu
   }, [siteKey]);
 
   useEffect(() => {
-    if (resetKey > 0 && widget.current) window.turnstile?.reset(widget.current);
+    if (resetKey > 0 && widget.current) {
+      report.current?.("pending");
+      window.turnstile?.reset(widget.current);
+    }
   }, [resetKey]);
 
   return <div ref={el} className="min-h-0" />;

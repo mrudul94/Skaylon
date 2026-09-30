@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
-import { Magnetic } from "@/components/motion/Magnetic";
 
 function cx(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
@@ -18,64 +17,62 @@ export function Container({
   children: ReactNode;
 }) {
   const Element = Tag as unknown as React.FC<React.HTMLAttributes<HTMLElement>>;
-  return <Element className={cx("mx-auto w-full max-w-page px-4 sm:px-6 lg:px-12", className)}>{children}</Element>;
+  return <Element className={cx("mx-auto w-full max-w-page px-4 sm:px-6 lg:px-8", className)}>{children}</Element>;
 }
 
-/** Mono label with a short accent rule: section kickers, metadata. */
+/** Small uppercase label above a heading. */
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <p className={cx("flex items-center gap-3 font-mono text-eyebrow text-chalk-muted uppercase", className)}>
-      <span aria-hidden="true" className="h-px w-6 bg-gradient-to-r from-accent to-cyan" />
+    <p className={cx("flex items-center gap-2.5 font-mono text-eyebrow font-medium text-accent-ink uppercase", className)}>
+      <span aria-hidden="true" className="h-px w-5 bg-accent" />
       {children}
     </p>
   );
 }
 
-type ButtonLinkProps = ComponentProps<typeof Link> & {
-  variant?: "primary" | "ghost";
-  /** Pull toward the pointer on hover (desktop). */
-  magnetic?: boolean;
-};
+const buttonStyles = {
+  primary: "bg-ink text-paper hover:bg-ink-2 border border-ink",
+  secondary: "border border-line-strong bg-surface text-ink hover:border-ink",
+  accent: "bg-accent-ink text-white hover:bg-[#8a3814] border border-accent-ink",
+} as const;
 
-/**
- * Pill button. Hover: a fill wipes up from the bottom and the arrow loops
- * through (`.btn` in globals.css); optionally magnetic.
- */
-export function ButtonLink({ variant = "primary", magnetic = true, className, children, ...props }: ButtonLinkProps) {
-  const link = (
-    <Link
-      {...props}
-      className={cx(
-        "btn group inline-flex min-h-12 items-center gap-3 rounded-full px-6 text-sm font-medium tracking-tight",
-        variant === "primary"
-          ? "bg-chalk text-ink-950 [--btn-fill:linear-gradient(100deg,var(--color-accent),var(--color-cyan))]"
-          : "border border-chalk/20 text-chalk [--btn-fill:var(--color-chalk)] hover:border-chalk hover:text-ink-950 focus-visible:text-ink-950",
-        className,
-      )}
-    >
+export type ButtonVariant = keyof typeof buttonStyles;
+
+export function buttonClass(variant: ButtonVariant = "primary", className?: string) {
+  return cx(
+    "btn inline-flex min-h-12 items-center justify-center gap-2.5 rounded-lg px-5 text-[0.95rem] font-medium",
+    buttonStyles[variant],
+    className,
+  );
+}
+
+type ButtonLinkProps = ComponentProps<typeof Link> & { variant?: ButtonVariant; arrow?: boolean };
+
+export function ButtonLink({ variant = "primary", arrow = true, className, children, ...props }: ButtonLinkProps) {
+  return (
+    <Link {...props} className={buttonClass(variant, className)}>
       {children}
-      <span className="btn-arrow" aria-hidden="true">
-        <Arrow />
-        <Arrow />
-      </span>
+      {arrow && (
+        <span className="btn-arrow" aria-hidden="true">
+          <Arrow />
+        </span>
+      )}
     </Link>
   );
-  return magnetic ? <Magnetic>{link}</Magnetic> : link;
 }
 
 export function Arrow({ className }: { className?: string }) {
   return (
     <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16" className={className}>
-      <path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }
 
-/** Arrow pointing up-right: external / "go to" affordance on cards. */
-export function ArrowUpRight({ className }: { className?: string }) {
+export function Check({ className }: { className?: string }) {
   return (
     <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16" className={className}>
-      <path d="M4 12L12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -98,25 +95,74 @@ export function SectionHeading({
   return (
     <div className={cx("max-w-3xl", className)}>
       {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-      <Tag id={id} className={cx("mt-6 font-medium text-balance", Tag === "h1" ? "text-display-xl" : "text-display")}>
-        <AccentLast text={heading} />
+      <Tag id={id} className={cx("mt-4 font-semibold text-balance", Tag === "h1" ? "text-display-xl" : "text-display")}>
+        {heading}
       </Tag>
-      {children && <div className="mt-7 space-y-4 text-lead text-chalk-muted">{children}</div>}
+      {children && <div className="mt-5 space-y-4 text-lead text-ink-muted">{children}</div>}
     </div>
   );
 }
 
-/**
- * Sets a headline's last word in the gradient serif italic. The text content
- * is unchanged (tests and screen readers see the plain heading).
- */
-export function AccentLast({ text }: { text: string }) {
-  const i = text.lastIndexOf(" ");
-  if (i < 0) return <>{text}</>;
+/** "In short" answer box: a quotable summary near the top of a page (AEO/GEO). */
+export function Summary({ children, label = "In short", className }: { children: ReactNode; label?: string; className?: string }) {
   return (
-    <>
-      {text.slice(0, i + 1)}
-      <span className="serif-accent text-gradient">{text.slice(i + 1)}</span>
-    </>
+    <aside aria-label={label} className={cx("relative border-l-2 border-accent py-1 pl-5 sm:pl-8", className)}>
+      <p className="font-mono text-eyebrow font-medium text-accent-ink uppercase">{label}</p>
+      <div className="mt-3 max-w-4xl text-[clamp(1.12rem,1rem+0.55vw,1.45rem)] leading-[1.55] tracking-[-0.01em] text-ink-2">{children}</div>
+    </aside>
+  );
+}
+
+/** Grid of titled cards (capabilities, audiences, reasons). */
+export function CardGrid({
+  items,
+  headingLevel = "h3",
+  columns = 3,
+  className,
+}: {
+  items: { title: string; description: string }[];
+  headingLevel?: "h3" | "h4";
+  columns?: 2 | 3;
+  className?: string;
+}) {
+  const H = headingLevel;
+  return (
+    <ul
+      data-stagger-target
+      className={cx("grid gap-4 sm:grid-cols-2", columns === 3 && (items.length === 5 ? "lg:grid-cols-6" : "lg:grid-cols-3"), className)}
+    >
+      {items.map((item, i) => (
+        <li
+          key={item.title}
+          className={cx(
+            "card-link rounded-xl border hairline bg-surface p-6",
+            columns === 3 && items.length === 5 && (i < 3 ? "lg:col-span-2" : "lg:col-span-3"),
+          )}
+        >
+          <span aria-hidden="true" className="font-mono text-sm text-accent-ink">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <H className="mt-3 text-lg font-semibold tracking-tight">{item.title}</H>
+          <p className="mt-2 leading-relaxed text-ink-muted">{item.description}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Numbered steps (process on home and service pages). */
+export function StepList({ steps, className }: { steps: { title: string; description: string }[]; className?: string }) {
+  return (
+    <ol data-stagger-target className={cx("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
+      {steps.map((step, i) => (
+        <li key={step.title} className="rounded-xl border hairline bg-surface p-6">
+          <span aria-hidden="true" className="font-mono text-sm text-accent-ink">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <h3 className="mt-3 text-lg font-semibold tracking-tight">{step.title}</h3>
+          <p className="mt-2 leading-relaxed text-ink-muted">{step.description}</p>
+        </li>
+      ))}
+    </ol>
   );
 }

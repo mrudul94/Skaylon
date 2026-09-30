@@ -10,7 +10,6 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbs, projectSchema } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { Reveal } from "@/scroll/Reveal";
-import { WorldPose } from "@/world/WorldPose";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -60,7 +59,6 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <article>
       <JsonLd data={[breadcrumbs(crumbs), projectSchema(project)]} />
-      <WorldPose pose="work" />
       <PageHero
         eyebrow={`${project.client} · ${project.industry} · ${project.year}`}
         heading={project.title}
@@ -69,7 +67,7 @@ export default async function ProjectPage({ params }: Props) {
       />
 
       <Container>
-        <div className="relative aspect-[16/9] overflow-hidden rounded-sm bg-ink-800">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-paper-2">
           <Image
             src={project.cover.url}
             alt={project.cover.alt}
@@ -82,24 +80,24 @@ export default async function ProjectPage({ params }: Props) {
 
         <dl className="hairline mt-12 grid gap-8 border-b pb-12 sm:grid-cols-3">
           <div>
-            <dt className="text-eyebrow text-chalk-muted uppercase">Services</dt>
+            <dt className="text-eyebrow text-ink-muted uppercase">Services</dt>
             <dd className="mt-3 space-y-1">
               {services.map((s) => (
-                <Link key={s.slug} href={`/services/${s.slug}`} className="block hover:text-accent">
+                <Link key={s.slug} href={`/services/${s.slug}`} className="block hover:text-accent-ink">
                   {s.name}
                 </Link>
               ))}
             </dd>
           </div>
           <div>
-            <dt className="text-eyebrow text-chalk-muted uppercase">Stack</dt>
+            <dt className="text-eyebrow text-ink-muted uppercase">Stack</dt>
             <dd className="mt-3">{project.techStack.join(" · ")}</dd>
           </div>
           {project.liveUrl && (
             <div>
-              <dt className="text-eyebrow text-chalk-muted uppercase">Live</dt>
+              <dt className="text-eyebrow text-ink-muted uppercase">Live</dt>
               <dd className="mt-3">
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent">
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="hover:text-accent-ink">
                   Visit site<span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </dd>
@@ -108,23 +106,23 @@ export default async function ProjectPage({ params }: Props) {
         </dl>
 
         {project.metrics.length > 0 && (
-          <Reveal as="dl" stagger className="grid gap-10 py-20 sm:grid-cols-3">
+          <Reveal as="div" className="py-16"><dl className="grid gap-10 sm:grid-cols-3">
             {project.metrics.map((m) => (
               <div key={m.label} className="flex flex-col-reverse">
-                <dt className="mt-3 text-chalk-muted">{m.label}</dt>
-                <dd className="text-gradient text-6xl font-semibold tracking-[-0.05em]">{m.value}</dd>
+                <dt className="mt-3 text-ink-muted">{m.label}</dt>
+                <dd className="text-5xl font-semibold tracking-[-0.04em] text-accent-ink">{m.value}</dd>
               </div>
             ))}
-          </Reveal>
+          </dl></Reveal>
         )}
 
         {STORY.map(([key, heading]) =>
           project[key].length > 0 ? (
             <section key={key} aria-labelledby={`${key}-heading`} className="grid gap-8 py-16 lg:grid-cols-[1fr_2fr]">
-              <h2 id={`${key}-heading`} className="text-title font-medium">
+              <h2 id={`${key}-heading`} className="text-title font-semibold">
                 {heading}
               </h2>
-              <div className="space-y-5 text-lead text-chalk-muted">
+              <div className="space-y-5 text-lead text-ink-muted">
                 {project[key].map((p) => (
                   <p key={p}>{p}</p>
                 ))}
@@ -136,7 +134,7 @@ export default async function ProjectPage({ params }: Props) {
         {project.gallery.length > 0 && (
           <ul className="grid gap-8 py-16 md:grid-cols-2">
             {project.gallery.map((img) => (
-              <li key={img.url} className="relative aspect-[4/3] overflow-hidden rounded-sm bg-ink-800">
+              <li key={img.url} className="relative aspect-[4/3] overflow-hidden rounded-xl bg-paper-2">
                 <Image src={img.url} alt={img.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
               </li>
             ))}

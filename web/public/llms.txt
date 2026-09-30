@@ -1,0 +1,31 @@
+# Skaylon
+
+> Skaylon (Skaylon Technology) is a founder-led software development studio in Kasaragod, Kerala, India. It designs and builds websites, web applications, iOS and Android apps, custom business software, UI/UX designs and backend/API systems for small and mid-sized businesses and startups in India and abroad. Projects start with a short discovery phase and a written fixed-scope proposal; clients own the code and designs.
+
+Key facts:
+- Legal name: Skaylon Technology (registered MSME in India, Udyam registration UDYAM-KL-05-0037475)
+- Location: Kasaragod, Kerala, India; works remotely with clients in India and other countries
+- Contact: skaylon.in@gmail.com, +91 80759 15386
+- Technologies named on the site: React, Next.js, Node.js, TypeScript, Flutter, Figma
+- Typical timelines: business website 4–8 weeks; mobile app 10–16 weeks; others set in the proposal
+
+## Services
+
+- [Websites](https://skaylon.com/services/website-development): business websites, landing pages, CMS setup, redesigns and technical SEO
+- [Web Applications](https://skaylon.com/services/web-application-development): customer portals, dashboards, SaaS products and integrations
+- [Mobile Apps](https://skaylon.com/services/mobile-app-development): iOS and Android apps from one Flutter codebase, including store release
+- [Custom Software](https://skaylon.com/services/custom-software-development): internal business systems, workflow automation, reporting and MVPs
+- [UI/UX Design](https://skaylon.com/services/ui-ux-design): user research, flows, prototypes, Figma design systems and developer handoff
+- [Backend and API Systems](https://skaylon.com/services/backend-api-development): REST APIs, database design, authentication and third-party integrations
+
+## Company
+
+- [About](https://skaylon.com/about): who runs Skaylon and how it works
+- [Process](https://skaylon.com/process): the four project phases and what each delivers
+- [Contact](https://skaylon.com/contact): enquiry form, email, phone and WhatsApp
+
+## Policies
+
+- [Privacy Policy](https://skaylon.com/privacy)
+- [Terms and Conditions](https://skaylon.com/terms)
+- [Cookie Policy](https://skaylon.com/cookies)

@@ -5,45 +5,37 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { ButtonLink, Container } from "@/components/ui/primitives";
-import { isActive, primaryNav } from "@/lib/nav";
-import { lenisRef } from "@/scroll/lenis";
+import { isActive, primaryNav, type NavService } from "@/lib/nav";
+import { ServicesMenu } from "./ServicesMenu";
 
-export function Header() {
+export function Header({ services, phone }: { services: NavService[]; phone: string }) {
   const pathname = usePathname();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
 
   // Native modal <dialog>: focus trap, Escape to close and inert background for free.
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-    if (open && !dialog.open) {
-      dialog.showModal();
-      lenisRef.current?.stop();
-    } else if (!open && dialog.open) {
-      dialog.close();
-    }
-    if (!open) lenisRef.current?.start();
+    if (open && !dialog.open) dialog.showModal();
+    else if (!open && dialog.open) dialog.close();
   }, [open]);
 
   // Close when a link navigates.
-  useEffect(() => setOpen(false), [pathname]);
-
-  // Hide while scrolling down past the hero, show again on any scroll up.
-  // Written straight to data attributes: no re-renders while scrolling.
   useEffect(() => {
-    let last = window.scrollY;
+    setOpen(false);
+    setServicesOpen(false);
+  }, [pathname]);
+
+  // Border and solid background once the page has scrolled. Written straight
+  // to a data attribute: no re-renders while scrolling.
+  useEffect(() => {
     let raf = 0;
     const update = () => {
       raf = 0;
-      const y = window.scrollY;
-      const el = headerRef.current;
-      if (!el) return;
-      el.dataset.scrolled = y > 24 ? "true" : "false";
-      if (Math.abs(y - last) < 6) return;
-      el.dataset.hidden = y > last && y > 240 && !el.contains(document.activeElement) ? "true" : "false";
-      last = y;
+      if (headerRef.current) headerRef.current.dataset.scrolled = window.scrollY > 8 ? "true" : "false";
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -56,16 +48,24 @@ export function Header() {
     };
   }, []);
 
+  const tel = `tel:${phone.replace(/\s/g, "")}`;
+
   return (
-    <header ref={headerRef} className="site-header group/header fixed inset-x-0 top-0 z-50 pt-3 sm:pt-4">
+    <header
+      ref={headerRef}
+      className="site-header fixed inset-x-0 top-0 z-50 border-b border-transparent bg-paper/80 backdrop-blur-md transition-colors duration-200"
+    >
       <Container>
-        <div className="flex h-16 items-center justify-between rounded-full border border-transparent px-3 transition-[background-color,border-color,backdrop-filter] duration-700 ease-cinematic group-data-[scrolled=true]/header:border-chalk/[0.08] group-data-[scrolled=true]/header:bg-ink-900/60 group-data-[scrolled=true]/header:backdrop-blur-xl sm:px-4">
-          <Link href="/" aria-label="Skaylon — home" className="-m-1 rounded-full p-2">
+        <div className="flex h-16 items-center justify-between gap-4 sm:h-[4.5rem]">
+          <Link href="/" aria-label="Skaylon home" className="-m-1 rounded-md p-1">
             <Logo />
           </Link>
 
-          <nav aria-label="Primary" className="hidden md:block">
-            <ul className="flex items-center gap-1 text-sm">
+          <nav aria-label="Primary" className="hidden lg:block">
+            <ul className="flex items-center gap-1">
+              <li>
+                <ServicesMenu services={services} />
+              </li>
               {primaryNav.map((item) => {
                 const active = isActive(pathname, item.href);
                 return (
@@ -73,12 +73,9 @@ export function Header() {
                     <Link
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      className={`relative flex items-center gap-2 rounded-full px-4 py-2 transition-colors duration-500 hover:text-chalk ${active ? "text-chalk" : "text-chalk-muted"}`}
+                      className={`block rounded-md px-3 py-2 text-[0.95rem] hover:text-ink ${active ? "font-medium text-ink" : "text-ink-2"}`}
                     >
-                      {active && <span aria-hidden="true" className="h-1 w-1 rounded-full bg-cyan" />}
-                      <span className="roll" data-text={item.label}>
-                        <span>{item.label}</span>
-                      </span>
+                      {item.label}
                     </Link>
                   </li>
                 );
@@ -86,24 +83,27 @@ export function Header() {
             </ul>
           </nav>
 
-          <div className="hidden md:block">
-            <ButtonLink href="/contact" className="min-h-10 px-5" data-track="cta_click" data-track-label="header">
+          <div className="hidden items-center gap-4 lg:flex">
+            <a href={tel} className="text-sm text-ink-2 hover:text-ink hover:underline" data-track="phone_click" data-track-label="header">
+              {phone}
+            </a>
+            <ButtonLink href="/contact" className="min-h-11" data-track="cta_click" data-track-label="header">
               Start a project
             </ButtonLink>
           </div>
 
           <button
             type="button"
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-chalk/10 bg-ink-900/60 backdrop-blur-md md:hidden"
+            className="flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-line-strong bg-surface px-3 text-sm font-medium lg:hidden"
             aria-haspopup="dialog"
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen(true)}
           >
-            <span className="sr-only">Open menu</span>
-            <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22">
-              <path d="M4 9h16M4 15h10" stroke="currentColor" strokeWidth="1.4" />
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.6" />
             </svg>
+            Menu
           </button>
         </div>
       </Container>
@@ -111,45 +111,89 @@ export function Header() {
       <dialog
         id="mobile-menu"
         ref={dialogRef}
-        aria-label="Menu"
-        data-lenis-prevent
-        onClose={() => setOpen(false)}
-        className="menu m-0 h-dvh max-h-none w-full max-w-none bg-ink-950 p-0 text-chalk"
+        aria-label="Site menu"
+        onClose={() => {
+          setOpen(false);
+          setServicesOpen(false);
+        }}
+        className="sheet m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto overscroll-contain bg-paper p-0 text-ink"
       >
-        <Container className="flex h-full flex-col pb-10">
-          <div className="flex h-16 items-center justify-between pt-3 sm:pt-4">
-            <Logo />
+        <Container className="flex min-h-full flex-col pb-8">
+          <div className="flex h-16 items-center justify-between">
+            <Link href="/" aria-label="Skaylon home" onClick={() => setOpen(false)} className="-m-1 rounded-md p-1">
+              <Logo />
+            </Link>
             <button
               type="button"
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-chalk/10"
+              className="flex min-h-11 items-center justify-center gap-2 rounded-lg border border-line-strong bg-surface px-3 text-sm font-medium"
               onClick={() => setOpen(false)}
             >
-              <span className="sr-only">Close menu</span>
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22">
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.4" />
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20">
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.6" />
               </svg>
+              Close
             </button>
           </div>
-          <nav aria-label="Mobile" className="mt-14">
-            <ul className="space-y-1">
-              {[...primaryNav, { label: "Contact", href: "/contact" }].map((item, i) => (
-                <li key={item.href} className="menu-item" style={{ "--i": i } as React.CSSProperties}>
+
+          <nav aria-label="Mobile" className="mt-6">
+            <ul className="divide-y divide-line border-y hairline">
+              <li>
+                <button
+                  type="button"
+                  aria-expanded={servicesOpen}
+                  aria-controls="mobile-services"
+                  onClick={() => setServicesOpen((o) => !o)}
+                  className="flex w-full items-center justify-between py-4 text-left text-xl font-semibold"
+                >
+                  Services
+                  <svg aria-hidden="true" viewBox="0 0 12 12" width="14" height="14" className={`transition-transform duration-200 ${servicesOpen ? "rotate-180" : ""}`}>
+                    <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                </button>
+                <ul id="mobile-services" hidden={!servicesOpen} className="space-y-1 pb-4">
+                  {services.map((s) => (
+                    <li key={s.slug}>
+                      <Link
+                        href={`/services/${s.slug}`}
+                        aria-current={pathname === `/services/${s.slug}` ? "page" : undefined}
+                        onClick={() => setOpen(false)}
+                        className="block rounded-lg px-3 py-2.5 hover:bg-paper-2 aria-[current=page]:bg-accent-wash"
+                      >
+                        <span className="block font-medium">{s.name}</span>
+                        <span className="block text-sm text-ink-muted">{s.description}</span>
+                      </Link>
+                    </li>
+                  ))}
+                  <li>
+                    <Link href="/services" onClick={() => setOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-accent-ink underline">
+                      All services overview
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+              {[...primaryNav, { label: "Contact", href: "/contact" }].map((item) => (
+                <li key={item.href}>
                   <Link
                     href={item.href}
                     aria-current={isActive(pathname, item.href) ? "page" : undefined}
                     onClick={() => setOpen(false)}
-                    className="flex items-baseline gap-4 py-2 text-display font-medium aria-[current=page]:text-accent"
+                    className="block py-4 text-xl font-semibold aria-[current=page]:text-accent-ink"
                   >
-                    <span className="font-mono text-xs text-chalk-muted">{String(i + 1).padStart(2, "0")}</span>
                     {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
-          <p className="menu-item mt-auto font-mono text-xs text-chalk-muted uppercase" style={{ "--i": 6 } as React.CSSProperties}>
-            Software studio · Kasaragod, Kerala
-          </p>
+
+          <div className="mt-auto space-y-3 pt-8">
+            <ButtonLink href="/contact" className="w-full" onClick={() => setOpen(false)} data-track="cta_click" data-track-label="mobile-menu">
+              Start a project
+            </ButtonLink>
+            <a href={tel} className="flex min-h-12 w-full items-center justify-center rounded-lg border border-line-strong text-[0.95rem] font-medium" data-track="phone_click" data-track-label="mobile-menu">
+              Call {phone}
+            </a>
+          </div>
         </Container>
       </dialog>
     </header>

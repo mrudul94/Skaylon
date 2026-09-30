@@ -5,7 +5,12 @@ import { env, serverEnv } from "@/lib/env";
 /** Every Sanity-backed page carries this tag; the webhook revalidates it. */
 export const SANITY_TAG = "sanity";
 
-export const sanityConfigured = Boolean(env.NEXT_PUBLIC_SANITY_PROJECT_ID);
+/**
+ * CONTENT_SOURCE=seed (server-only, used by the e2e test build) serves the
+ * local seed even when a project id is configured, so tests don't depend on
+ * what the live dataset holds. Never set it in production.
+ */
+export const sanityConfigured = Boolean(env.NEXT_PUBLIC_SANITY_PROJECT_ID) && process.env.CONTENT_SOURCE !== "seed";
 
 let client: SanityClient | null = null;
 function getClient(): SanityClient {

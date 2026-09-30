@@ -1,47 +1,48 @@
 @import "tailwindcss";
-@import "lenis/dist/lenis.css";
 
 /* ------------------------------------------------------------------
    Design tokens
-   Palette: deep ink, cool chalk text, and an iris → cyan accent pair
-   that matches the iridescent 3D core. Contrast pairs are asserted by
-   scripts/verify-contrast.mts.
+   Light editorial palette: warm paper, near-black ink, one brand accent
+   (the orange from the logo mark). Text/background pairs are asserted
+   against WCAG AA by scripts/verify-contrast.mts, so change them there too.
 ------------------------------------------------------------------ */
 @theme {
-  --color-ink-950: #06070a;
-  --color-ink-900: #0b0d12;
-  --color-ink-800: #12151c;
-  --color-ink-700: #1c2029;
-  --color-ink-600: #2a2f3a;
-  --color-ink-500: #4a5060;
-  --color-chalk: #eef0f3;
-  --color-chalk-muted: #9ba2ae;
-  --color-accent: #a797ff;
-  --color-accent-soft: #c9c0ff;
-  --color-cyan: #62e4ff;
+  --color-paper: #faf8f4;
+  --color-paper-2: #f2eee7;
+  --color-surface: #ffffff;
+  --color-ink: #14161a;
+  --color-ink-2: #2b2f36;
+  --color-ink-muted: #525866;
+  --color-line: #e3ddd3;
+  --color-line-strong: #cfc7ba;
+  --color-field: #7d828c;
+  --color-accent: #d9764a;
+  --color-accent-ink: #a4441c;
+  --color-accent-wash: #fbeee6;
+  --color-success: #1f6f43;
+  --color-danger: #b42318;
 
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
 
-  --text-display-xl: clamp(3.1rem, 1.2rem + 7.4vw, 9.5rem);
-  --text-display-xl--line-height: 0.92;
-  --text-display-xl--letter-spacing: -0.045em;
-  --text-display: clamp(2.35rem, 1.3rem + 3.9vw, 5.25rem);
-  --text-display--line-height: 0.98;
-  --text-display--letter-spacing: -0.038em;
-  --text-title: clamp(1.5rem, 1.15rem + 1.3vw, 2.4rem);
-  --text-title--line-height: 1.1;
-  --text-title--letter-spacing: -0.025em;
-  --text-lead: clamp(1.075rem, 1rem + 0.4vw, 1.3rem);
-  --text-lead--line-height: 1.6;
-  --text-eyebrow: 0.72rem;
+  --text-display-xl: clamp(2.4rem, 1.5rem + 3.6vw, 4.6rem);
+  --text-display-xl--line-height: 1.04;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display: clamp(1.9rem, 1.4rem + 2vw, 3.1rem);
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.03em;
+  --text-title: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+  --text-title--line-height: 1.25;
+  --text-title--letter-spacing: -0.015em;
+  --text-lead: clamp(1.06rem, 1rem + 0.3vw, 1.22rem);
+  --text-lead--line-height: 1.65;
+  --text-eyebrow: 0.75rem;
   --text-eyebrow--line-height: 1.2;
-  --text-eyebrow--letter-spacing: 0.16em;
+  --text-eyebrow--letter-spacing: 0.14em;
 
-  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-snap: cubic-bezier(0.65, 0, 0.35, 1);
-  --container-page: 92rem;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --container-page: 76rem;
+  --container-prose: 44rem;
 }
 
 /* ------------------------------------------------------------------
@@ -49,156 +50,125 @@
 ------------------------------------------------------------------ */
 @layer base {
   html {
-    color-scheme: dark;
-    background: var(--color-ink-950);
-    color: var(--color-chalk);
+    color-scheme: light;
+    background: var(--color-paper);
+    color: var(--color-ink);
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
   }
 
-  /* Transparent on purpose: the fixed world layer sits at z-index -1, which
-     paints BELOW an opaque body background. The colour lives on <html>. */
   body {
-    background: transparent;
+    background: var(--color-paper);
     font-family: var(--font-sans);
     overflow-x: clip;
   }
 
   ::selection {
-    background: var(--color-accent);
-    color: var(--color-ink-950);
+    background: var(--color-accent-wash);
+    color: var(--color-ink);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-accent-ink);
     outline-offset: 3px;
     border-radius: 4px;
   }
 
-  /* Native smooth scrolling only when Lenis is off (reduced motion keeps it off). */
-  html:not(.lenis) {
-    scroll-behavior: auto;
+  a {
+    text-underline-offset: 0.18em;
+  }
+
+  /* Dark bands: the focus ring switches to the light accent to stay visible. */
+  :is(.dark-band, .cta-band, .dark-card) :focus-visible {
+    outline-color: var(--color-accent);
   }
 }
 
-/* ------------------------------------------------------------------
-   Atmosphere: the static stand-in behind content until the 3D world
-   mounts, and the permanent look for T0/reduced motion.
------------------------------------------------------------------- */
-.atmosphere {
-  position: fixed;
-  inset: 0;
+/* Page backdrop: a faint warm glow and a fine grid near the top of the page.
+   Pure CSS, painted once, no layout cost. */
+.backdrop {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 46rem;
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(45% 45% at 72% 40%, rgb(167 151 255 / 0.12), transparent 70%),
-    radial-gradient(35% 35% at 80% 60%, rgb(98 228 255 / 0.07), transparent 70%),
-    radial-gradient(80% 60% at 10% 100%, rgb(238 240 243 / 0.03), transparent 70%),
-    var(--color-ink-950);
+    radial-gradient(40rem 22rem at 85% 0%, rgb(217 118 74 / 0.12), transparent 70%),
+    radial-gradient(34rem 20rem at 5% 10%, rgb(20 22 26 / 0.05), transparent 70%);
 }
-
-/* Keeps text legible over the world: darkens the text side of the frame
-   (left on wide screens, bottom on tall ones), plus a soft edge vignette. */
-.world-scrim {
-  background:
-    linear-gradient(to top, rgb(6 7 10 / 0.9), rgb(6 7 10 / 0) 55%),
-    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(6 7 10 / 0.6));
-}
-@media (min-aspect-ratio: 6/5) {
-  .world-scrim {
-    background:
-      linear-gradient(to right, rgb(6 7 10 / 0.82), rgb(6 7 10 / 0.3) 45%, rgb(6 7 10 / 0) 68%),
-      radial-gradient(120% 90% at 62% 45%, transparent 55%, rgb(6 7 10 / 0.6));
-  }
-}
-
-/* Fine blueprint grid behind content; fades toward the edges. */
-.grid-lines {
-  position: fixed;
+.backdrop::after {
+  content: "";
+  position: absolute;
   inset: 0;
-  z-index: -1;
-  pointer-events: none;
   background-image:
-    linear-gradient(to right, rgb(238 240 243 / 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(238 240 243 / 0.035) 1px, transparent 1px);
-  background-size: 96px 96px;
-  mask-image: radial-gradient(80% 70% at 50% 40%, #000 20%, transparent 80%);
-}
-
-/* Film grain: a static SVG noise tile, never animated. */
-.grain {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    linear-gradient(to right, rgb(20 22 26 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(20 22 26 / 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(70% 70% at 60% 0%, #000 10%, transparent 75%);
 }
 
 /* Hairline rule used between sections and list rows. */
 .hairline {
-  border-color: rgb(238 240 243 / 0.09);
-}
-
-/* Iris → cyan gradient text (the accent word in headlines). */
-.text-gradient {
-  background: linear-gradient(100deg, var(--color-accent-soft) 0%, var(--color-accent) 40%, var(--color-cyan) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Accent word set in the serif italic. Slightly larger to match cap height. */
-.serif-accent {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  padding-right: 0.06em;
-}
-
-/* Frosted surface for cards and panels. */
-.glass {
-  background: linear-gradient(160deg, rgb(28 32 41 / 0.62), rgb(11 13 18 / 0.55));
-  border: 1px solid rgb(238 240 243 / 0.08);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-color: var(--color-line);
 }
 
 /* ------------------------------------------------------------------
-   Headline intro: words rise out of a mask on load. Pure CSS so it
-   starts with first paint (no JS wait); each word sets --i.
+   Reveal: content is visible by default (no JS, crawlers, reduced
+   motion). Reveal.tsx adds .reveal-armed only when it will animate, and
+   .is-visible once the element enters the viewport.
 ------------------------------------------------------------------ */
-.rise {
-  display: inline-block;
-  overflow: clip;
-  overflow-clip-margin: 0.2em;
-  vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+.reveal-armed {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 0.6s var(--ease-out);
 }
-.rise > span {
-  display: inline-block;
-  animation: rise 1.1s var(--ease-cinematic) both;
-  animation-delay: calc(80ms + var(--i, 0) * 70ms);
-}
-@keyframes rise {
-  from {
-    transform: translate3d(0, 105%, 0) rotate(4deg);
-  }
-  to {
-    transform: none;
-  }
+.reveal-armed.is-visible {
+  opacity: 1;
+  transform: none;
 }
 
-.fade-in {
-  animation: fade-in 1.2s var(--ease-cinematic) both;
-  animation-delay: var(--delay, 500ms);
+/* Staggered reveal: the container stays put and its items rise in turn.
+   Items are the direct children, or the children of a direct child marked
+   [data-stagger-target] (e.g. a CardGrid list inside the Reveal). */
+.reveal-armed[data-stagger] {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
-@keyframes fade-in {
+.reveal-armed[data-stagger] > :not([data-stagger-target]),
+.reveal-armed[data-stagger] > [data-stagger-target] > * {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+.reveal-armed[data-stagger].is-visible > :not([data-stagger-target]),
+.reveal-armed[data-stagger].is-visible > [data-stagger-target] > * {
+  opacity: 1;
+  transform: none;
+}
+:is(.reveal-armed[data-stagger], .reveal-armed[data-stagger] > [data-stagger-target]) > :nth-child(2) { transition-delay: 70ms; }
+:is(.reveal-armed[data-stagger], .reveal-armed[data-stagger] > [data-stagger-target]) > :nth-child(3) { transition-delay: 140ms; }
+:is(.reveal-armed[data-stagger], .reveal-armed[data-stagger] > [data-stagger-target]) > :nth-child(4) { transition-delay: 210ms; }
+:is(.reveal-armed[data-stagger], .reveal-armed[data-stagger] > [data-stagger-target]) > :nth-child(5) { transition-delay: 280ms; }
+:is(.reveal-armed[data-stagger], .reveal-armed[data-stagger] > [data-stagger-target]) > :nth-child(6) { transition-delay: 350ms; }
+:is(.reveal-armed[data-stagger], .reveal-armed[data-stagger] > [data-stagger-target]) > :nth-child(n + 7) { transition-delay: 420ms; }
+
+/* Hero entrance: first paint is already final for the h1 (the LCP element
+   never animates); the supporting lines fade up just after it. */
+.hero-in {
+  animation: hero-in 0.8s var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes hero-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 14px, 0);
+    transform: translate3d(0, 12px, 0);
   }
   to {
     opacity: 1;
@@ -206,152 +176,133 @@
   }
 }
 
-/* ------------------------------------------------------------------
-   Hover: text roll. The label slides up and its copy rolls in below.
-   Markup: <span class="roll" data-text="Label"><span>Label</span></span>
------------------------------------------------------------------- */
-.roll {
-  position: relative;
-  display: inline-flex;
-  overflow: hidden;
-  line-height: 1.25;
-}
-.roll > span,
-.roll::after {
-  transition: transform 0.55s var(--ease-cinematic);
-}
-.roll::after {
-  content: attr(data-text);
-  /* Empty alt text: the copy is decorative, keep it out of accessible names. */
-  content: attr(data-text) / "";
-  position: absolute;
-  inset: 0;
-  transform: translateY(100%);
-}
-:is(a, button):hover .roll > span,
-:is(a, button):focus-visible .roll > span {
-  transform: translateY(-100%);
-}
-:is(a, button):hover .roll::after,
-:is(a, button):focus-visible .roll::after {
-  transform: none;
-}
-
-/* Underline that draws in from the left on hover. */
-.link-draw {
-  background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0 1px;
-  transition: background-size 0.6s var(--ease-cinematic), color 0.4s;
-}
-.link-draw:hover,
-.link-draw:focus-visible {
-  background-position: 0 100%;
-  background-size: 100% 1px;
+/* Text inside decorative illustrations: generated content, so it is never
+   indexed or announced as page copy. */
+.gen-text::before {
+  content: attr(data-t);
+  content: attr(data-t) / "";
+  white-space: pre;
 }
 
 /* ------------------------------------------------------------------
-   Buttons: fill wipes up from the bottom, arrow loops through.
+   Illustration motion (ProductStack, ServiceVisual). Transform/opacity
+   only, composited; all of it stops under prefers-reduced-motion.
 ------------------------------------------------------------------ */
-.btn {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  transition: color 0.5s var(--ease-cinematic), border-color 0.5s var(--ease-cinematic), transform 0.5s var(--ease-cinematic);
+.ps-float-a {
+  animation: float 7s ease-in-out infinite;
 }
-.btn::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: -1;
-  background: var(--btn-fill);
-  transform: translateY(101%);
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  transition: transform 0.6s var(--ease-cinematic), border-radius 0.6s var(--ease-cinematic);
+.ps-float-b {
+  animation: float 8s ease-in-out -2.5s infinite;
 }
-.btn:hover::before,
-.btn:focus-visible::before {
-  transform: none;
-  border-radius: 0;
+.ps-float-c {
+  animation: float 9s ease-in-out -5s infinite;
 }
-.btn .btn-arrow {
-  position: relative;
-  display: inline-flex;
-  overflow: hidden;
-  width: 16px;
-  height: 16px;
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
 }
-.btn .btn-arrow > svg {
-  position: absolute;
-  inset: 0;
-  transition: transform 0.55s var(--ease-cinematic);
+.ps-bar {
+  transform-origin: bottom;
+  animation: bar-grow 1.1s var(--ease-out) both;
+  animation-delay: calc(300ms + var(--i, 0) * 70ms);
 }
-.btn .btn-arrow > svg + svg {
-  transform: translateX(-120%);
+@keyframes bar-grow {
+  from {
+    transform: scaleY(0.08);
+  }
+  to {
+    transform: none;
+  }
 }
-.btn:hover .btn-arrow > svg:first-child,
-.btn:focus-visible .btn-arrow > svg:first-child {
-  transform: translateX(120%);
+.ps-caret {
+  animation: caret 1.1s steps(1) infinite;
 }
-.btn:hover .btn-arrow > svg + svg,
-.btn:focus-visible .btn-arrow > svg + svg {
-  transform: none;
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
 }
-
-/* ------------------------------------------------------------------
-   Spotlight card: a soft light and a lit border follow the pointer.
-   Tilt.tsx sets --mx/--my (px) and --rx/--ry (deg).
------------------------------------------------------------------- */
-.spotlight {
-  position: relative;
-  isolation: isolate;
-  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.6s var(--ease-cinematic), border-color 0.5s;
-  transform-style: preserve-3d;
-}
-.spotlight[data-active] {
-  transition: transform 0.12s linear, border-color 0.5s;
-}
-.spotlight::before,
-.spotlight::after {
+.ps-pulse::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.5s;
+  background: inherit;
+  animation: pulse 2s var(--ease-out) infinite;
 }
-.spotlight::before {
-  z-index: -1;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(167 151 255 / 0.14), transparent 45%);
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
 }
-.spotlight::after {
-  padding: 1px;
-  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(98 228 255 / 0.7), rgb(167 151 255 / 0.35) 40%, transparent 70%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+.ps-glow {
+  animation: glow 6s ease-in-out infinite;
 }
-.spotlight:hover::before,
-.spotlight:hover::after,
-.spotlight:focus-within::before,
-.spotlight:focus-within::after {
-  opacity: 1;
+@keyframes glow {
+  50% {
+    transform: scale(0.94) rotate(4deg);
+  }
+}
+.ps-draw {
+  animation: dash 1.6s linear infinite;
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+.ps-cursor {
+  animation: cursor 5s var(--ease-out) infinite;
+}
+@keyframes cursor {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40% {
+    transform: translate3d(-40px, -30px, 0);
+  }
+  60% {
+    transform: translate3d(-40px, -30px, 0) scale(0.9);
+  }
+}
+.ps-row {
+  animation: row-in 0.6s var(--ease-out) both;
+  animation-delay: calc(400ms + var(--i, 0) * 220ms);
+}
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translate3d(-8px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-/* ------------------------------------------------------------------
-   Marquee: two identical tracks loop seamlessly; slows on hover.
------------------------------------------------------------------- */
+/* Tech marquee: two identical tracks loop; the second is aria-hidden. */
 .marquee {
-  --duration: 38s;
   display: flex;
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
 }
 .marquee-track {
   display: flex;
   flex-shrink: 0;
   min-width: 100%;
-  animation: marquee var(--duration) linear infinite;
+  justify-content: space-around;
+  animation: marquee 32s linear infinite;
 }
 .marquee:hover .marquee-track {
   animation-play-state: paused;
@@ -362,129 +313,97 @@
   }
 }
 
-/* Live status dot. */
-.pulse-dot {
-  position: relative;
-  width: 7px;
-  height: 7px;
-  border-radius: 9999px;
-  background: var(--color-cyan);
+/* Timeline line draws across when the process section scrolls in. */
+.tl-line {
+  transform-origin: left;
 }
-.pulse-dot::after {
+.reveal-armed .tl-line {
+  transform: scaleX(0);
+}
+.tl-line-y {
+  transform-origin: top;
+}
+.reveal-armed .tl-line-y {
+  transform: scaleY(0);
+}
+.reveal-armed.is-visible .tl-line {
+  transform: none;
+  transition: transform 1.4s var(--ease-out) 0.2s;
+}
+
+/* Service cards: icon fills and the arrow slides on hover/focus. */
+.service-card .service-icon {
+  transition:
+    background-color 0.25s,
+    color 0.25s,
+    transform 0.35s var(--ease-out);
+}
+.service-card:hover .service-icon,
+.service-card:focus-within .service-icon {
+  background: var(--color-accent-ink);
+  color: #fff;
+  transform: rotate(-6deg) scale(1.06);
+}
+.service-card .card-arrow {
+  transition: transform 0.25s var(--ease-out);
+}
+.service-card:hover .card-arrow,
+.service-card:focus-within .card-arrow {
+  transform: translateX(4px);
+}
+.service-card:hover,
+.service-card:focus-within {
+  transform: translate3d(0, -3px, 0);
+}
+
+/* Closing CTA band: a slow drifting glow over a fine grid. */
+.cta-band::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  background: inherit;
-  animation: pulse 2.2s var(--ease-cinematic) infinite;
-}
-@keyframes pulse {
-  from {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  to {
-    transform: scale(3.2);
-    opacity: 0;
-  }
-}
-
-/* Scroll cue: a line with a light travelling down it. */
-.scroll-cue {
-  position: relative;
-  width: 1px;
-  height: 56px;
-  overflow: hidden;
-  background: rgb(238 240 243 / 0.15);
-}
-.scroll-cue::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 1px;
-  height: 40%;
-  background: linear-gradient(to bottom, transparent, var(--color-chalk));
-  animation: cue 2s var(--ease-snap) infinite;
-}
-@keyframes cue {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(260%);
-  }
-}
-
-/* Oversized decorative chapter numeral. Generated content, so it is never
-   read out or measured as text (it is deliberately faint). */
-.numeral::before {
-  content: attr(data-numeral);
-  content: attr(data-numeral) / "";
-}
-
-/* Footer wordmark: letters lift one after another on hover. */
-.wordmark span {
-  display: inline-block;
-  transition: transform 0.7s var(--ease-cinematic), color 0.7s var(--ease-cinematic);
-  transition-delay: calc(var(--i, 0) * 35ms);
-}
-.wordmark:hover span {
-  transform: translateY(-9%);
-  color: rgb(167 151 255 / 0.28);
-}
-
-/* Header hides while scrolling down, returns on scroll up. */
-.site-header {
-  transition: transform 0.7s var(--ease-cinematic);
-}
-.site-header[data-hidden="true"] {
-  transform: translateY(-120%);
-}
-
-/* Custom cursor (fine pointers only; Cursor.tsx). */
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 80;
+  background-image:
+    linear-gradient(to right, rgb(250 248 244 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(250 248 244 / 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(80% 90% at 80% 20%, #000, transparent 75%);
   pointer-events: none;
-  width: 36px;
-  height: 36px;
-  margin: -18px 0 0 -18px;
-  border-radius: 9999px;
-  border: 1px solid rgb(238 240 243 / 0.5);
-  mix-blend-mode: difference;
-  transition: width 0.4s var(--ease-cinematic), height 0.4s var(--ease-cinematic), margin 0.4s var(--ease-cinematic),
-    background-color 0.4s, opacity 0.3s, border-color 0.4s;
-  opacity: 0;
 }
-.cursor[data-visible="true"] {
-  opacity: 1;
+.cta-glow {
+  animation: drift 14s ease-in-out infinite;
 }
-.cursor[data-hover="true"] {
-  width: 64px;
-  height: 64px;
-  margin: -32px 0 0 -32px;
-  background: rgb(238 240 243 / 0.95);
-  border-color: transparent;
+@keyframes drift {
+  50% {
+    transform: translate3d(-80px, 40px, 0) scale(1.15);
+  }
 }
-.cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 81;
-  pointer-events: none;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px 0 0 -2.5px;
-  border-radius: 9999px;
-  background: var(--color-chalk);
-  mix-blend-mode: difference;
-  opacity: 0;
-  transition: opacity 0.3s;
+
+/* Buttons: plain colour/border transitions only. */
+.btn {
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
-.cursor-dot[data-visible="true"] {
-  opacity: 1;
+.btn .btn-arrow {
+  transition: transform 0.25s var(--ease-out);
+}
+.btn:hover .btn-arrow,
+.btn:focus-visible .btn-arrow {
+  transform: translateX(3px);
+}
+
+/* Cards that are whole links: lift the border on hover/focus. */
+.card-link {
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s var(--ease-out);
+}
+.card-link:hover,
+.card-link:focus-within {
+  border-color: var(--color-line-strong);
+  box-shadow: 0 12px 32px -18px rgb(20 22 26 / 0.25);
 }
 
 /* Native <details> FAQ marker. */
@@ -494,20 +413,24 @@ details > summary {
 details > summary::-webkit-details-marker {
   display: none;
 }
+details[open] .faq-icon {
+  transform: rotate(45deg);
+}
 
-/* Mobile menu dialog. */
-dialog.menu::backdrop {
-  background: rgb(6 7 10 / 0.6);
-  backdrop-filter: blur(6px);
+/* Header gains a border once the page has scrolled. */
+.site-header[data-scrolled="true"] {
+  border-color: var(--color-line);
+  background: rgb(250 248 244 / 0.92);
 }
-dialog.menu[open] .menu-item {
-  animation: menu-in 0.8s var(--ease-cinematic) both;
-  animation-delay: calc(120ms + var(--i, 0) * 60ms);
+
+/* Services mega-menu panel. */
+.menu-panel {
+  animation: panel-in 0.18s var(--ease-out) both;
 }
-@keyframes menu-in {
+@keyframes panel-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 40px, 0);
+    transform: translate3d(0, -6px, 0);
   }
   to {
     opacity: 1;
@@ -515,7 +438,38 @@ dialog.menu[open] .menu-item {
   }
 }
 
+/* Dialogs (mobile menu, enquiry popup). */
+dialog::backdrop {
+  background: rgb(20 22 26 / 0.45);
+}
+dialog[open].sheet {
+  animation: sheet-in 0.25s var(--ease-out) both;
+}
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/* Sticky mobile CTA leaves room for itself at the end of the page. */
+@media (max-width: 767px) {
+  body[data-sticky-cta="true"] {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
@@ -524,10 +478,17 @@ dialog.menu[open] .menu-item {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .reveal-armed,
+  .reveal-armed[data-stagger] > *,
+  .reveal-armed[data-stagger] > [data-stagger-target] > *,
+  .reveal-armed .tl-line {
+    opacity: 1;
+    transform: none;
+  }
   .marquee-track {
     animation: none;
   }
-  .spotlight {
-    transform: none !important;
+  .marquee-track[aria-hidden="true"] {
+    display: none;
   }
 }

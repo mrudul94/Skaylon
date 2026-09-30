@@ -1,43 +1,33 @@
+import Link from "next/link";
 import type { Service } from "@/content/types";
-import { ServiceRowLink } from "./ServiceRowLink";
-import { ArrowUpRight } from "@/components/ui/primitives";
+import { Arrow } from "@/components/ui/primitives";
 import { Reveal } from "@/scroll/Reveal";
+import { ServiceIcon } from "./ServiceIcon";
 
-/**
- * Numbered, full-width rows. Hover: a tinted panel wipes in from the left,
- * the name slides, the arrow disc fills and turns, and the matching
- * satellite lights up in the 3D world.
- */
+/** Service cards; the whole card is one link (stretched from the heading). */
 export function ServiceList({ services, headingLevel = "h3" }: { services: Service[]; headingLevel?: "h2" | "h3" }) {
   const H = headingLevel;
   return (
-    <Reveal as="ul" stagger className="border-t border-chalk/[0.09]">
+    <Reveal as="ul" stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {services.map((service, i) => (
-        <li key={service.slug} className="border-b border-chalk/[0.09]" data-wedge={service.wedgeIndex}>
-          <ServiceRowLink
-            wedge={service.wedgeIndex}
-            href={`/services/${service.slug}`}
-            data-cursor=""
-            className="group relative isolate grid gap-3 overflow-hidden px-1 py-8 sm:grid-cols-[4.5rem_1.1fr_1.2fr_auto] sm:items-center sm:gap-8 sm:px-4 sm:py-10"
-          >
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 -z-10 origin-left scale-x-0 bg-gradient-to-r from-accent/[0.14] via-accent/[0.06] to-cyan/[0.02] transition-transform duration-700 ease-cinematic group-hover:scale-x-100 group-focus-visible:scale-x-100"
-            />
-            <span className="font-mono text-xs text-chalk-muted tabular-nums transition-colors duration-500 group-hover:text-cyan">
+        <li key={service.slug} className="service-card card-link group relative flex flex-col overflow-hidden rounded-xl border hairline bg-surface p-6">
+          {/* Accent rule that grows along the top edge on hover. */}
+          <span aria-hidden="true" className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100 group-focus-within:scale-x-100" />
+          <div className="flex items-start justify-between">
+            <ServiceIcon slug={service.slug} />
+            <span aria-hidden="true" className="font-mono text-sm text-ink-muted">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <H className="text-title font-medium transition-transform duration-700 ease-cinematic group-hover:translate-x-3">
+          </div>
+          <H className="mt-5 text-title font-semibold">
+            <Link href={`/services/${service.slug}`} className="after:absolute after:inset-0 after:rounded-xl">
               {service.name}
-            </H>
-            <p className="text-chalk-muted transition-colors duration-500 group-hover:text-chalk">{service.summary}</p>
-            <span
-              aria-hidden="true"
-              className="hidden h-12 w-12 items-center justify-center rounded-full border border-chalk/15 transition-all duration-700 ease-cinematic group-hover:rotate-45 group-hover:border-transparent group-hover:bg-chalk group-hover:text-ink-950 sm:flex"
-            >
-              <ArrowUpRight />
-            </span>
-          </ServiceRowLink>
+            </Link>
+          </H>
+          <p className="mt-3 flex-1 leading-relaxed text-ink-muted">{service.summary}</p>
+          <span aria-hidden="true" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-accent-ink">
+            Learn more <Arrow className="card-arrow" />
+          </span>
         </li>
       ))}
     </Reveal>

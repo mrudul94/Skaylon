@@ -1,7 +1,6 @@
 import type { LegalPage } from "@/content/types";
 import { PageHero } from "@/components/sections/PageHero";
 import { Container } from "@/components/ui/primitives";
-import { WorldPose } from "@/world/WorldPose";
 
 export function LegalDocument({ page }: { page: LegalPage }) {
   const updated = new Date(page.lastUpdated).toLocaleDateString("en-IN", {
@@ -12,18 +11,25 @@ export function LegalDocument({ page }: { page: LegalPage }) {
   });
   return (
     <>
-      <WorldPose pose="legal" />
-      <PageHero eyebrow="Legal" heading={page.title} sub={page.intro}>
-        <p className="mt-6 text-sm text-chalk-muted">
+      <PageHero
+        eyebrow="Legal"
+        heading={page.title}
+        sub={page.intro}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: page.title, href: `/${page.slug}` },
+        ]}
+      >
+        <p className="mt-5 text-sm text-ink-muted">
           Last updated <time dateTime={page.lastUpdated}>{updated}</time>
         </p>
       </PageHero>
-      <Container className="pb-28">
-        <div className="max-w-3xl space-y-14">
+      <Container className="pb-20">
+        <div className="max-w-prose space-y-10">
           {page.sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="text-title font-medium">{section.heading}</h2>
-              <div className="mt-5 space-y-4 leading-relaxed text-chalk-muted">
+              <h2 className="text-title font-semibold">{section.heading}</h2>
+              <div className="mt-3 space-y-4 leading-relaxed text-ink-2">
                 {section.body.map((p) => (
                   <p key={p}>{p}</p>
                 ))}
