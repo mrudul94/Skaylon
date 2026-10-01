@@ -84,7 +84,15 @@ export function Header({ services, phone }: { services: NavService[]; phone: str
           </nav>
 
           <div className="hidden items-center gap-4 lg:flex">
-            <a href={tel} className="text-sm text-ink-2 hover:text-ink hover:underline" data-track="phone_click" data-track-label="header">
+            <a
+              href={tel}
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border hairline bg-surface px-3.5 text-sm font-medium text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
+              data-track="phone_click"
+              data-track-label="header"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-accent-ink">
+                <path d="M5 4h3.5l1.8 4.4-2.2 1.4a11 11 0 0 0 6.1 6.1l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z" />
+              </svg>
               {phone}
             </a>
             <ButtonLink href="/contact" className="min-h-11" data-track="cta_click" data-track-label="header">

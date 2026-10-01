@@ -69,6 +69,25 @@ export function Arrow({ className }: { className?: string }) {
   );
 }
 
+/**
+ * Sets the first matching phrase in a heading in the brand accent, with a
+ * soft marker underline. The text content is unchanged, so search engines,
+ * AI tools and screen readers see the plain heading.
+ */
+export function AccentPhrase({ text, phrases }: { text: string; phrases: string[] }) {
+  const lower = text.toLowerCase();
+  const phrase = phrases.find((p) => lower.includes(p.toLowerCase()));
+  if (!phrase) return <>{text}</>;
+  const i = lower.indexOf(phrase.toLowerCase());
+  return (
+    <>
+      {text.slice(0, i)}
+      <span className="accent-phrase">{text.slice(i, i + phrase.length)}</span>
+      {text.slice(i + phrase.length)}
+    </>
+  );
+}
+
 export function Check({ className }: { className?: string }) {
   return (
     <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16" className={className}>
@@ -135,7 +154,7 @@ export function CardGrid({
         <li
           key={item.title}
           className={cx(
-            "card-link rounded-xl border hairline bg-surface p-6",
+            "card-link card-lift rounded-xl border hairline bg-surface p-6",
             columns === 3 && items.length === 5 && (i < 3 ? "lg:col-span-2" : "lg:col-span-3"),
           )}
         >

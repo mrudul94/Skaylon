@@ -9,9 +9,10 @@ import { ServiceList } from "@/components/sections/ServiceList";
 import { TechStrip } from "@/components/sections/TechStrip";
 import { ProductStack } from "@/components/visuals/ProductStack";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ButtonLink, CardGrid, Check, Container, SectionHeading, Summary } from "@/components/ui/primitives";
+import { AccentPhrase, ButtonLink, CardGrid, Check, Container, SectionHeading, Summary } from "@/components/ui/primitives";
 import { faqPage, webPage } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
+import { Tilt } from "@/components/visuals/Tilt";
 import { Reveal } from "@/scroll/Reveal";
 
 const TITLE = "Skaylon | Websites, Web Apps, Mobile Apps & Custom Software";
@@ -44,7 +45,7 @@ export default async function HomePage() {
             </p>
             {/* The LCP element: painted final on first frame, never animated. */}
             <h1 id="hero-heading" className="mt-6 text-[clamp(2.5rem,1.5rem+3.3vw,4.35rem)] leading-[1.03] font-semibold tracking-[-0.04em] text-balance">
-              {home.hero.heading}
+              <AccentPhrase text={home.hero.heading} phrases={["custom software", "growing businesses"]} />
             </h1>
             <p className="hero-in mt-6 max-w-xl text-lead text-ink-muted" style={{ "--d": "80ms" } as React.CSSProperties}>
               {home.hero.sub}
@@ -57,9 +58,9 @@ export default async function HomePage() {
                 Explore services
               </ButtonLink>
             </div>
-            <ul className="hero-in mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-2" style={{ "--d": "240ms" } as React.CSSProperties}>
+            <ul className="hero-in mt-8 flex flex-wrap gap-2 text-sm text-ink-2" style={{ "--d": "240ms" } as React.CSSProperties}>
               {["Founder-led projects", "Fixed-scope proposals", "You own the code"].map((t) => (
-                <li key={t} className="flex items-center gap-2">
+                <li key={t} className="inline-flex items-center gap-1.5 rounded-full border hairline bg-surface/80 px-3 py-1.5 shadow-[0_1px_2px_rgb(20_22_26/0.04)]">
                   <Check className="text-success" />
                   {t}
                 </li>
@@ -69,7 +70,9 @@ export default async function HomePage() {
 
           {/* Decorative: what we build, as stylised UI. Desktop and tablet only. */}
           <div className="hero-in hidden md:block" style={{ "--d": "200ms" } as React.CSSProperties}>
-            <ProductStack />
+            <Tilt>
+              <ProductStack />
+            </Tilt>
           </div>
         </Container>
       </section>
