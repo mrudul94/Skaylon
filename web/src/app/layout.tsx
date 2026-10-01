@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Analytics } from "@/components/layout/Analytics";
 import { ClickTracker } from "@/components/layout/ClickTracker";
 import { Header } from "@/components/layout/Header";
 import { StickyMobileCta } from "@/components/layout/StickyMobileCta";
 import { EnquiryPrompt } from "@/components/enquiry/EnquiryPrompt";
+import { PointerGlow } from "@/components/visuals/PointerGlow";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getServices, getSiteSettings } from "@/content";
 import { env } from "@/lib/env";
@@ -27,6 +28,16 @@ const geistMono = Geist_Mono({
   display: "swap",
   // Small labels only: don't compete with the hero's font during LCP.
   preload: false,
+});
+
+// Italic serif for accent words and figures (one weight, ~20 KB). Preloaded
+// because the home h1 uses it; the metric-matched fallback avoids layout shift.
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-instrument-serif",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -53,7 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const navServices = services.map((s) => ({ slug: s.slug, name: s.name, description: s.menuDescription }));
   const siteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   return (
-    <html lang="en-IN" className={`${geist.variable} ${geistMono.variable}`}>
+    <html lang="en-IN" className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}>
       <body className="min-h-svh antialiased">
         <JsonLd data={[organization(site, services), website(site)]} />
         <a
@@ -62,6 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           Skip to content
         </a>
+        <div className="scroll-progress" aria-hidden="true" />
         <Header services={navServices} phone={site.phone} />
         <main id="main" tabIndex={-1} className="relative outline-none">
           {children}
@@ -69,6 +81,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Footer />
         <StickyMobileCta phone={site.phone} />
         {siteKey && <EnquiryPrompt siteKey={siteKey} />}
+        <PointerGlow />
         <ClickTracker />
         <Analytics />
       </body>

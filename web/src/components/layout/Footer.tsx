@@ -12,7 +12,7 @@ export async function Footer() {
   const [site, services] = await Promise.all([getSiteSettings(), getServices()]);
 
   return (
-    <footer className="border-t hairline bg-paper-2 pt-14 pb-8">
+    <footer className="overflow-hidden border-t hairline bg-paper-2 pt-14">
       <Container>
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
@@ -96,6 +96,9 @@ export async function Footer() {
           </ul>
         </div>
       </Container>
+          <div aria-hidden="true" className="footer-wordmark mt-12 select-none">
+        <span data-t="Skaylon" className="gen-text" />
+      </div>
     </footer>
   );
 }

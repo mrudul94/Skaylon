@@ -31,7 +31,7 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
 }
 
 const buttonStyles = {
-  primary: "bg-ink text-paper hover:bg-ink-2 border border-ink",
+  primary: "btn-sheen bg-ink text-paper hover:bg-ink-2 border border-ink",
   secondary: "border border-line-strong bg-surface text-ink hover:border-ink",
   accent: "bg-accent-ink text-white hover:bg-[#8a3814] border border-accent-ink",
 } as const;
@@ -154,7 +154,7 @@ export function CardGrid({
         <li
           key={item.title}
           className={cx(
-            "card-link card-lift rounded-xl border hairline bg-surface p-6",
+            "spot card-link card-lift rounded-xl border hairline bg-surface p-6",
             columns === 3 && items.length === 5 && (i < 3 ? "lg:col-span-2" : "lg:col-span-3"),
           )}
         >

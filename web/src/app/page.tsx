@@ -7,6 +7,7 @@ import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
 import { ProjectGrid } from "@/components/sections/ProjectGrid";
 import { ServiceList } from "@/components/sections/ServiceList";
 import { TechStrip } from "@/components/sections/TechStrip";
+import { FactsBand } from "@/components/sections/FactsBand";
 import { ProductStack } from "@/components/visuals/ProductStack";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AccentPhrase, ButtonLink, CardGrid, Check, Container, SectionHeading, Summary } from "@/components/ui/primitives";
@@ -37,6 +38,8 @@ export default async function HomePage() {
       {/* ------------------------------------------------ hero */}
       <section aria-labelledby="hero-heading" className="relative overflow-hidden pt-28 pb-14 sm:pt-36 sm:pb-20">
         <div className="backdrop" aria-hidden="true" />
+        <div className="aurora" aria-hidden="true" />
+        <div className="grain" aria-hidden="true" />
         <Container className="grid items-center gap-12 lg:grid-cols-[1.55fr_1fr] xl:gap-12">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border hairline bg-surface px-3 py-1.5 text-sm text-ink-2">
@@ -95,6 +98,8 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+
+      <FactsBand services={services.length} phases={process.phases.length} />
 
       {/* ------------------------------------------------ who we help */}
       <section aria-labelledby="audience-heading" className="border-y hairline bg-paper-2 py-16 sm:py-24">

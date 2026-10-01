@@ -34,7 +34,7 @@ export function ServiceList({
         return (
           <li
             key={service.slug}
-            className="service-card card-link card-lift group relative flex flex-col overflow-hidden rounded-xl border hairline bg-surface p-6"
+            className="spot service-card card-link card-lift group relative flex flex-col overflow-hidden rounded-xl border hairline bg-surface p-6"
           >
             {/* Accent rule that grows along the top edge on hover. */}
             <span
