@@ -5,6 +5,12 @@ import { expect, test, type Page } from "@playwright/test";
 // engagement delays don't make the suite slow.
 test.describe.configure({ mode: "serial" });
 
+// A cookie choice already made, so the consent banner (which the pop-up
+// deliberately waits for) is closed.
+test.beforeEach(async ({ context }) => {
+  await context.addCookies([{ name: "skaylon_consent", value: "1%3Adenied", url: "http://127.0.0.1:3100" }]);
+});
+
 async function engageAndExit(page: Page) {
   // Listeners attach after hydration: engagement before that isn't seen.
   // (Not "networkidle": Turnstile keeps a connection busy on some pages.)

@@ -14,18 +14,18 @@ export function ProcessTimeline({ phases }: { phases: ProcessPhase[] }) {
           {/* Vertical connector between phases (phones and tablets). */}
           {i < phases.length - 1 && (
             <span aria-hidden="true" className="absolute top-9 -bottom-8 left-4 w-px bg-paper/15 lg:hidden">
-              <span className="tl-line tl-line-y block h-full w-full bg-gradient-to-b from-accent to-accent/30" />
+              <span className="tl-line tl-line-y block h-full w-full bg-gradient-to-b from-accent-light to-accent-light/30" />
             </span>
           )}
           {/* Connector: a segment from this dot to the next (desktop). */}
           {i < phases.length - 1 && (
             <span aria-hidden="true" className="absolute top-[0.9rem] left-8 hidden h-px w-[calc(100%-0.5rem)] bg-paper/15 lg:block">
-              <span className="tl-line block h-full w-full bg-gradient-to-r from-accent to-accent/40" />
+              <span className="tl-line block h-full w-full bg-gradient-to-r from-accent-light to-accent-light/40" />
             </span>
           )}
           <span
             aria-hidden="true"
-            className="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-full border border-accent/60 bg-ink font-mono text-xs text-accent"
+            className="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-full border border-accent-light/60 bg-ink font-mono text-xs text-accent-light"
           >
             {phase.number}
           </span>

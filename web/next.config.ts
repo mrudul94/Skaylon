@@ -3,6 +3,9 @@ import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import { legacyRedirects, securityHeaders } from "./src/lib/security-headers";
 
 const nextConfig: NextConfig = {
+  // Test/preview builds can use their own folder (NEXT_DIST_DIR=.next-test)
+  // so they never overwrite a running `next dev` in .next.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   reactStrictMode: true,
   poweredByHeader: false,
   experimental: {

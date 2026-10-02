@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { CmsImage } from "@/components/ui/CmsImage";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, getProjects, getServices } from "@/content";
@@ -68,7 +68,7 @@ export default async function ProjectPage({ params }: Props) {
 
       <Container>
         <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-paper-2">
-          <Image
+          <CmsImage
             src={project.cover.url}
             alt={project.cover.alt}
             fill
@@ -135,7 +135,7 @@ export default async function ProjectPage({ params }: Props) {
           <ul className="grid gap-8 py-16 md:grid-cols-2">
             {project.gallery.map((img) => (
               <li key={img.url} className="relative aspect-[4/3] overflow-hidden rounded-xl bg-paper-2">
-                <Image src={img.url} alt={img.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+                <CmsImage src={img.url} alt={img.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
               </li>
             ))}
           </ul>

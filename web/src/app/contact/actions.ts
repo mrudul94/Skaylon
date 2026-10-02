@@ -1,9 +1,10 @@
 "use server";
 
 import { headers } from "next/headers";
-import { buildEnquiryEmail } from "@/lib/contact-email";
+import { buildConfirmationEmail, buildEnquiryEmail } from "@/lib/contact-email";
+import { getSiteSettings } from "@/content";
 import { botSignals, contactSchema, fieldErrors, type ContactState } from "@/lib/contact-schema";
-import { serverEnv } from "@/lib/env";
+import { env, serverEnv } from "@/lib/env";
 import { allowSubmission } from "@/lib/rate-limit";
 import { sendEmail } from "@/lib/resend";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -81,6 +82,24 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
   if (!sent.ok) {
     console.error(`[contact] Resend failed with status ${sent.status}`);
     return { status: "error", message: `Your message couldn't be sent just now. ${FALLBACK}`, values };
+  }
+
+  // 6. Optional acknowledgement to the visitor. Best effort: the enquiry has
+  //    already reached the team, so a failure here never fails the form.
+  if (cfg.CONTACT_CONFIRMATION === "1") {
+    const site = await getSiteSettings();
+    const ack = buildConfirmationEmail({ siteName: site.name, teamEmail: cfg.CONTACT_TO_EMAIL!, phone: site.phone, siteUrl: env.NEXT_PUBLIC_SITE_URL });
+    const acked = await sendEmail({
+      apiKey: cfg.RESEND_API_KEY!,
+      from: cfg.CONTACT_FROM_EMAIL!,
+      to: parsed.data.email,
+      replyTo: ack.replyTo,
+      subject: ack.subject,
+      text: ack.text,
+      html: ack.html,
+      idempotencyKey: await sha256(`ack|${parsed.data.email}|${raw.startedAt}`),
+    }).catch(() => ({ ok: false as const, status: 0 }));
+    if (!acked.ok) console.error(`[contact] confirmation email failed with status ${acked.status}`);
   }
   return { status: "success" };
 }

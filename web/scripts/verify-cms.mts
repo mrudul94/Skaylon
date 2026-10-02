@@ -38,7 +38,12 @@ const same = (name: string, got: unknown, want: unknown) => {
   check(name, !d, d);
 };
 
-same("siteSettings", await client.fetch(q.SITE_SETTINGS), siteSettings);
+{
+  const { founderPhoto, ...seedSite } = siteSettings;
+  const cmsSite = await client.fetch(q.SITE_SETTINGS);
+  const localOnly = founderPhoto?.url.startsWith("/") && !cmsSite?.founderPhoto;
+  same("siteSettings", cmsSite, localOnly ? seedSite : siteSettings);
+}
 
 same("homePage", await client.fetch(q.HOME_PAGE), homePage);
 

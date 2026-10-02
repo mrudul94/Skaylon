@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/primitives";
 import { companyNav, legalNav } from "@/lib/nav";
 import { SocialLinks } from "./SocialLinks";
 import { Year } from "./Year";
+import { CookieSettingsButton } from "./CookieConsent";
 
 const linkClass = "text-ink-2 hover:text-ink hover:underline";
 
@@ -93,11 +94,17 @@ export async function Footer() {
                 </Link>
               </li>
             ))}
+              <li>
+                <CookieSettingsButton className={`${linkClass} cursor-pointer`} />
+              </li>
           </ul>
         </div>
       </Container>
           <div aria-hidden="true" className="footer-wordmark mt-12 select-none">
-        <span data-t="Skaylon" className="gen-text" />
+        {/* One generated-content letter each, so the hover wave can stagger. */}
+        {"Skaylon".split("").map((c, i) => (
+          <span key={i} data-t={c} className="wm-letter gen-text" style={{ "--i": i } as React.CSSProperties} />
+        ))}
       </div>
     </footer>
   );

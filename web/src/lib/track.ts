@@ -1,5 +1,7 @@
 "use client";
 
+import { analyticsAllowed } from "./consent";
+
 export type TrackEvent =
   | "cta_click"
   | "contact_submitted"
@@ -14,8 +16,10 @@ export type TrackEvent =
 /**
  * First-party, cookieless conversion events → /api/event → Workers Analytics
  * Engine. sendBeacon survives navigation; nothing identifies the visitor.
+ * Sent only after the visitor accepts analytics in the cookie banner.
  */
 export function track(name: TrackEvent, label?: string) {
+  if (!analyticsAllowed()) return;
   try {
     const body = JSON.stringify({ name, label, path: location.pathname });
     if (!navigator.sendBeacon?.("/api/event", new Blob([body], { type: "application/json" }))) {

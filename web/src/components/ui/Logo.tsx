@@ -1,13 +1,20 @@
-/** Wordmark with the brand glyph (the same mark as app/icon.svg). Decorative: the parent link carries the name. */
-export function Logo({ className }: { className?: string }) {
+/**
+ * The Skaylon logo (swoosh mark + wordmark), from brand/skaylon-logo.png via
+ * scripts/render-brand-assets.mjs. Rendered as an <img> with alt "Skaylon",
+ * so the name is still read by screen readers and search engines.
+ */
+export function Logo({ className, priority = false }: { className?: string; priority?: boolean }) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className ?? ""}`}>
-      <svg aria-hidden="true" viewBox="0 0 32 32" width="28" height="28">
-        <rect width="32" height="32" rx="6" fill="#14161a" />
-        <path d="M10 4h12v11.5L10 18.5z" fill="#ece8e1" />
-        <path d="M10 20.6l12-3V28H10z" fill="#d9764a" />
-      </svg>
-      <span className="text-[1.1rem] font-semibold tracking-[-0.02em]">Skaylon</span>
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/logo.webp"
+      srcSet="/logo.webp 1x, /logo@2x.webp 2x"
+      alt="Skaylon"
+      width={149}
+      height={33}
+      decoding="async"
+      fetchPriority={priority ? "high" : undefined}
+      className={`h-[33px] w-auto ${className ?? ""}`}
+    />
   );
 }

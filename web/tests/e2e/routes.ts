@@ -21,6 +21,8 @@ export const routes: string[] = [
 export const SUPPRESS_POPUP = () => {
   try {
     localStorage.setItem("skaylon:enquiry-popup-dismissed", String(Date.now()));
+    // A consent choice already made, so the cookie banner stays closed.
+    document.cookie = "skaylon_consent=1%3Adenied; Path=/";
   } catch {
     // ignore
   }

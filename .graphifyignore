@@ -4,3 +4,11 @@ web/cloudflare-env.d.ts
 # generated from src/app/icon.svg by scripts/render-brand-assets.mjs
 web/public/icon-*.png
 web/src/app/apple-icon.png
+
+# Brand source files and generated web images (photos, icon renders): no
+# structure for the graph. The OG card is kept: it carries the site message.
+web/brand/
+web/public/*.webp
+web/src/app/icon.png
+web/src/app/favicon.ico
+web/src/app/apple-icon.png

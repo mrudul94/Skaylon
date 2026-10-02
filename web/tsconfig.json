@@ -23,6 +23,6 @@
     },
     "types": ["node"]
   },
-  "include": ["next-env.d.ts", "cloudflare-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mts", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "cloudflare-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mts", ".next/types/**/*.ts", ".next-test/types/**/*.ts"],
   "exclude": ["node_modules", ".open-next", ".wrangler"]
 }

@@ -39,7 +39,7 @@ const pairs: [string, string, number, string][] = [
   ["danger", "surface", 4.5, "form error text"],
   ["success", "paper", 4.5, "success status text"],
   ["accent-ink", "paper", 3, "focus ring (non-text, 1.4.11)"],
-  ["accent", "ink", 4.5, "eyebrows, step numbers and focus ring on dark bands"],
+  ["accent-light", "ink", 4.5, "eyebrows, step numbers, figures and focus ring on dark bands"],
   ["field", "surface", 3, "form field borders (non-text, 1.4.11)"],
   ["field", "paper", 3, "form field borders on the page background"],
 ];

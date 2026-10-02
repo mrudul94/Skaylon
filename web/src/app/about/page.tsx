@@ -1,5 +1,5 @@
 import { getAboutPage, getSiteSettings } from "@/content";
-import { FounderCard } from "@/components/sections/FounderCard";
+import { FounderBanner } from "@/components/sections/FounderBanner";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { PageHero } from "@/components/sections/PageHero";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -42,18 +42,7 @@ export default async function AboutPage() {
       {about.quote && (
         <section aria-label="Founder's principle" className="py-10">
           <Container>
-            <figure className="cta-band relative overflow-hidden rounded-2xl bg-ink px-6 py-12 text-paper sm:px-14 sm:py-16">
-              <div aria-hidden="true" className="cta-glow pointer-events-none absolute -right-20 -bottom-32 h-80 w-80 rounded-full bg-accent/30 blur-3xl" />
-              <span aria-hidden="true" className="relative block font-serif text-7xl leading-none text-accent">
-                &ldquo;
-              </span>
-              <blockquote className="relative max-w-3xl text-display font-semibold text-balance">
-                <p>{about.quote}</p>
-              </blockquote>
-              <figcaption className="relative mt-8">
-                <FounderCard site={site} tone="dark" />
-              </figcaption>
-            </figure>
+            <FounderBanner site={site} quote={about.quote} />
           </Container>
         </section>
       )}

@@ -5,6 +5,8 @@ import { Analytics } from "@/components/layout/Analytics";
 import { ClickTracker } from "@/components/layout/ClickTracker";
 import { Header } from "@/components/layout/Header";
 import { StickyMobileCta } from "@/components/layout/StickyMobileCta";
+import { CookieConsent } from "@/components/layout/CookieConsent";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { EnquiryPrompt } from "@/components/enquiry/EnquiryPrompt";
 import { PointerGlow } from "@/components/visuals/PointerGlow";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -55,7 +57,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f4",
+  themeColor: "#f7f8fb",
   colorScheme: "light",
 };
 
@@ -80,10 +82,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </main>
         <Footer />
         <StickyMobileCta phone={site.phone} />
+        <WhatsAppButton number={site.whatsapp} />
         {siteKey && <EnquiryPrompt siteKey={siteKey} />}
         <PointerGlow />
         <ClickTracker />
-        <Analytics />
+        <Analytics token={env.NEXT_PUBLIC_CF_BEACON_TOKEN} />
+        <CookieConsent />
       </body>
     </html>
   );

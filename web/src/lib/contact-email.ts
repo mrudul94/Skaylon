@@ -47,3 +47,32 @@ export function buildEnquiryEmail(input: ContactInput, meta: { receivedAt: strin
 
   return { subject, text, html, replyTo: oneLine(input.email) };
 }
+
+/**
+ * The acknowledgement sent to the visitor. Deliberately generic: it repeats
+ * nothing the visitor typed (no name, message or company), so the form can't
+ * be abused to deliver attacker-written text to someone else's inbox.
+ */
+export function buildConfirmationEmail(meta: { siteName: string; teamEmail: string; phone: string; siteUrl: string }) {
+  const subject = `We received your enquiry | ${meta.siteName}`;
+  const lines = [
+    "Hello,",
+    "",
+    `Thank you for contacting ${meta.siteName}. Your project enquiry has reached us, and we reply to every enquiry within one to two working days, usually to arrange a short call.`,
+    "",
+    `If it's urgent, reply to this email or call ${meta.phone}.`,
+    "",
+    `${meta.siteName}`,
+    meta.siteUrl,
+    "",
+    "You are receiving this because this email address was entered in the enquiry form on our website. If that wasn't you, you can ignore this message.",
+  ];
+  const html = `<!doctype html><html><body style="font-family:system-ui,sans-serif;color:#0a1435;line-height:1.6;max-width:560px">
+<p>Hello,</p>
+<p>Thank you for contacting ${escapeHtml(meta.siteName)}. Your project enquiry has reached us, and we reply to every enquiry within one to two working days, usually to arrange a short call.</p>
+<p>If it&#39;s urgent, reply to this email or call ${escapeHtml(meta.phone)}.</p>
+<p style="margin-top:24px">${escapeHtml(meta.siteName)}<br><a href="${escapeHtml(meta.siteUrl)}" style="color:#0052cc">${escapeHtml(meta.siteUrl.replace(/^https?:\/\//, ""))}</a></p>
+<p style="color:#4f5875;font-size:12px;margin-top:24px">You are receiving this because this email address was entered in the enquiry form on our website. If that wasn&#39;t you, you can ignore this message.</p>
+</body></html>`;
+  return { subject, text: lines.join("\n"), html, replyTo: meta.teamEmail };
+}

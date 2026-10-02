@@ -1,74 +1,132 @@
 /**
- * render-brand-assets — regenerates the raster brand assets from SVG with
- * sharp: PNG app icons (manifest + Apple touch icon) from src/app/icon.svg,
- * and the default Open Graph image (1200×630 JPEG).
+ * render-brand-assets — regenerates every raster brand asset with sharp from
+ * the sources in brand/:
+ *
+ *   brand/skaylon-logo.png       logo (swoosh mark + wordmark, transparent)
+ *   brand/founder-studio.png     founder portrait (studio)
+ *   brand/founder-corridor.png   founder photo for the About banner
+ *
+ * Outputs: header/footer logo, favicon.ico + app icons (from the swoosh mark),
+ * manifest icons, founder photos and the default Open Graph image.
  *
  *   npm run brand-assets
  *
- * Run it after changing the logo, the palette or the OG wording; commit the
- * output. Text is rendered with the machine's system sans-serif font.
+ * Run after changing a source image, the palette or the OG wording; commit
+ * the output. OG text uses the machine's system sans-serif font.
  */
-import { readFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import sharp from "sharp";
 
 const root = new URL("../", import.meta.url);
 const out = (p) => new URL(p, root).pathname.replace(/^\/([A-Za-z]:)/, "$1");
-const iconSvg = readFileSync(new URL("src/app/icon.svg", root));
+const src = (p) => out(`brand/${p}`);
 
-const icons = [
-  ["public/icon-192.png", 192],
-  ["public/icon-512.png", 512],
-  ["src/app/apple-icon.png", 180],
-];
-for (const [path, size] of icons) {
-  await sharp(iconSvg, { density: 1200 }).resize(size, size).png({ compressionLevel: 9 }).toFile(out(path));
-  console.log(`wrote ${path} (${size}×${size})`);
+// Palette (keep in sync with the @theme tokens in src/app/globals.css).
+const NAVY = "#0a1435";
+const BLUE = "#0068fd";
+const BLUE_INK = "#0052cc";
+const PAPER = "#f7f8fb";
+const LINE = "#e0e5ee";
+const MUTED = "#4f5875";
+
+const logo = src("skaylon-logo.png");
+const trimmed = await sharp(logo).trim({ threshold: 10 }).png().toBuffer();
+const { width: lw, height: lh } = await sharp(trimmed).metadata();
+
+// Logo for the header/footer: 33 px tall (1x) and 66 px (2x).
+for (const [file, h] of [["public/logo.webp", 33], ["public/logo@2x.webp", 66]]) {
+  await sharp(trimmed).resize({ height: h }).webp({ quality: 92, alphaQuality: 100 }).toFile(out(file));
+  console.log(`wrote ${file} (h ${h})`);
 }
 
-// Maskable: the glyph inside the 80% safe zone on a full-bleed background.
-const maskable = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#14161a"/>
-  <g transform="translate(96 96) scale(10)">
-    <path d="M10 4h12v11.5L10 18.5z" fill="#ece8e1"/>
-    <path d="M10 20.6l12-3V28H10z" fill="#d9764a"/>
-  </g>
-</svg>`;
-await sharp(Buffer.from(maskable)).png({ compressionLevel: 9 }).toFile(out("public/icon-512-maskable.png"));
-console.log("wrote public/icon-512-maskable.png (512×512, maskable)");
+// The swoosh mark: the left part of the logo, up to the gap before the "S".
+const markWidth = Math.round(lw * 0.235);
+const mark = await sharp(trimmed).extract({ left: 0, top: 0, width: markWidth, height: lh }).trim({ threshold: 10 }).png().toBuffer();
 
+/** The mark centred on a white rounded tile (visible on light and dark tabs). */
+async function tile(size, { padding = 0.14, radius = 0.22, bleed = false } = {}) {
+  const inner = Math.round(size * (1 - padding * 2));
+  const markPng = await sharp(mark).resize(inner, inner, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
+  const r = bleed ? 0 : Math.round(size * radius);
+  const bg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${r}" fill="#ffffff"/></svg>`);
+  return sharp(bg).composite([{ input: markPng, gravity: "center" }]).png({ compressionLevel: 9, palette: true, quality: 90, effort: 10 }).toBuffer();
+}
+
+for (const [file, size, opts] of [
+  ["src/app/icon.png", 512, {}],
+  ["src/app/apple-icon.png", 180, { radius: 0 }],
+  ["public/icon-192.png", 192, {}],
+  ["public/icon-512.png", 512, {}],
+  ["public/icon-512-maskable.png", 512, { padding: 0.22, bleed: true }],
+]) {
+  writeFileSync(out(file), await tile(size, opts));
+  console.log(`wrote ${file} (${size}×${size})`);
+}
+
+// favicon.ico with 16, 32 and 48 px PNG entries (the ICO container is tiny).
+{
+  const sizes = [16, 32, 48];
+  const pngs = await Promise.all(sizes.map((s) => tile(s, { padding: 0.06, radius: 0.18 })));
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(sizes.length, 4);
+  let offset = 6 + 16 * sizes.length;
+  const entries = sizes.map((s, i) => {
+    const e = Buffer.alloc(16);
+    e.writeUInt8(s, 0);
+    e.writeUInt8(s, 1);
+    e.writeUInt16LE(1, 4);
+    e.writeUInt16LE(32, 6);
+    e.writeUInt32LE(pngs[i].length, 8);
+    e.writeUInt32LE(offset, 12);
+    offset += pngs[i].length;
+    return e;
+  });
+  writeFileSync(out("src/app/favicon.ico"), Buffer.concat([header, ...entries, ...pngs]));
+  console.log("wrote src/app/favicon.ico (16, 32, 48)");
+}
+
+// Founder photos.
+await sharp(src("founder-studio.png")).extract({ left: 122, top: 30, width: 900, height: 900 }).resize(480, 480).webp({ quality: 80 }).toFile(out("public/founder-480.webp"));
+for (const w of [1600, 960]) {
+  await sharp(src("founder-corridor.png")).resize(w).grayscale().linear(1.08, -6).webp({ quality: 82 }).toFile(out(`public/founder-wide-${w}.webp`));
+}
+await sharp(src("founder-corridor.png")).extract({ left: 560, top: 0, width: 820, height: 823 }).resize(720).grayscale().linear(1.08, -6).webp({ quality: 82 }).toFile(out("public/founder-portrait-720.webp"));
+console.log("wrote founder photos");
+
+// Default Open Graph image.
 const font = "Segoe UI, Helvetica Neue, Arial, sans-serif";
 const services = ["Websites", "Web Applications", "Mobile Apps", "Custom Software", "UI/UX Design", "Backend &amp; APIs"];
-const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <radialGradient id="glow" cx="1" cy="0" r="0.9">
-      <stop offset="0" stop-color="#d9764a" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#d9764a" stop-opacity="0"/>
+      <stop offset="0" stop-color="${BLUE}" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="${BLUE}" stop-opacity="0"/>
     </radialGradient>
     <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-      <path d="M48 0H0V48" fill="none" stroke="#14161a" stroke-opacity="0.06"/>
+      <path d="M48 0H0V48" fill="none" stroke="${NAVY}" stroke-opacity="0.06"/>
     </pattern>
   </defs>
-  <rect width="1200" height="630" fill="#faf8f4"/>
+  <rect width="1200" height="630" fill="${PAPER}"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
   <rect width="1200" height="630" fill="url(#glow)"/>
-  <g transform="translate(80 72) scale(2)">
-    <rect width="32" height="32" rx="6" fill="#14161a"/>
-    <path d="M10 4h12v11.5L10 18.5z" fill="#ece8e1"/>
-    <path d="M10 20.6l12-3V28H10z" fill="#d9764a"/>
-  </g>
-  <text x="160" y="118" font-family="${font}" font-size="40" font-weight="700" fill="#14161a" letter-spacing="-1">Skaylon</text>
-  <text x="80" y="270" font-family="${font}" font-size="68" font-weight="700" fill="#14161a" letter-spacing="-2">Websites, apps and custom</text>
-  <text x="80" y="350" font-family="${font}" font-size="68" font-weight="700" fill="#14161a" letter-spacing="-2">software for growing businesses</text>
-  <text x="80" y="420" font-family="${font}" font-size="28" fill="#525866">Founder-led software studio · Kerala, India · skaylon.com</text>
-  <g font-family="${font}" font-size="22" fill="#2b2f36">
+  <text x="80" y="270" font-family="${font}" font-size="68" font-weight="700" fill="${NAVY}" letter-spacing="-2">Websites, apps and custom</text>
+  <text x="80" y="350" font-family="${font}" font-size="68" font-weight="700" fill="${NAVY}" letter-spacing="-2">software for growing businesses</text>
+  <text x="80" y="420" font-family="${font}" font-size="28" fill="${MUTED}">Founder-led software studio · Kerala, India · skaylon.com</text>
+  <g font-family="${font}" font-size="22" fill="${NAVY}">
     ${services
       .map((s, i) => {
         const x = 80 + (i % 3) * 330;
         const y = 490 + Math.floor(i / 3) * 56;
-        return `<g transform="translate(${x} ${y})"><rect width="310" height="42" rx="8" fill="#ffffff" stroke="#e3ddd3"/><circle cx="22" cy="21" r="5" fill="#a4441c"/><text x="40" y="28">${s}</text></g>`;
+        return `<g transform="translate(${x} ${y})"><rect width="310" height="42" rx="8" fill="#ffffff" stroke="${LINE}"/><circle cx="22" cy="21" r="5" fill="${BLUE_INK}"/><text x="40" y="28">${s}</text></g>`;
       })
       .join("\n    ")}
   </g>
 </svg>`;
-await sharp(Buffer.from(og)).jpeg({ quality: 86, mozjpeg: true }).toFile(out("public/og-default.jpg"));
+const ogLogo = await sharp(trimmed).resize({ height: 64 }).png().toBuffer();
+await sharp(Buffer.from(ogSvg))
+  .composite([{ input: ogLogo, left: 80, top: 72 }])
+  .jpeg({ quality: 86, mozjpeg: true })
+  .toFile(out("public/og-default.jpg"));
 console.log("wrote public/og-default.jpg (1200×630)");

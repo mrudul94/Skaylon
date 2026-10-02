@@ -66,6 +66,8 @@ export function EnquiryPrompt({ siteKey }: { siteKey: string }) {
     const elapsed = () => performance.now() - start;
     const show = () => {
       if (suppressed()) return;
+      // Never on top of the cookie banner: wait until a choice is made.
+      if (document.body.dataset.consentOpen === "true") return;
       setSince(startWall);
       setShown(true);
       setOpen(true);

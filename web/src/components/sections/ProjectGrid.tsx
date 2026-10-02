@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { CmsImage } from "@/components/ui/CmsImage";
 import Link from "next/link";
 import type { Project } from "@/content/types";
 import { ButtonLink } from "@/components/ui/primitives";
@@ -12,13 +12,13 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
         <li key={project.slug}>
           <Link href={`/work/${project.slug}`} className="group block">
             <div className="relative aspect-[16/10] overflow-hidden rounded-xl border hairline bg-paper-2 transition-shadow duration-300 group-hover:shadow-[0_30px_60px_-30px_rgb(20_22_26/0.45)]">
-              <Image
+              <CmsImage
                 src={project.cover.url}
                 alt={project.cover.alt}
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
-                loading={i < 2 ? "eager" : "lazy"}
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                priority={i < 2}
+                className="object-cover object-left-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
               />
             </div>
             <div className="mt-5 flex items-baseline justify-between gap-6">

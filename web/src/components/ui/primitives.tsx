@@ -33,7 +33,7 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
 const buttonStyles = {
   primary: "btn-sheen bg-ink text-paper hover:bg-ink-2 border border-ink",
   secondary: "border border-line-strong bg-surface text-ink hover:border-ink",
-  accent: "bg-accent-ink text-white hover:bg-[#8a3814] border border-accent-ink",
+  accent: "bg-accent-ink text-white hover:bg-[#0042a6] border border-accent-ink",
 } as const;
 
 export type ButtonVariant = keyof typeof buttonStyles;

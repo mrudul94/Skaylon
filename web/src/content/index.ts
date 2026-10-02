@@ -26,7 +26,9 @@ async function fromCms<T>(query: string, fallback: T, params: Record<string, str
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  return fromCms(q.SITE_SETTINGS, siteSettings);
+  const site = await fromCms(q.SITE_SETTINGS, siteSettings);
+  // A photo uploaded in the CMS wins; until then the local one is used.
+  return site.founderPhoto ? site : { ...site, founderPhoto: siteSettings.founderPhoto };
 }
 
 export async function getHomePage(): Promise<HomePage> {

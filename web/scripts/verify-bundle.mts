@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 
 const BUDGET_KB = 130;
-const root = new URL("../.next/", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
+const root = new URL(`../${process.env.NEXT_DIST_DIR || ".next"}/`, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
 const appDir = join(root, "server", "app");
 if (!existsSync(appDir)) {
   console.error("No build found. Run `next build` first.");

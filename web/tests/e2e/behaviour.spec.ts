@@ -160,3 +160,53 @@ for (const [from, to] of [
     expect(res.headers()["location"]).toMatch(new RegExp(`${to}$`));
   });
 }
+
+test.describe("cookie consent", () => {
+  test("first visit: banner shown, nothing optional runs until accepted", async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const events: string[] = [];
+    page.on("request", (r) => {
+      if (r.url().includes("/api/event") || r.url().includes("cloudflareinsights")) events.push(r.url());
+    });
+    await page.goto("/");
+    const banner = page.getByRole("region", { name: "Cookies and analytics" });
+    await expect(banner).toBeVisible();
+    await expect(banner.getByRole("link", { name: "Cookie Policy" })).toHaveAttribute("href", "/cookies");
+
+    // Before any choice, clicks are not counted.
+    await page.locator("main").getByRole("link", { name: "Start a project" }).first().click();
+    await page.waitForTimeout(500);
+    expect(events).toEqual([]);
+
+    // Reject is one click and is remembered.
+    await page.goto("/");
+    await page.getByRole("button", { name: "Reject" }).click();
+    await expect(banner).toBeHidden();
+    const cookie = (await context.cookies()).find((c) => c.name === "skaylon_consent");
+    expect(cookie?.value).toBe("1%3Adenied");
+    await page.reload();
+    await expect(page.getByRole("region", { name: "Cookies and analytics" })).toHaveCount(0);
+    await context.close();
+  });
+
+  test("cookie settings re-opens the banner and the choice can be changed", async ({ page }) => {
+    await page.addInitScript(SUPPRESS_POPUP);
+    await page.goto("/");
+    await expect(page.getByRole("region", { name: "Cookies and analytics" })).toHaveCount(0);
+    await page.getByRole("contentinfo").getByRole("button", { name: "Cookie settings" }).click();
+    const banner = page.getByRole("region", { name: "Cookies and analytics" });
+    await expect(banner).toContainText("Current choice: rejected");
+    await banner.getByRole("button", { name: "Accept" }).click();
+    await expect(banner).toBeHidden();
+    expect(await page.evaluate(() => document.cookie)).toContain("skaylon_consent=1%3Agranted");
+  });
+});
+
+test("WhatsApp button opens a chat with a pre-filled message", async ({ page }) => {
+  await page.goto("/services");
+  const wa = page.getByRole("link", { name: /Chat on WhatsApp/ });
+  await expect(wa).toBeVisible();
+  await expect(wa).toHaveAttribute("href", /^https:\/\/wa\.me\/918075915386\?text=/);
+  await expect(wa).toHaveAttribute("target", "_blank");
+});

@@ -3,7 +3,7 @@
  * construction (injection safety), from the real modules.
  */
 import { MAX_FILL_MS, MIN_FILL_MS, botSignals, contactSchema } from "../src/lib/contact-schema.ts";
-import { buildEnquiryEmail, escapeHtml } from "../src/lib/contact-email.ts";
+import { buildConfirmationEmail, buildEnquiryEmail, escapeHtml } from "../src/lib/contact-email.ts";
 
 let failures = 0;
 function check(name: string, ok: boolean) {
@@ -77,6 +77,12 @@ if (evil.success) {
   check("text part keeps the message verbatim", mail.text.includes("<script>alert('x')</script>"));
 }
 check("escapeHtml covers & < > \" '", escapeHtml(`&<>"'`) === "&amp;&lt;&gt;&quot;&#39;");
+{
+  const ack = buildConfirmationEmail({ siteName: "Skaylon", teamEmail: "team@example.in", phone: "+91 80759 15386", siteUrl: "https://skaylon.com" });
+  check("confirmation replies go to the team", ack.replyTo === "team@example.in");
+  check("confirmation repeats nothing the visitor typed", !/Asha|clinic|<script|Bcc:/i.test(ack.text + ack.html));
+  check("confirmation subject has no line breaks", !/[\r\n]/.test(ack.subject));
+}
 
 console.log(`\n${failures === 0 ? "All checks passed." : `${failures} check(s) failed.`}`);
 process.exit(failures === 0 ? 0 : 1);

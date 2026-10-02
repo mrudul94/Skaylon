@@ -105,7 +105,7 @@ test("titles and descriptions are unique across pages", async ({ page }) => {
 });
 
 test("brand assets, manifest and llms.txt are served", async ({ request }) => {
-  for (const path of ["/og-default.jpg", "/icon.svg", "/apple-icon.png", "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png", "/manifest.webmanifest", "/llms.txt"]) {
+  for (const path of ["/og-default.jpg", "/favicon.ico", "/icon.png", "/apple-icon.png", "/logo.webp", "/logo@2x.webp", "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png", "/manifest.webmanifest", "/llms.txt"]) {
     expect((await request.get(path)).status(), path).toBe(200);
   }
   expect(await (await request.get("/llms.txt")).text()).toContain("Backend and API Systems");

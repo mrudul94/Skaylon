@@ -39,7 +39,7 @@ export function FactsBand({ services, phases }: { services: number; phases: numb
         <Reveal as="ul" stagger className="grid gap-px overflow-hidden rounded-2xl bg-paper/10 sm:grid-cols-2 lg:grid-cols-4">
           {facts.map((f) => (
             <li key={f.label} className="spot bg-ink/95 p-6 sm:p-8">
-              <p className="font-serif-accent text-[clamp(2.6rem,2rem+2vw,3.6rem)] leading-none text-accent">{f.value}</p>
+              <p className="font-serif-accent text-[clamp(2.6rem,2rem+2vw,3.6rem)] leading-none text-accent-light">{f.value}</p>
               <p className="mt-4 font-semibold">{f.label}</p>
               <p className="mt-1 text-sm text-paper/65">{f.detail}</p>
             </li>

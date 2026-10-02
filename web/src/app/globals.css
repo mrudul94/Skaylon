@@ -2,23 +2,25 @@
 
 /* ------------------------------------------------------------------
    Design tokens
-   Light editorial palette: warm paper, near-black ink, one brand accent
-   (the orange from the logo mark). Text/background pairs are asserted
+   Light palette from the Skaylon logo: cool paper, navy ink and the
+   logo blue as the one accent. Text/background pairs are asserted
    against WCAG AA by scripts/verify-contrast.mts, so change them there too.
 ------------------------------------------------------------------ */
 @theme {
-  --color-paper: #faf8f4;
-  --color-paper-2: #f2eee7;
+  --color-paper: #f7f8fb;
+  --color-paper-2: #eef1f7;
   --color-surface: #ffffff;
-  --color-ink: #14161a;
-  --color-ink-2: #2b2f36;
-  --color-ink-muted: #525866;
-  --color-line: #e3ddd3;
-  --color-line-strong: #cfc7ba;
-  --color-field: #7d828c;
-  --color-accent: #d9764a;
-  --color-accent-ink: #a4441c;
-  --color-accent-wash: #fbeee6;
+  --color-ink: #0a1435;
+  --color-ink-2: #263050;
+  --color-ink-muted: #4f5875;
+  --color-line: #e0e5ee;
+  --color-line-strong: #c7cfdd;
+  --color-field: #7a839b;
+  --color-accent: #0068fd;
+  --color-accent-ink: #0052cc;
+  --color-accent-wash: #e8f0ff;
+  /* The logo blue, lightened for text and rings on navy (dark) sections. */
+  --color-accent-light: #5c9dff;
   --color-success: #1f6f43;
   --color-danger: #b42318;
 
@@ -82,7 +84,7 @@
 
   /* Dark bands: the focus ring switches to the light accent to stay visible. */
   :is(.dark-band, .cta-band, .dark-card) :focus-visible {
-    outline-color: var(--color-accent);
+    outline-color: var(--color-accent-light);
   }
 }
 
@@ -95,16 +97,16 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(40rem 22rem at 85% 0%, rgb(217 118 74 / 0.12), transparent 70%),
-    radial-gradient(34rem 20rem at 5% 10%, rgb(20 22 26 / 0.05), transparent 70%);
+    radial-gradient(40rem 22rem at 85% 0%, rgb(0 104 253 / 0.12), transparent 70%),
+    radial-gradient(34rem 20rem at 5% 10%, rgb(10 20 53 / 0.05), transparent 70%);
 }
 .backdrop::after {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, rgb(20 22 26 / 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(20 22 26 / 0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgb(10 20 53 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(10 20 53 / 0.05) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(70% 70% at 60% 0%, #000 10%, transparent 75%);
 }
@@ -362,8 +364,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, rgb(250 248 244 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(250 248 244 / 0.06) 1px, transparent 1px);
+    linear-gradient(to right, rgb(247 248 251 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(247 248 251 / 0.06) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(80% 90% at 80% 20%, #000, transparent 75%);
   pointer-events: none;
@@ -397,16 +399,16 @@
 /* Cards: a quiet two-layer shadow at rest, deeper and lifted on hover. */
 .card-lift {
   box-shadow:
-    0 1px 2px rgb(20 22 26 / 0.04),
-    0 10px 28px -14px rgb(20 22 26 / 0.12);
+    0 1px 2px rgb(10 20 53 / 0.04),
+    0 10px 28px -14px rgb(10 20 53 / 0.12);
 }
 .card-lift:hover,
 .card-lift:focus-within {
   transform: translate3d(0, -3px, 0);
-  border-color: rgb(217 118 74 / 0.4);
+  border-color: rgb(0 104 253 / 0.4);
   box-shadow:
-    0 1px 2px rgb(20 22 26 / 0.05),
-    0 24px 48px -20px rgb(20 22 26 / 0.28);
+    0 1px 2px rgb(10 20 53 / 0.05),
+    0 24px 48px -20px rgb(10 20 53 / 0.28);
 }
 
 /* Pointer tilt for decorative illustrations (Tilt.tsx sets --rx/--ry). */
@@ -423,7 +425,7 @@
 .product-stack > div {
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.65),
-    0 40px 80px -40px rgb(20 22 26 / 0.45);
+    0 40px 80px -40px rgb(10 20 53 / 0.45);
 }
 
 .card-link {
@@ -435,7 +437,7 @@
 .card-link:hover,
 .card-link:focus-within {
   border-color: var(--color-line-strong);
-  box-shadow: 0 12px 32px -18px rgb(20 22 26 / 0.25);
+  box-shadow: 0 12px 32px -18px rgb(10 20 53 / 0.25);
 }
 
 /* Native <details> FAQ marker. */
@@ -452,7 +454,7 @@ details[open] .faq-icon {
 /* Header gains a border once the page has scrolled. */
 .site-header[data-scrolled="true"] {
   border-color: var(--color-line);
-  background: rgb(250 248 244 / 0.92);
+  background: rgb(247 248 251 / 0.92);
 }
 
 /* Services mega-menu panel. */
@@ -472,7 +474,7 @@ details[open] .faq-icon {
 
 /* Dialogs (mobile menu, enquiry popup). */
 dialog::backdrop {
-  background: rgb(20 22 26 / 0.45);
+  background: rgb(10 20 53 / 0.45);
 }
 dialog[open].sheet {
   animation: sheet-in 0.25s var(--ease-out) both;
@@ -546,7 +548,7 @@ html:has(dialog[open]) {
   font-weight: 400;
   letter-spacing: -0.015em;
   color: var(--color-accent-ink);
-  background: linear-gradient(rgb(217 118 74 / 0.24), rgb(217 118 74 / 0.24)) no-repeat 0 88% / 0 0.3em;
+  background: linear-gradient(rgb(0 104 253 / 0.24), rgb(0 104 253 / 0.24)) no-repeat 0 88% / 0 0.3em;
   animation: marker-in 0.9s 0.35s var(--ease-out) forwards;
   padding: 0 0.06em;
 }
@@ -579,7 +581,7 @@ html:has(dialog[open]) {
   height: 34rem;
   right: 4%;
   top: 4%;
-  background: radial-gradient(circle at 30% 30%, rgb(217 118 74 / 0.28), rgb(217 118 74 / 0) 65%);
+  background: radial-gradient(circle at 30% 30%, rgb(0 104 253 / 0.28), rgb(0 104 253 / 0) 65%);
   animation: aurora-a 18s ease-in-out infinite alternate;
 }
 .aurora::after {
@@ -587,7 +589,7 @@ html:has(dialog[open]) {
   height: 28rem;
   left: -4%;
   top: 18%;
-  background: radial-gradient(circle at 60% 40%, rgb(164 68 28 / 0.12), rgb(164 68 28 / 0) 65%);
+  background: radial-gradient(circle at 60% 40%, rgb(0 82 204 / 0.12), rgb(0 82 204 / 0) 65%);
   animation: aurora-b 22s ease-in-out infinite alternate;
 }
 .aurora-dark {
@@ -595,10 +597,10 @@ html:has(dialog[open]) {
   height: auto;
 }
 .aurora-dark::before {
-  background: radial-gradient(circle at 30% 30%, rgb(217 118 74 / 0.35), transparent 65%);
+  background: radial-gradient(circle at 30% 30%, rgb(0 104 253 / 0.35), transparent 65%);
 }
 .aurora-dark::after {
-  background: radial-gradient(circle at 60% 40%, rgb(250 248 244 / 0.08), transparent 65%);
+  background: radial-gradient(circle at 60% 40%, rgb(247 248 251 / 0.08), transparent 65%);
 }
 @keyframes aurora-a {
   to {
@@ -654,10 +656,10 @@ html:has(dialog[open]) {
    sets --mx/--my). Painted as a background image on the card itself: no
    extra layer, no positioning or stacking changes. */
 .spot:hover {
-  background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 50%), rgb(217 118 74 / 0.09), transparent 60%);
+  background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 50%), rgb(0 104 253 / 0.09), transparent 60%);
 }
 .dark-band .spot:hover {
-  background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 50%), rgb(217 118 74 / 0.2), transparent 60%);
+  background-image: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 50%), rgb(0 104 253 / 0.2), transparent 60%);
 }
 
 /* Primary buttons: a light sheen sweeps across on hover. */
@@ -682,20 +684,86 @@ html:has(dialog[open]) {
 }
 
 /* Footer wordmark: oversized, cropped by the page edge, warm gradient. */
+/* Hover: the letters rise in a wave and warm from grey to brand orange.
+   The whole word stays visible (no fade-out, no cropping): line-height 1
+   leaves room for the "y" descender and the hover lift. */
 .footer-wordmark {
-  line-height: 0.78;
+  line-height: 1;
   font-size: clamp(5rem, 21vw, 19rem);
   font-weight: 650;
   letter-spacing: -0.06em;
   text-align: center;
-  background: linear-gradient(180deg, rgb(20 22 26 / 0.12), rgb(217 118 74 / 0.18) 60%, transparent 92%);
+  padding-bottom: 0.04em;
+  cursor: default;
+}
+.wm-letter {
+  display: inline-block;
+  /* Two stacked fills in one 200%-tall image: the top half is the resting
+     tone, the bottom half the hover tone; hover slides between them. */
+  background-image: linear-gradient(
+    180deg,
+    rgb(10 20 53 / 0.13) 0%,
+    rgb(0 104 253 / 0.24) 49.9%,
+    var(--color-accent) 50.1%,
+    var(--color-accent-ink) 100%
+  );
+  background-size: 100% 200%;
+  background-position: 0 0;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  margin-bottom: -0.08em;
+  transition:
+    transform 0.7s var(--ease-out),
+    background-position 0.8s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 45ms);
 }
-.footer-wordmark .gen-text::before {
+.wm-letter::before {
   color: transparent;
+}
+.footer-wordmark:hover .wm-letter {
+  transform: translate3d(0, -0.09em, 0);
+  background-position: 0 100%;
+}
+
+/* Founder banner fade: from the bottom on phones; on wider screens a fade
+   that covers only the text column and clears before the person. */
+.founder-banner-fade {
+  background: linear-gradient(to top, var(--color-ink) 0%, rgb(10 20 53 / 0.82) 34%, rgb(10 20 53 / 0.1) 62%, transparent 80%);
+}
+@media (min-width: 1024px) {
+  .founder-banner-fade {
+    background: linear-gradient(
+      90deg,
+      var(--color-ink) 0%,
+      rgb(10 20 53 / 0.88) 24%,
+      rgb(10 20 53 / 0.45) 36%,
+      transparent 48%
+    );
+  }
+}
+
+/* Founder banner: the photo drifts in very slightly on hover. */
+.founder-banner-img {
+  transform: scale(1.02);
+  transition: transform 1.4s var(--ease-out);
+}
+.founder-banner:hover .founder-banner-img {
+  transform: scale(1.06);
+}
+
+/* WhatsApp button: bottom-right; on phones it sits above the sticky call
+   bar, and it hides while the cookie banner is open (no overlap). */
+.whatsapp-fab {
+  bottom: calc(1.25rem + env(safe-area-inset-bottom));
+}
+@media (max-width: 767px) {
+  body[data-sticky-cta="true"] .whatsapp-fab {
+    bottom: calc(5.75rem + env(safe-area-inset-bottom));
+  }
+}
+body[data-consent-open="true"] .whatsapp-fab {
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

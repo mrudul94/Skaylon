@@ -157,7 +157,7 @@ const visuals: Record<string, ReactNode> = {
           </svg>
         </div>
         <div className="space-y-2">
-          {["#14161a", "#d9764a", "#a4441c", "#f2eee7"].map((c) => (
+          {["#0a1435", "#0068fd", "#0052cc", "#eef1f7"].map((c) => (
             <span key={c} className="flex items-center gap-1.5">
               <span className="h-5 w-5 rounded border hairline" style={{ background: c }} />
               <span className="h-1.5 flex-1 rounded bg-line" />

@@ -8,7 +8,7 @@ import type { LegalPage } from "../types";
 export const privacyPage: LegalPage = {
   slug: "privacy",
   title: "Privacy Policy",
-  lastUpdated: "2026-09-29",
+  lastUpdated: "2026-10-02",
   intro:
     "This policy explains what personal data Skaylon Technology (\"Skaylon\", \"we\") collects through skaylon.com, why we collect it, and the choices you have. We collect as little as possible.",
   sections: [
@@ -16,22 +16,21 @@ export const privacyPage: LegalPage = {
       heading: "Data you give us",
       body: [
         "When you send an enquiry through the contact form or the project enquiry pop-up, we receive your name and email address, and any optional details you choose to add: company, phone number, the type of project, budget range, timeline and your message.",
-        "We use this information only to reply to your enquiry and, if we work together, to manage the engagement. Enquiries are delivered to our inbox by email; we do not store them in a database on this website.",
+        "We use this information only to reply to your enquiry and, if we work together, to manage the engagement. Enquiries are delivered to our inbox by email through Resend; we do not store them in a database on this website. We may also send you one automatic email confirming that your enquiry arrived.",
         "If you contact us by email, phone or WhatsApp, we receive the details you share through that channel. WhatsApp is operated by WhatsApp LLC (Meta) under its own privacy policy.",
       ],
     },
     {
       heading: "Data collected automatically",
       body: [
-        "We use Cloudflare Web Analytics, which measures page views and performance without cookies and without tracking you across websites.",
-        "We also record a small number of anonymous events, such as \"contact form submitted\", together with the page path and the country your request came from. These events contain no name, email address, IP address or other identifier.",
+        "Only if you accept analytics in our cookie banner, we use Cloudflare Web Analytics, which measures page views and performance without cookies and without tracking you across websites, and we record a small number of anonymous events, such as \"contact form submitted\", together with the page path and the country your request came from. These events contain no name, email address, IP address or other identifier. If you reject analytics, neither runs.",
         "To protect our forms from spam we use Cloudflare Turnstile, which evaluates signals from your browser to tell people from automated bots. Like any web server, our hosting provider processes your IP address to deliver pages and defend against abuse.",
       ],
     },
     {
       heading: "Cookies and browser storage",
       body: [
-        "This website does not use advertising, analytics or cross-site tracking cookies. Our Cookie Policy explains the few strictly necessary items that may be stored in your browser, such as a note that you have already closed the enquiry pop-up.",
+        "This website does not use advertising or cross-site tracking cookies. Our Cookie Policy explains the few strictly necessary items that may be stored in your browser, such as your cookie choice and a note that you have already closed the enquiry pop-up, and how to change your choice at any time with \"Cookie settings\" at the bottom of every page.",
       ],
     },
     {
@@ -120,39 +119,50 @@ export const termsPage: LegalPage = {
 export const cookiesPage: LegalPage = {
   slug: "cookies",
   title: "Cookie Policy",
-  lastUpdated: "2026-09-29",
+  lastUpdated: "2026-10-02",
   intro:
-    "This page explains which cookies and similar browser storage skaylon.com uses. In short: we do not use advertising, analytics or tracking cookies, so we do not show a cookie consent banner.",
+    "This page explains which cookies and similar browser storage skaylon.com uses and the choices you have. We do not use advertising or cross-site tracking cookies. Optional analytics only run if you accept them in our cookie banner, and you can change your choice at any time.",
   sections: [
     {
-      heading: "Cookies set by this website",
+      heading: "Your choice",
       body: [
-        "Our own code does not set any cookies.",
-        "Cloudflare, our hosting and security provider, may set strictly necessary cookies to protect the site from abuse and automated traffic. Cloudflare Turnstile, which protects our enquiry forms, may do the same. These cookies do not track you across websites and are not used for advertising.",
+        "On your first visit we show a banner asking whether you accept optional analytics. \"Accept\" and \"Reject\" are equally easy, and nothing optional runs until you choose \"Accept\".",
+        "You can change your choice at any time with \"Cookie settings\" at the bottom of every page. We ask again if what analytics covers ever changes.",
       ],
     },
     {
-      heading: "Browser storage",
+      heading: "Strictly necessary (always on)",
       body: [
-        "The project enquiry pop-up stores a small note in your browser's local storage when you close it or send an enquiry, so it is not shown to you again for a while. This note contains only a date or a yes/no value, never personal data, and it never leaves your device.",
-        "You can remove it at any time by clearing your browser's site data for skaylon.com.",
+        "Your cookie choice: a first-party cookie named skaylon_consent stores whether you accepted or rejected analytics, so we don't ask on every page. It contains only that choice and lasts 180 days.",
+        "Security: Cloudflare, our hosting and security provider, may set strictly necessary cookies to protect the site from abuse and automated traffic. Cloudflare Turnstile, which protects our enquiry forms, may do the same. These do not track you across websites and are not used for advertising.",
+        "Enquiry pop-up: a small note in your browser's local storage records that you closed the pop-up or sent an enquiry, so it isn't shown again for a while. It holds only a date or a yes/no value, never personal data, and never leaves your device.",
       ],
     },
     {
-      heading: "Analytics",
+      heading: "Optional analytics (only if you accept)",
       body: [
-        "We measure visits with Cloudflare Web Analytics, which does not use cookies or local storage and does not track you across sites. Anonymous site events are counted on our server without any identifier.",
+        "Cloudflare Web Analytics measures page views and page speed. It does not use cookies or local storage and does not track you across websites.",
+        "We also count a few anonymous actions on our own server, such as \"enquiry sent\" or \"WhatsApp button clicked\", with the page path and your country. No name, email address, IP address or other identifier is stored.",
+        "If you reject analytics, neither of these runs.",
       ],
     },
     {
-      heading: "Changes",
+      heading: "Third-party services",
       body: [
-        "If we ever add non-essential cookies, such as marketing or advertising cookies, we will update this policy and ask for your consent before setting them.",
+        "Links to WhatsApp open WhatsApp, which is operated by WhatsApp LLC (Meta) under its own privacy and cookie policies. Nothing from WhatsApp is loaded on our pages until you click the link.",
       ],
     },
     {
-      heading: "Contact",
-      body: ["Questions about this policy: skaylon.in@gmail.com."],
+      heading: "Removing stored data",
+      body: [
+        "You can delete the cookies and storage described here at any time by clearing your browser's site data for skaylon.com. You will then see the cookie banner again on your next visit.",
+      ],
+    },
+    {
+      heading: "Changes and contact",
+      body: [
+        "If we add any other optional cookies or services, we will update this policy and ask for your consent before using them. Questions about this policy: skaylon.in@gmail.com.",
+      ],
     },
   ],
 };

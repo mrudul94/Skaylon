@@ -24,7 +24,9 @@ const serverSchema = z.object({
   CONTACT_TO_EMAIL: z.email().optional(),
   CONTACT_FROM_EMAIL: z.string().min(1).optional(),
   /** "1" = log enquiries instead of emailing (local e2e only; never set in production). */
-  CONTACT_DRY_RUN: z.enum(["1"]).optional(),
+  CONTACT_DRY_RUN: z.enum(["0", "1"]).optional(),
+  /** "1" = also email the visitor a short "we received your enquiry" note. */
+  CONTACT_CONFIRMATION: z.enum(["1"]).optional(),
 });
 
 function format(error: z.ZodError): string {

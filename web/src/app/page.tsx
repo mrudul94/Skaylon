@@ -119,8 +119,8 @@ export default async function HomePage() {
         <Container className="relative">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-3xl">
-              <p className="flex items-center gap-2.5 font-mono text-eyebrow font-medium text-accent uppercase">
-                <span aria-hidden="true" className="h-px w-5 bg-accent" />
+              <p className="flex items-center gap-2.5 font-mono text-eyebrow font-medium text-accent-light uppercase">
+                <span aria-hidden="true" className="h-px w-5 bg-accent-light" />
                 How it works
               </p>
               <h2 id="process-heading" className="mt-4 text-display font-semibold text-balance">

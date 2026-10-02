@@ -13,5 +13,11 @@ export const siteSettings: SiteSettings = {
   founder: "Mrudul",
   address: { locality: "Kasaragod", region: "Kerala", country: "India", countryCode: "IN" },
   credential: { label: "MSME registered (Udyam)", value: "UDYAM-KL-05-0037475" },
+  founderPhoto: {
+    url: "/founder-480.webp",
+    alt: "Mrudul, founder of Skaylon Technology",
+    width: 480,
+    height: 480,
+  },
   socials: [],
 };
