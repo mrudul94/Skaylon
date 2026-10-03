@@ -9,7 +9,7 @@
 import { createClient } from "@sanity/client";
 import { siteSettings } from "../../web/src/content/seed/site.ts";
 import { services } from "../../web/src/content/seed/services.ts";
-import { aboutPage, homePage, processPage } from "../../web/src/content/seed/pages.ts";
+import { aboutPage, homePage, pricingPage, processPage } from "../../web/src/content/seed/pages.ts";
 import { cookiesPage, privacyPage, termsPage } from "../../web/src/content/seed/legal.ts";
 
 import { projectId } from "../env.ts";
@@ -51,6 +51,19 @@ const docs: ({ _id: string; _type: string } & Record<string, unknown>)[] = [
     intro: processPage.intro,
     phases: keyed(processPage.phases, "ph"),
     faqs: keyed(processPage.faqs, "f"),
+  },
+  {
+    _id: "pricingPage",
+    _type: "pricingPage",
+    intro: pricingPage.intro,
+    packages: pricingPage.packages.map(({ serviceSlug, ...p }, i) => ({
+      _key: `pk${i}`,
+      ...p,
+      ...(serviceSlug ? { service: { _type: "reference", _ref: `service-${serviceSlug}` } } : {}),
+    })),
+    factors: keyed(pricingPage.factors, "fa"),
+    note: pricingPage.note,
+    faqs: keyed(pricingPage.faqs, "f"),
   },
   ...[privacyPage, termsPage, cookiesPage].map((p) => ({
     _id: `${p.slug}Page`,

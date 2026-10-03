@@ -1,7 +1,9 @@
 /** Top-level links after the Services menu (which is built from the CMS services). */
 export const primaryNav = [
-  { label: "Process", href: "/process" },
   { label: "Work", href: "/work" },
+  { label: "Showcase", href: "/showcase" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Process", href: "/process" },
   { label: "About", href: "/about" },
 ] as const;
 
@@ -9,6 +11,8 @@ export const companyNav = [
   { label: "About", href: "/about" },
   { label: "How we work", href: "/process" },
   { label: "Work", href: "/work" },
+  { label: "Showcase", href: "/showcase" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Contact", href: "/contact" },
 ] as const;
 

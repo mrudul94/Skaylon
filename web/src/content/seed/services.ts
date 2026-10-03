@@ -3,7 +3,8 @@ import type { Service } from "../types";
 // Service copy. Also imported into Sanity by studio/seed/import.mts, so the CMS
 // and the fallback stay identical. Facts only: technologies, timelines and the
 // fixed-scope proposal come from Skaylon's own previous copy; no client names,
-// results, prices or team-size claims.
+// results or team-size claims. Prices only as the owner's starting prices
+// (see pricingPage in pages.ts).
 export const services: Service[] = [
   {
     slug: "website-development",
@@ -47,7 +48,7 @@ export const services: Service[] = [
       {
         question: "How is a website project priced?",
         answer:
-          "After a short discovery phase we send a fixed-scope proposal with the price, deliverables and timeline, so you know the cost before development starts.",
+          "Business websites start from ₹7,999 and e-commerce stores from ₹15,999. After a short discovery phase we send a fixed-scope proposal with the final price, deliverables and timeline, so you know the cost before development starts.",
       },
       {
         question: "Can we update the website ourselves after launch?",

@@ -48,6 +48,58 @@
 }
 
 /* ------------------------------------------------------------------
+   Dark theme. ThemeScript (layout.tsx) sets data-theme on <html> before
+   first paint from the saved choice or the system setting. Pairs are
+   asserted by scripts/verify-contrast.mts too.
+------------------------------------------------------------------ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #060a19;
+  --color-paper-2: #0b1129;
+  --color-surface: #0f1733;
+  --color-ink: #eef2fb;
+  --color-ink-2: #ccd4e8;
+  --color-ink-muted: #9aa4c0;
+  --color-line: #1c2647;
+  --color-line-strong: #2c3862;
+  --color-field: #6d789a;
+  --color-accent: #3d8bff;
+  --color-accent-ink: #6aa6ff;
+  --color-accent-wash: #13234d;
+  --color-success: #4cc38a;
+  --color-danger: #ff7a6e;
+}
+
+/* Navy bands and the product illustrations keep the light palette in both
+   themes (they are already dark, or are pictures of light UIs). Must match
+   @theme above: verify-contrast checks they agree. */
+:root[data-theme="dark"] :is(.dark-band, .cta-band, .founder-banner, .product-stack, .tone-light) {
+  --color-paper: #f7f8fb;
+  --color-paper-2: #eef1f7;
+  --color-surface: #ffffff;
+  --color-ink: #0a1435;
+  --color-ink-2: #263050;
+  --color-ink-muted: #4f5875;
+  --color-line: #e0e5ee;
+  --color-line-strong: #c7cfdd;
+  --color-field: #7a839b;
+  --color-accent: #0068fd;
+  --color-accent-ink: #0052cc;
+  --color-accent-wash: #e8f0ff;
+  --color-success: #1f6f43;
+  --color-danger: #b42318;
+}
+
+/* Per-theme variants (logo, toggle icon). */
+.theme-dark-only,
+:root[data-theme="dark"] .theme-light-only {
+  display: none;
+}
+:root[data-theme="dark"] .theme-dark-only {
+  display: block;
+}
+
+/* ------------------------------------------------------------------
    Base
 ------------------------------------------------------------------ */
 @layer base {
@@ -105,8 +157,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, rgb(10 20 53 / 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(10 20 53 / 0.05) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--color-ink) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 5%, transparent) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(70% 70% at 60% 0%, #000 10%, transparent 75%);
 }
@@ -343,7 +395,7 @@
 .service-card:hover .service-icon,
 .service-card:focus-within .service-icon {
   background: var(--color-accent-ink);
-  color: #fff;
+  color: var(--color-paper);
   transform: rotate(-6deg) scale(1.06);
 }
 .service-card .card-arrow {
@@ -454,7 +506,7 @@ details[open] .faq-icon {
 /* Header gains a border once the page has scrolled. */
 .site-header[data-scrolled="true"] {
   border-color: var(--color-line);
-  background: rgb(247 248 251 / 0.92);
+  background: color-mix(in srgb, var(--color-paper) 92%, transparent);
 }
 
 /* Services mega-menu panel. */
@@ -702,7 +754,7 @@ html:has(dialog[open]) {
      tone, the bottom half the hover tone; hover slides between them. */
   background-image: linear-gradient(
     180deg,
-    rgb(10 20 53 / 0.13) 0%,
+    color-mix(in srgb, var(--color-ink) 13%, transparent) 0%,
     rgb(0 104 253 / 0.24) 49.9%,
     var(--color-accent) 50.1%,
     var(--color-accent-ink) 100%
@@ -723,6 +775,38 @@ html:has(dialog[open]) {
 .footer-wordmark:hover .wm-letter {
   transform: translate3d(0, -0.09em, 0);
   background-position: 0 100%;
+}
+
+/* Showcase cards: a tall screenshot scrolls top to bottom while hovered or
+   focused (object-position only, no layout), and eases back on leave. */
+.showcase-shot {
+  transition: object-position 1.2s var(--ease-out);
+}
+.showcase-frame {
+  transition: box-shadow 0.3s;
+}
+.showcase-card:hover .showcase-frame,
+.showcase-card:focus-visible .showcase-frame {
+  box-shadow: 0 30px 60px -30px rgb(10 20 53 / 0.45);
+}
+.showcase-visit {
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+  transition:
+    opacity 0.25s,
+    transform 0.25s var(--ease-out);
+}
+.showcase-card:hover .showcase-visit,
+.showcase-card:focus-visible .showcase-visit {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .showcase-card:hover .showcase-shot,
+  .showcase-card:focus-visible .showcase-shot {
+    object-position: 50% 100%;
+    transition: object-position 6s ease-in-out;
+  }
 }
 
 /* Founder banner fade: from the bottom on phones; on wider screens a fade

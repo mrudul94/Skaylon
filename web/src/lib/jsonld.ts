@@ -1,4 +1,4 @@
-import type { Faq, Project, Service, SiteSettings } from "@/content/types";
+import type { Faq, PricingPackage, Project, Service, SiteSettings } from "@/content/types";
 import { env } from "./env";
 
 /**
@@ -133,6 +133,24 @@ export function serviceList(services: Service[]) {
       position: i + 1,
       name: s.name,
       url: url(`/services/${s.slug}`),
+    })),
+  };
+}
+
+/** Packages with a starting price, as offers with a minimum price in INR. */
+export function pricingCatalog(packages: PricingPackage[]) {
+  const priced = packages.filter((p) => p.priceFrom != null);
+  if (priced.length === 0) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "OfferCatalog",
+    name: "Skaylon pricing",
+    url: url("/pricing"),
+    itemListElement: priced.map((p) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: p.name, description: p.description },
+      priceSpecification: { "@type": "PriceSpecification", minPrice: p.priceFrom, priceCurrency: "INR" },
+      seller: { "@id": ORG_ID },
     })),
   };
 }

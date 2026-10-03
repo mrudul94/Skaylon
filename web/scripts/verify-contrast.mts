@@ -6,10 +6,26 @@
 import { readFileSync } from "node:fs";
 
 const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+// Body of the first rule whose selector starts with `selector`.
+const block = (selector: string): string => {
+  const at = css.indexOf(selector);
+  if (at < 0) throw new Error(`rule ${selector} not found in globals.css`);
+  return css.slice(at, css.indexOf("}", at));
+};
+const themes = {
+  light: block("@theme {"),
+  dark: block(':root[data-theme="dark"] {'),
+  // Navy bands and illustrations keep the light palette in the dark theme.
+  "dark (light scopes)": block(':root[data-theme="dark"] :is('),
+};
+const tokenIn = (src: string, name: string): string | undefined =>
+  new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`).exec(src)?.[1];
+let theme: keyof typeof themes = "light";
 const token = (name: string): string => {
-  const m = new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`).exec(css);
-  if (!m?.[1]) throw new Error(`token --color-${name} not found in globals.css`);
-  return m[1];
+  // A theme only overrides some tokens; the rest fall through to @theme.
+  const hex = tokenIn(themes[theme], name) ?? tokenIn(themes.light, name);
+  if (!hex) throw new Error(`token --color-${name} not found in globals.css`);
+  return hex;
 };
 
 function luminance(hex: string) {
@@ -44,11 +60,25 @@ const pairs: [string, string, number, string][] = [
   ["field", "paper", 3, "form field borders on the page background"],
 ];
 let failures = 0;
-for (const [fg, bg, min, use] of pairs) {
-  const r = ratio(token(fg), token(bg));
-  const ok = r >= min;
+for (const name of Object.keys(themes) as (keyof typeof themes)[]) {
+  theme = name;
+  console.log(`\n— ${name} theme`);
+  for (const [fg, bg, min, use] of pairs) {
+    // Band-only pairs never render on the dark page palette (bands keep light tokens).
+    if (name === "dark" && use.includes("on dark bands")) continue;
+    const r = ratio(token(fg), token(bg));
+    const ok = r >= min;
+    if (!ok) failures++;
+    console.log(`${ok ? "PASS" : "FAIL"}  ${fg} on ${bg}: ${r.toFixed(2)}:1 (min ${min}) — ${use}`);
+  }
+}
+
+// The light scopes must restore exactly the @theme palette, or they drift.
+for (const m of themes["dark (light scopes)"].matchAll(/--color-([\w-]+):\s*(#[0-9a-fA-F]{6})/g)) {
+  const [, name, hex] = m as unknown as [string, string, string];
+  const ok = hex.toLowerCase() === tokenIn(themes.light, name)?.toLowerCase();
   if (!ok) failures++;
-  console.log(`${ok ? "PASS" : "FAIL"}  ${fg} on ${bg}: ${r.toFixed(2)}:1 (min ${min}) — ${use}`);
+  console.log(`${ok ? "PASS" : "FAIL"}  light scope --color-${name} matches @theme`);
 }
 console.log(`\n${failures === 0 ? "All checks passed." : `${failures} check(s) failed.`}`);
 process.exit(failures === 0 ? 0 : 1);

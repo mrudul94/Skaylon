@@ -11,7 +11,8 @@ export type TrackEvent =
   | "phone_click"
   | "enquiry_popup_shown"
   | "enquiry_popup_dismissed"
-  | "enquiry_popup_submitted";
+  | "enquiry_popup_submitted"
+  | "showcase_click";
 
 /**
  * First-party, cookieless conversion events → /api/event → Workers Analytics

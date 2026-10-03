@@ -24,6 +24,8 @@ const expected: [string, number][] = [
     ...services.map((s) => `/services/${s.slug}`),
     "/work",
     ...projects.map((p) => `/work/${p.slug}`),
+    "/showcase",
+    "/pricing",
     "/about",
     "/process",
     "/contact",

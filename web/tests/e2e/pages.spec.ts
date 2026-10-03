@@ -82,14 +82,20 @@ test("every Reveal ends fully visible after scrolling", async ({ page }) => {
       await new Promise((r) => setTimeout(r, 80));
     }
   });
-  await page.waitForTimeout(1000);
-  const hidden = await page.evaluate(() =>
-    Array.from(document.querySelectorAll("main *")).filter((el) => {
-      const s = getComputedStyle(el);
-      return el.textContent?.trim() && (s.visibility === "hidden" || Number(s.opacity) < 0.99);
-    }).length,
-  );
-  expect(hidden).toBe(0);
+  // Poll rather than sleep: the last staggered items can still be mid-fade
+  // (up to 420ms delay + 700ms transition) right after the final scroll step.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          Array.from(document.querySelectorAll("main *")).filter((el) => {
+            const s = getComputedStyle(el);
+            return el.textContent?.trim() && (s.visibility === "hidden" || Number(s.opacity) < 0.99);
+          }).length,
+        ),
+      { timeout: 10_000 },
+    )
+    .toBe(0);
 });
 
 test("key pages show a call to action above the fold", async ({ page }) => {

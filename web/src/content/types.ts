@@ -69,6 +69,23 @@ export type Project = {
   seo: Seo;
 };
 
+/** Category values: keep in sync with SHOWCASE_CATEGORIES in studio/schemaTypes/documents.ts. */
+export type ShowcaseCategory = "landing" | "business" | "ecommerce" | "portfolio" | "webapp" | "dashboard" | "experimental";
+
+/** A demo or concept site built by Skaylon (not client work: see Project). */
+export type ShowcaseItem = {
+  id: string;
+  title: string;
+  /** The live demo the card opens. */
+  url: string;
+  /** Ideally a full-page screenshot: the card scrolls down it on hover. */
+  screenshot: ContentImage;
+  description?: string;
+  category: ShowcaseCategory;
+  techStack: string[];
+  year: number;
+};
+
 export type SiteSettings = {
   name: string;
   legalName: string;
@@ -109,6 +126,28 @@ export type ProcessPhase = {
 export type ProcessPage = {
   intro: { heading: string; sub: string };
   phases: ProcessPhase[];
+  faqs: Faq[];
+};
+
+export type PricingPackage = {
+  name: string;
+  description: string;
+  /** Starting price in INR. Absent = priced on features (priceLabel is shown instead). */
+  priceFrom?: number;
+  priceLabel?: string;
+  features: string[];
+  ctaLabel: string;
+  /** Pre-selects the project type on /contact?service=… */
+  serviceSlug?: string;
+};
+
+export type PricingPage = {
+  intro: { heading: string; sub: string };
+  packages: PricingPackage[];
+  /** What moves the price of apps and custom software. */
+  factors: TitledText[];
+  /** Small print under the packages (what is not included, currency). */
+  note: string;
   faqs: Faq[];
 };
 

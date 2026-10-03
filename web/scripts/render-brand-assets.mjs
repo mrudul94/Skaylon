@@ -28,6 +28,7 @@ const BLUE_INK = "#0052cc";
 const PAPER = "#f7f8fb";
 const LINE = "#e0e5ee";
 const MUTED = "#4f5875";
+const DARK_INK = "#eef2fb"; // --color-ink in the dark theme
 
 const logo = src("skaylon-logo.png");
 const trimmed = await sharp(logo).trim({ threshold: 10 }).png().toBuffer();
@@ -42,6 +43,29 @@ for (const [file, h] of [["public/logo.webp", 33], ["public/logo@2x.webp", 66]])
 // The swoosh mark: the left part of the logo, up to the gap before the "S".
 const markWidth = Math.round(lw * 0.235);
 const mark = await sharp(trimmed).extract({ left: 0, top: 0, width: markWidth, height: lh }).trim({ threshold: 10 }).png().toBuffer();
+
+// Dark-theme logo: same swoosh, wordmark recoloured to the dark theme's ink
+// (keeps the original alpha, so the anti-aliased edges stay smooth).
+{
+  const wordWidth = lw - markWidth;
+  const wordAlpha = await sharp(trimmed).extract({ left: markWidth, top: 0, width: wordWidth, height: lh }).extractChannel("alpha").toBuffer();
+  const lightWord = await sharp({ create: { width: wordWidth, height: lh, channels: 3, background: DARK_INK } })
+    .joinChannel(wordAlpha, { raw: undefined })
+    .png()
+    .toBuffer();
+  const markOnly = await sharp(trimmed).extract({ left: 0, top: 0, width: markWidth, height: lh }).png().toBuffer();
+  const darkLogo = await sharp({ create: { width: lw, height: lh, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([
+      { input: markOnly, left: 0, top: 0 },
+      { input: lightWord, left: markWidth, top: 0 },
+    ])
+    .png()
+    .toBuffer();
+  for (const [file, h] of [["public/logo-dark.webp", 33], ["public/logo-dark@2x.webp", 66]]) {
+    await sharp(darkLogo).resize({ height: h }).webp({ quality: 92, alphaQuality: 100 }).toFile(out(file));
+    console.log(`wrote ${file} (h ${h})`);
+  }
+}
 
 /** The mark centred on a white rounded tile (visible on light and dark tabs). */
 async function tile(size, { padding = 0.14, radius = 0.22, bleed = false } = {}) {

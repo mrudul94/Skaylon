@@ -113,4 +113,55 @@ export const project = defineType({
   preview: { select: { title: "title", subtitle: "client", media: "cover" } },
 });
 
-export const documentTypes = [service, project];
+/** Values for showcase categories: the site's filter chips follow this list. */
+export const SHOWCASE_CATEGORIES = [
+  { title: "Landing page", value: "landing" },
+  { title: "Business website", value: "business" },
+  { title: "E-commerce", value: "ecommerce" },
+  { title: "Portfolio", value: "portfolio" },
+  { title: "Web app", value: "webapp" },
+  { title: "Dashboard", value: "dashboard" },
+  { title: "Experimental", value: "experimental" },
+];
+
+/**
+ * Showcase: demo and concept sites built by Skaylon (not client work, which
+ * goes in Project). Shown as a gallery on /showcase, each card opening the
+ * live demo.
+ */
+export const showcase = defineType({
+  name: "showcase",
+  title: "Showcase item",
+  type: "document",
+  fields: [
+    defineField({ name: "title", type: "string", validation: (r) => r.required().max(60) }),
+    defineField({
+      name: "url",
+      title: "Live demo URL",
+      type: "url",
+      description: "Where the card links to. Opens in a new tab.",
+      validation: (r) => r.required().uri({ scheme: ["https"] }),
+    }),
+    defineField({
+      name: "screenshot",
+      type: "imageWithAlt",
+      description:
+        "A full-page screenshot works best: the card shows the top and scrolls down it on hover. At least 1600 px wide.",
+      validation: (r) => r.required(),
+    }),
+    defineField({ name: "description", type: "text", rows: 2, description: "One or two lines under the card.", validation: (r) => r.max(160) }),
+    defineField({
+      name: "category",
+      type: "string",
+      options: { list: SHOWCASE_CATEGORIES, layout: "dropdown" },
+      validation: (r) => r.required(),
+    }),
+    defineField({ name: "techStack", title: "Tech stack", type: "array", of: [defineArrayMember({ type: "string" })], options: { layout: "tags" }, validation: (r) => r.max(5) }),
+    defineField({ name: "year", type: "number", validation: (r) => r.required().integer().min(2000).max(2100) }),
+    defineField({ name: "order", type: "number", initialValue: 100, description: "Lower numbers show first.", validation: (r) => r.integer() }),
+  ],
+  orderings: [{ title: "Display order", name: "order", by: [{ field: "order", direction: "asc" }] }],
+  preview: { select: { title: "title", subtitle: "url", media: "screenshot" } },
+});
+
+export const documentTypes = [service, project, showcase];

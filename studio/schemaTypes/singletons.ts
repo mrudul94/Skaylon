@@ -166,6 +166,57 @@ export const processPage = defineType({
   ],
 });
 
+export const pricingPage = defineType({
+  name: "pricingPage",
+  title: "Pricing page",
+  type: "document",
+  fields: [
+    defineField({
+      name: "intro",
+      type: "object",
+      fields: [
+        defineField({ name: "heading", type: "string", validation: (r) => r.required().max(80) }),
+        defineField({ name: "sub", type: "text", rows: 3, validation: (r) => r.required().max(300) }),
+      ],
+    }),
+    defineField({
+      name: "packages",
+      type: "array",
+      validation: (r) => r.required().min(1).max(6),
+      of: [
+        defineArrayMember({
+          type: "object",
+          fields: [
+            defineField({ name: "name", type: "string", validation: (r) => r.required().max(40) }),
+            defineField({ name: "description", type: "text", rows: 2, validation: (r) => r.required().max(160) }),
+            defineField({
+              name: "priceFrom",
+              title: "Starting price (₹)",
+              type: "number",
+              description: "Shown as \"Starting from ₹…\". Leave empty for feature-based pricing.",
+              validation: (r) => r.integer().min(0),
+            }),
+            defineField({
+              name: "priceLabel",
+              title: "Label when there is no price",
+              type: "string",
+              initialValue: "Priced on features",
+              validation: (r) => r.max(40),
+            }),
+            defineField({ name: "features", title: "What's included", type: "array", of: [defineArrayMember({ type: "string" })], validation: (r) => r.required().min(1).max(10) }),
+            defineField({ name: "ctaLabel", title: "Button label", type: "string", validation: (r) => r.required().max(30) }),
+            defineField({ name: "service", title: "Related service", type: "reference", to: [{ type: "service" }], description: "Pre-selects the project type on the contact form." }),
+          ],
+          preview: { select: { title: "name", price: "priceFrom", label: "priceLabel" }, prepare: ({ title, price, label }) => ({ title, subtitle: price != null ? `From ₹${price}` : label }) },
+        }),
+      ],
+    }),
+    defineField({ name: "factors", title: "What affects the price", type: "array", of: [defineArrayMember({ type: "titledText" })], validation: (r) => r.max(8) }),
+    defineField({ name: "note", title: "Small print", type: "text", rows: 2, validation: (r) => r.max(300) }),
+    defineField({ name: "faqs", title: "FAQs", type: "array", of: [defineArrayMember({ type: "faq" })] }),
+  ],
+});
+
 export const legalPage = defineType({
   name: "legalPage",
   title: "Legal page",
@@ -191,4 +242,4 @@ export const legalPage = defineType({
   ],
 });
 
-export const singletonTypes = [siteSettings, homePage, aboutPage, processPage, legalPage];
+export const singletonTypes = [siteSettings, homePage, aboutPage, processPage, pricingPage, legalPage];

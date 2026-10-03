@@ -7,6 +7,7 @@ import { Logo } from "@/components/ui/Logo";
 import { ButtonLink, Container } from "@/components/ui/primitives";
 import { isActive, primaryNav, type NavService } from "@/lib/nav";
 import { ServicesMenu } from "./ServicesMenu";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Header({
   services,
@@ -95,10 +96,11 @@ export function Header({
             </ul>
           </nav>
 
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="hidden items-center gap-3 lg:flex">
+            <ThemeToggle />
             <a
               href={tel}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border hairline bg-surface px-3.5 text-sm font-medium text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
+              className="inline-flex min-h-11 whitespace-nowrap max-xl:hidden items-center gap-2 rounded-full border hairline bg-surface px-3.5 text-sm font-medium text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
               data-track="phone_click"
               data-track-label="header"
             >
@@ -120,7 +122,7 @@ export function Header({
             </a>
             <ButtonLink
               href="/contact"
-              className="min-h-11"
+              className="min-h-11 whitespace-nowrap"
               data-track="cta_click"
               data-track-label="header"
             >
@@ -131,9 +133,10 @@ export function Header({
           {/* Tablets: no sticky bar (phones only) and no desktop nav yet, so
               the main call to action sits beside the menu button. */}
           <div className="flex items-center gap-3 lg:hidden">
+            <ThemeToggle />
             <ButtonLink
               href="/contact"
-              className="hidden min-h-11 md:inline-flex"
+              className="min-h-11 max-md:hidden"
               data-track="cta_click"
               data-track-label="header-tablet"
             >

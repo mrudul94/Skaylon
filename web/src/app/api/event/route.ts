@@ -11,6 +11,7 @@ const EVENTS = new Set([
   "enquiry_popup_shown",
   "enquiry_popup_dismissed",
   "enquiry_popup_submitted",
+  "showcase_click",
 ]);
 
 type AnalyticsEngine = { writeDataPoint: (p: { blobs?: string[]; doubles?: number[]; indexes?: string[] }) => void };

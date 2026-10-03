@@ -20,6 +20,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...services.filter((s) => !s.seo.noindex).map((s) => entry(`/services/${s.slug}`, 0.8, "monthly")),
     entry("/work", 0.8, "weekly"),
     ...projects.filter((p) => !p.seo.noindex).map((p) => entry(`/work/${p.slug}`, 0.7, "monthly")),
+    entry("/showcase", 0.7, "weekly"),
+    entry("/pricing", 0.8, "monthly"),
     entry("/process", 0.6, "yearly"),
     entry("/about", 0.6, "yearly"),
     entry("/contact", 0.7, "yearly"),

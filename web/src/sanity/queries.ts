@@ -35,6 +35,21 @@ export const PROCESS_PAGE = `*[_id == "processPage"][0]{
   "faqs": coalesce(faqs[]{question, answer}, [])
 }`;
 
+export const PRICING_PAGE = `*[_id == "pricingPage"][0]{
+  intro,
+  "packages": coalesce(packages[]{
+    name, description,
+    defined(priceFrom) => { priceFrom },
+    defined(priceLabel) => { priceLabel },
+    "features": coalesce(features, []),
+    ctaLabel,
+    defined(service) => { "serviceSlug": service->slug.current }
+  }, []),
+  "factors": coalesce(factors[]{title, description}, []),
+  "note": coalesce(note, ""),
+  "faqs": coalesce(faqs[]{question, answer}, [])
+}`;
+
 export const LEGAL_PAGE = `*[_id == $id][0]{
   title, lastUpdated, "intro": coalesce(intro, ""),
   "sections": coalesce(sections[]{heading, "body": coalesce(body, [])}, [])
@@ -70,5 +85,12 @@ const projectFields = `
   "order": coalesce(order, 100),
   "seo": coalesce(seo, {})
 `;
+
+export const SHOWCASE = `*[_type == "showcase" && defined(url) && defined(screenshot.asset)] | order(order asc, year desc){
+  "id": _id, title, url,
+  "screenshot": screenshot${image},
+  defined(description) => { description },
+  category, "techStack": coalesce(techStack, []), year
+}`;
 
 export const PROJECTS = `*[_type == "project" && defined(slug.current) && defined(cover.asset)] | order(order asc){ ${projectFields} }`;

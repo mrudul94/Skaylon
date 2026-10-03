@@ -1,6 +1,6 @@
 // Zod-free constants the browser forms need (importing contact-schema from a
 // client component would ship zod in the bundle).
-export const BUDGETS = ["Under ₹2 lakh", "₹2–5 lakh", "₹5–15 lakh", "₹15 lakh+", "Not sure yet"] as const;
+export const BUDGETS = ["Under ₹25,000", "₹25,000–1 lakh", "₹1–2 lakh", "₹2–5 lakh", "₹5–15 lakh", "₹15 lakh+", "Not sure yet"] as const;
 
 export const PROJECT_TYPES = [
   "Website",

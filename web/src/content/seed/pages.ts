@@ -1,4 +1,4 @@
-import type { AboutPage, HomePage, ProcessPage, Project } from "../types";
+import type { AboutPage, HomePage, PricingPage, ProcessPage, Project, ShowcaseItem } from "../types";
 
 export const homePage: HomePage = {
   hero: {
@@ -161,7 +161,7 @@ export const processPage: ProcessPage = {
     {
       question: "How are projects priced?",
       answer:
-        "After discovery we send a fixed-scope, fixed-price proposal. You know what will be built, by when and for how much before development starts.",
+        "Business websites start from ₹7,999 and e-commerce stores from ₹15,999. Apps and custom software are priced on their features. In every case, after discovery we send a fixed-scope, fixed-price proposal, so you know what will be built, by when and for how much before development starts.",
     },
     {
       question: "Will I see progress while the project is being built?",
@@ -183,3 +183,109 @@ export const processPage: ProcessPage = {
 // Intentionally empty: no case studies are published yet. Pages render an honest
 // empty state until real projects are added in the CMS.
 export const projects: Project[] = [];
+
+// Demo sites are added in the CMS (Showcase). None are invented here: the
+// page shows an empty state until real ones are published.
+export const showcase: ShowcaseItem[] = [];
+
+// Starting prices set by the owner (2026-10-03). Package contents are the
+// owner's offer: change them here and in the CMS together.
+export const pricingPage: PricingPage = {
+  intro: {
+    heading: "Simple, upfront pricing",
+    sub: "Starting prices for websites and online stores. Apps and custom software are priced on their features. Either way, you get a fixed-scope, fixed-price proposal before any work starts.",
+  },
+  packages: [
+    {
+      name: "Business website",
+      description: "A professional website that explains what you do and turns visitors into enquiries.",
+      priceFrom: 7999,
+      features: [
+        "Up to 5 pages, designed for your business",
+        "Works on phones, tablets and desktops",
+        "Contact form, WhatsApp and call buttons",
+        "Basic SEO: page titles, descriptions and a sitemap",
+        "Google Maps location and business details",
+        "Set up and launched on your domain",
+      ],
+      ctaLabel: "Start a website",
+      serviceSlug: "website-development",
+    },
+    {
+      name: "E-commerce store",
+      description: "An online store to list your products, take orders and accept payments.",
+      priceFrom: 15999,
+      features: [
+        "Product catalogue with categories and search",
+        "Cart and checkout",
+        "Online payments through a payment gateway",
+        "Dashboard to manage orders and stock",
+        "Works on phones, tablets and desktops",
+        "Basic SEO for product and category pages",
+      ],
+      ctaLabel: "Start a store",
+      serviceSlug: "website-development",
+    },
+    {
+      name: "Mobile apps",
+      description: "Android and iOS apps, from a first version to a complete product.",
+      priceLabel: "Priced on features",
+      features: [
+        "Android, iOS or both from one codebase",
+        "User accounts, notifications and payments as needed",
+        "Admin panel to manage content and users",
+        "Publishing to Google Play and the App Store",
+      ],
+      ctaLabel: "Get an app quote",
+      serviceSlug: "mobile-app-development",
+    },
+    {
+      name: "Web apps and custom software",
+      description: "Portals, dashboards, SaaS products and internal tools built around how you work.",
+      priceLabel: "Priced on features",
+      features: [
+        "Customer portals, dashboards and SaaS products",
+        "Workflow automation and reporting",
+        "Integrations with the tools you already use",
+        "Secure logins and user roles",
+      ],
+      ctaLabel: "Get a software quote",
+      serviceSlug: "custom-software-development",
+    },
+  ],
+  factors: [
+    { title: "Screens and features", description: "How many screens there are and how much each one does." },
+    { title: "User roles", description: "Whether customers, staff and admins each need their own views and permissions." },
+    { title: "Integrations", description: "Payments, maps, SMS, accounting tools or other systems the software connects to." },
+    { title: "Platforms", description: "Android, iOS, web, or a combination of them." },
+    { title: "Admin and reporting", description: "Back-office tools to manage data, plus reports and exports." },
+    { title: "Design depth", description: "A clean standard layout, or a fully custom design with motion and illustrations." },
+  ],
+  note: "Prices are in Indian rupees. Domain names, hosting and third-party fees, such as payment gateway charges, are not included.",
+  faqs: [
+    {
+      question: "What does \"starting from\" mean?",
+      answer:
+        "It is the price of the package as described. Extra pages, features or integrations add to it. The final price is fixed in a written proposal before any work starts, so there are no surprises later.",
+    },
+    {
+      question: "Why don't apps and custom software have a fixed price?",
+      answer:
+        "Their cost depends almost entirely on the features: a simple booking app and a full marketplace are very different projects. After a short discovery call we send a fixed-scope, fixed-price proposal for exactly what you need.",
+    },
+    {
+      question: "What is not included in the price?",
+      answer:
+        "Domain names, hosting, paid plugins and third-party fees such as payment gateway charges, unless the proposal says otherwise. We help you choose and set these up.",
+    },
+    {
+      question: "Can I add features later?",
+      answer: "Yes. You own the code, so your website or app can be extended at any time. New work is quoted separately before it starts.",
+    },
+    {
+      question: "How do I get an exact quote?",
+      answer:
+        "Send a short enquiry describing what you need. We reply within one to two working days, usually with a short call to understand the details, then send the proposal.",
+    },
+  ],
+};

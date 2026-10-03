@@ -10,6 +10,7 @@ export const SINGLETONS = [
   { id: "homePage", type: "homePage", title: "Home page" },
   { id: "aboutPage", type: "aboutPage", title: "About page" },
   { id: "processPage", type: "processPage", title: "Process page" },
+  { id: "pricingPage", type: "pricingPage", title: "Pricing page" },
   { id: "privacyPage", type: "legalPage", title: "Privacy policy" },
   { id: "termsPage", type: "legalPage", title: "Terms and conditions" },
   { id: "cookiesPage", type: "legalPage", title: "Cookie policy" },

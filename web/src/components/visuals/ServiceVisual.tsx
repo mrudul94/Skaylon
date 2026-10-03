@@ -203,7 +203,7 @@ const visuals: Record<string, ReactNode> = {
 
 export function ServiceVisual({ slug, className }: { slug: string; className?: string }) {
   return (
-    <div aria-hidden="true" className={`relative aspect-[5/4] w-full select-none ${className ?? ""}`}>
+    <div aria-hidden="true" className={`tone-light relative aspect-[5/4] w-full select-none ${className ?? ""}`}>
       <div className="absolute inset-0 flex items-center">
         <div className="relative flex h-full w-full flex-col justify-center">{visuals[slug] ?? visuals["web-application-development"]}</div>
       </div>

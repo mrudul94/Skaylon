@@ -1,10 +1,10 @@
 import "server-only";
 import { sanityConfigured, sanityFetch } from "@/sanity/client";
 import * as q from "@/sanity/queries";
-import type { AboutPage, HomePage, LegalPage, LegalSlug, ProcessPage, Project, Service, SiteSettings } from "./types";
+import type { AboutPage, HomePage, LegalPage, LegalSlug, PricingPage, ProcessPage, Project, Service, ShowcaseItem, SiteSettings } from "./types";
 import { siteSettings } from "./seed/site";
 import { services as seedServices } from "./seed/services";
-import { aboutPage, homePage, processPage, projects as seedProjects } from "./seed/pages";
+import { aboutPage, homePage, pricingPage, processPage, projects as seedProjects, showcase as seedShowcase } from "./seed/pages";
 import { cookiesPage, privacyPage, termsPage } from "./seed/legal";
 
 /**
@@ -15,8 +15,8 @@ import { cookiesPage, privacyPage, termsPage } from "./seed/legal";
  * falls back to the local seed, so a fresh dataset never breaks a page. A
  * failed fetch is NOT swallowed: better a failed build or revalidation (the
  * last good page keeps serving) than silently publishing stale seed copy.
- * Projects are the one exception to seeding: an empty CMS means no case
- * studies, and the site says so honestly.
+ * Projects and showcase items are the exception to seeding: an empty CMS
+ * means none, and the site says so honestly.
  */
 
 async function fromCms<T>(query: string, fallback: T, params: Record<string, string> = {}): Promise<T> {
@@ -52,6 +52,19 @@ export async function getAboutPage(): Promise<AboutPage> {
 
 export async function getProcessPage(): Promise<ProcessPage> {
   return fromCms(q.PROCESS_PAGE, processPage);
+}
+
+export async function getPricingPage(): Promise<PricingPage> {
+  const raw = await fromCms<Partial<PricingPage>>(q.PRICING_PAGE, pricingPage);
+  // Field-by-field fallback, as for the home page.
+  const list = <T,>(v: T[] | undefined, seed: T[]) => (v?.length ? v : seed);
+  return {
+    intro: raw.intro?.heading ? raw.intro : pricingPage.intro,
+    packages: list(raw.packages, pricingPage.packages),
+    factors: list(raw.factors, pricingPage.factors),
+    note: raw.note || pricingPage.note,
+    faqs: list(raw.faqs, pricingPage.faqs),
+  };
 }
 
 export async function getServices(): Promise<Service[]> {
@@ -96,6 +109,10 @@ export async function getProjects(opts: { featured?: boolean } = {}): Promise<Pr
 
 export async function getProject(slug: string): Promise<Project | null> {
   return (await getProjects()).find((p) => p.slug === slug) ?? null;
+}
+
+export async function getShowcase(): Promise<ShowcaseItem[]> {
+  return sanityConfigured ? sanityFetch<ShowcaseItem[]>(q.SHOWCASE) : seedShowcase;
 }
 
 const legalSeed: Record<LegalSlug, LegalPage> = { privacy: privacyPage, terms: termsPage, cookies: cookiesPage };

@@ -13,6 +13,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { getServices, getSiteSettings } from "@/content";
 import { env } from "@/lib/env";
 import { organization, website } from "@/lib/jsonld";
+import { themeScript } from "@/lib/theme";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import "./globals.css";
 
@@ -66,7 +67,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const navServices = services.map((s) => ({ slug: s.slug, name: s.name, description: s.menuDescription }));
   const siteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   return (
-    <html lang="en-IN" className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`}>
+    // suppressHydrationWarning: themeScript sets data-theme before React hydrates.
+    <html lang="en-IN" className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="min-h-svh antialiased">
         <JsonLd data={[organization(site, services), website(site)]} />
         <a
